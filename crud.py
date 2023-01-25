@@ -20,17 +20,38 @@ def find_user_by_id(user_id):
     return model.User.query.filter_by(user_id=user_id).first()
 
 
-def create_bookmark(api_url, title, author, full_text):
-    """Creates a LibraryDB object (a saved poem from the API)
+def create_bookmark(title, author):
+    """Creates a Poem object (a saved poem from the API)
     to be added to the database."""
 
-    bookmark = model.Poem(api_url=api_url, title=title, author=author, full_text=full_text)
+    bookmark = model.Poem(title=title, author=author)
 
     return bookmark
 
+def create_bookmark_lines(bk_poem_id, lines):
+    """Saves the lines (in list form in the JSON) as rows
+    on a table."""
+
+    bookmark_lines = []
+
+    for line in lines:
+        bookmark_line = model.PoemLine(bk_poem_id=bk_poem_id, line=line)
+        bookmark_lines.append(bookmark_line)
+    
+    return bookmark_lines
+
+
 def find_bookmark_by_id(bk_poem_id):
 
-    return model.Poem.query.filter_by(bk_poem_id=bk_poem_id)
+    return model.Poem.query.filter_by(bk_poem_id=bk_poem_id).first()
+
+def find_bookmark_by_title(title):
+
+    return model.Poem.query.filter_by(title=title).first()
+
+def find_bookmark_by_author(author):
+
+    return model.Poem.query.filter_by(author=author).first()
 
 
 def create_comment(user_id, bk_poem_id, user_notes=""):
@@ -43,6 +64,11 @@ def create_comment(user_id, bk_poem_id, user_notes=""):
 def find_comment_by_id(comment_id):
 
     return model.Comment.query.filter_by(comment_id=comment_id)
+
+
+def create_prompt(prompt):
+
+    return model.PromptDB(prompt_text=prompt)
 
 
 if __name__ == "__main__":

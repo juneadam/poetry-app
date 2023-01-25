@@ -1,3 +1,9 @@
 #random-poem {
     align: center;
 }
+
+.footer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}

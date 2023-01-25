@@ -6,7 +6,7 @@ import requests
 
 from model import connect_to_db, db
 
-from crud import create_user, find_user_by_email
+import crud
 
 from jinja2 import StrictUndefined
 
@@ -14,6 +14,8 @@ app = Flask(__name__)
 app.secret_key = "dev"
 app.jinja_env.undefined = StrictUndefined
 
+
+# ------------ home page/login/sign up routes ------------ #
 
 @app.route('/')
 def show_homepage():
@@ -27,12 +29,12 @@ def user_sign_up():
     email = request.form.get('email')
     username = request.form.get('username')
     password = request.form.get('password')
-    user = find_user_by_email(email=email)
+    user = crud.find_user_by_email(email=email)
 
     if user:
         flash("This email is already associated with an account. Please log in below.")
     else:
-        new_user = create_user(email=email, username=username, password=password)
+        new_user = crud.create_user(email=email, username=username, password=password)
         db.session.add(new_user)
         db.session.commit()
         flash('Your account was created successfully! You may now login.')
@@ -44,7 +46,7 @@ def user_login():
     """check user credentials and log in"""
     email = request.form.get('email')
     password = request.form.get('password')
-    user = find_user_by_email(email=email)
+    user = crud.find_user_by_email(email=email)
 
     if user:
         if user.password == password:
@@ -59,22 +61,84 @@ def user_login():
         flash("User not found, please create an account below!")
         return redirect('/')
 
+# ------------ random poem routes ------------ #
+
 @app.route('/poems')
 def show_poem_generator():
     """Render webpage which generates poems from PoetryDB API."""
+
+    call_random_poem()
 
     return render_template('poems.html')
 
 @app.route('/random-poem')
 def call_random_poem():
-    """Calls the API to get a random poem, sends to the JS file to update poems.html"""
+    """Calls the API to get a random poem, sends to the JS file to update poems.html, 
+    adds poem data to the session in case poem is bookmarked."""
 
     res = requests.get('https://poetrydb.org/random')
     
     random_poem = res.json()
 
+    # session['random_poem'] = {}
+
+    # session['random_poem']['title'] = random_poem[0]['title']
+    # session['random_poem']['author'] = random_poem[0]['author']
+    # session['random_poem']['lines'] = random_poem[0]['lines']
+
+    # print(f"session title is: {session['random_poem']['title']}")
+    # print(f"session title is: {session['random_poem']['author']}")
+    # print(f"session title is: {session['random_poem']['lines']}")
+
     return jsonify({'data': random_poem})
 
+
+@app.route('/bookmark', methods=["POST"])
+def bookmark_random_poem():
+    """Saves comment and, if needed, poem to the database."""
+
+    title = request.json.get('title')
+    author = request.json.get('author')
+    lines_string = request.json.get('lines')
+    comments = request.json.get('comments')
+
+    lines = lines_string.split('\n')
+    
+    user_id = session['user_id']
+    bk_poem_id = ''
+
+    bookmark_object = crud.find_bookmark_by_title(title)
+
+    print(bookmark_object)
+
+    # print(f"bookmark object author is: {bookmark_object.author}")
+
+    if bookmark_object:
+        if bookmark_object.author == author:
+            bk_poem_id = bookmark_object.bk_poem_id
+    
+    else:
+        new_bookmark = crud.create_bookmark(title=title, author=author)
+        db.session.add(new_bookmark)
+        db.session.commit()
+        
+        bookmark_object = crud.find_bookmark_by_title(title)
+        bk_poem_id = bookmark_object.bk_poem_id
+
+        new_lines = crud.create_bookmark_lines(bk_poem_id=bk_poem_id, lines=lines)
+        db.session.add_all(new_lines)
+        db.session.commit()
+
+    new_comment = crud.create_comment(user_id=user_id, bk_poem_id=bk_poem_id, user_notes=comments)    
+    db.session.add(new_comment)
+    db.session.commit()
+    
+    # flash('Poem bookmarked, and comments saved!')
+
+    return 'ok'
+
+
+# ------------ prompts routes ------------ #
 
 @app.route('/prompts')
 def show_prompt_generator():
@@ -82,11 +146,17 @@ def show_prompt_generator():
 
     return render_template('prompts.html')
 
+
+# ------------ mashups routes ------------ #
+
 @app.route('/mashups')
 def show_mashup_generator():
     """Render webpage which generates poetry mashups from PoetryDB API."""
 
     return render_template('mashups.html')
+
+
+# ------------ user profile routes ------------ #
 
 @app.route('/userprofile')
 def user_profile():

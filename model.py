@@ -58,15 +58,32 @@ class Poem(db.Model):
     bk_poem_id = db.Column(db.Integer,
                         primary_key=True,
                         autoincrement=True)
-    api_url = db.Column(db.Text)
     title = db.Column(db.String(255))
     author = db.Column(db.String(150))
-    full_text = db.Column(db.Text)
 
     comments = db.relationship("Comment", back_populates="saved_poem")
+    lines = db.relationship("PoemLine", back_populates="saved_poem")
 
     def __repr__(self):
-        return f'<LibraryDB object bk_poem_id: {self.bk_poem_id} title: {self.title} author: {self.author}>'
+        return f'<Poem object bk_poem_id: {self.bk_poem_id} title: {self.title} author: {self.author}>'
+
+
+class PoemLine(db.Model):
+
+    __tablename__ = "poemlines"
+
+    bk_line_id = db.Column(db.Integer,
+                        primary_key=True,
+                        autoincrement=True)
+    bk_poem_id = db.Column(db.Integer, 
+                        db.ForeignKey("poems.bk_poem_id"),
+                        nullable=False)
+    line = db.Column(db.Text)
+
+    saved_poem = db.relationship("Poem", back_populates="lines")
+
+    def __repr__(self):
+        return f'<PoemLine object bk_poem_id: {self.bk_poem_id} bk_line_id: {self.bk_line_id}>'
 
 
 class Mashup(db.Model):
