@@ -1,6 +1,8 @@
 """server for poetry app"""
 
-from flask import (Flask, render_template, request, flash, session, redirect)
+from flask import (Flask, render_template, request, flash, session, redirect, jsonify)
+
+import requests
 
 from model import connect_to_db, db
 
@@ -62,6 +64,17 @@ def show_poem_generator():
     """Render webpage which generates poems from PoetryDB API."""
 
     return render_template('poems.html')
+
+@app.route('/random-poem')
+def call_random_poem():
+    """Calls the API to get a random poem, sends to the JS file to update poems.html"""
+
+    res = requests.get('https://poetrydb.org/random')
+    
+    random_poem = res.json()
+
+    return jsonify({'data': random_poem})
+
 
 @app.route('/prompts')
 def show_prompt_generator():

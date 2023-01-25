@@ -5,24 +5,30 @@
 {% block body %}
 <div class="container">
     <br><div class="row">
-        <div id="poem-title">
+        <div class="col-10" id="poem-title">
             <h1>Title</h1>
         </div>
+        <div class="col-2">
+            <button type="button" class="btn btn-outline-secondary" id="random-poem">New Poem</button>
+            </div>
     </div>
     <div class="row">
         <div id="poem-author">
-            <h2>by Author</h2>
+            <h3>by Author</h3>
         </div>
     </div>
     <div class="row">
-        <div id="poem-text">
+        <div class="col-12 col-md-7" id="poem-text">
         This is where the poem will go.
         </div>
     </div><br>
+    <div class="row">
+    </div>
     <div class="row">
         <textarea id="comments" name="comments" rows="6" cols="20">Add your comments here...</textarea>
     </div>
 </div>
 
+<script src='static/poems.js'></script>
 
 {% endblock %}

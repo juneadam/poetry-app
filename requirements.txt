@@ -15,4 +15,4 @@ pyparsing==3.0.8
 pytest==7.1.2
 SQLAlchemy==1.4.25
 tomli==2.0.1
-Werkzeug==2.0.1
+Werkzeug==2.0.1requests

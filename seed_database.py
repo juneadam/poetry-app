@@ -40,9 +40,9 @@ for n in range(10):
     new_text = crud.create_bookmark(api_url=api_url, title=title, author=author, full_text=full_text)
 
     poems_in_db.append(new_text)
-    model.db.session.add(new_text)
+    # model.db.session.add(new_text)
 
-# model.db.session.add(poems_in_db)
+model.db.session.add_all(poems_in_db)
 model.db.session.commit()
 
 # loop that generates ten user objects
@@ -67,3 +67,20 @@ for n in range(10):
 
 model.db.session.commit()  
 
+
+# database of poetry prompts
+
+PROMPTS = ["Why are my shoes wet?",
+            "Write down the first 14 words you can think of. Write a sonnet using them - start or end a line with each, or incorporate them into each line.",
+            "A haiku is 3 lines, with 5, 7, and 5 syllables each. Pick a number 1-10 to choose a number of lines, then continue picking numbers 1-10 to choose the number of syllables for each line.",
+            "I haven't slept in weeks.",
+            "Why is the sky on fire?",
+            "Pick up a book near you, turn to page 28, and pick the first word on the page. Use it to start a poem.",
+            "Hold yourself accountable for one crime.",
+            "Forgive yourself for one crime.",
+            "Tell a story about the last great joy you felt.",
+            "Find a poem you like and replace it one word at a time until it is new.",
+            "Where did you come from? Do not name a place."
+            "Write six lines that don't have anything to do with each other. Rearrange them until they do."
+            
+            ]
