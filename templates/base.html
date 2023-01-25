@@ -6,6 +6,24 @@
     <link rel="stylesheet" href="static/styles.css">
 </head>
 <body>
+    <nav class="navbar navbar-expand-md">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">Poetry Toolkit</a>
+            <div class="navbar-nav">
+                <a class="nav-link active" aria-current="page" href="/">Home</a>
+                <a class="nav-link" href="/poems">Poems</a>
+                <a class="nav-link" href="/prompts">Prompts</a>
+                <a class="nav-link" href="/mashups">Mashups</a>
+                <a class="nav-link disabled">Disabled</a>
+              </div>
+        
+        </div>
+    </nav>
+    {% for msg in get_flashed_messages() %}
+    <p class="flash-msg">
+      {{ msg }}
+    </p>
+    {% endfor %}
     {% block body %}here goes the webpage :3{% endblock %}
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN" crossorigin="anonymous"></script>
 </body>

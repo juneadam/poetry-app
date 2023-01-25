@@ -5,16 +5,14 @@ from flask_sqlalchemy import SQLAlchemy
 db = SQLAlchemy()
 
 
-def User(db.Model):
+class User(db.Model):
     """Creates a table to save user data."""
 
     __tablename__ = 'users'
 
-    user_id = db.Column(db.Integer, 
-                        primary_key=True, 
-                        autoincrement=True)
+    user_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     username = db.Column(db.String(24), unique=True, nullable=False)
-    password - db.Column(db.String(24), nullable=False)
+    password = db.Column(db.String(24), nullable=False)
     email = db.Column(db.String(99), unique=True)
     active_account = db.Column(db.Boolean, default=True, nullable=False)
     location = db.Column(db.String(255), nullable=True)
@@ -22,41 +20,40 @@ def User(db.Model):
     comments = db.relationship("Comment", back_populates="user")
     mashups = db.relationship("Mashup", back_populates="user")
     saved_prompts = db.relationship("SavedPrompt", back_populates="user")
-
     saved_linebreaks = db.relationship("SavedLinebreak", back_populates="user")
 
     def __repr__(self):
         return f'<User object user_id: {self.user_id} username: {self.username}>'
 
 
-def Comment(db.Model):
+class Comment(db.Model):
     """Creates a table to track user comments associated with
     bookmarked poems."""
 
-    __tablename__ = 'poem_notes'
+    __tablename__ = 'comments'
 
-    poem_notes_id = db.Column(db.Integer, 
+    comment_id = db.Column(db.Integer, 
                         primary_key=True, 
                         autoincrement=True)
     user_notes = db.Column(db.Text)
     bk_poem_id = db.Column(db.Integer, 
-                        db.ForeignKey('saved_poems_DB.bk_poem_id'))
+                        db.ForeignKey('poems.bk_poem_id'))
     user_id = db.Column(db.Integer, 
                         db.ForeignKey('users.user_id'))
 
     user = db.relationship("User", back_populates="comments")
-    saved_poem = db.relationship("LibraryDB", back_populates="comments")
+    saved_poem = db.relationship("Poem", back_populates="comments")
 
 
     def __repr__(self):
         return f'<Comment object poem_notes_id: {self.poem_notes_id} user_id: {self.user_id}>'
 
 
-def LibraryDB(db.Model):
+class Poem(db.Model):
     """Creates a table for saving API-generated poems that 
     users wish to bookmark for future reading."""
 
-    __tablename__ = "saved_poems_DB"
+    __tablename__ = "poems"
 
     bk_poem_id = db.Column(db.Integer,
                         primary_key=True,
@@ -69,15 +66,14 @@ def LibraryDB(db.Model):
     comments = db.relationship("Comment", back_populates="saved_poem")
 
     def __repr__(self):
-        return f'<LibraryDB object bk_poem_id: {self.bk_poem_id} 
-        title: {self.title} author: {self.author}>'
+        return f'<LibraryDB object bk_poem_id: {self.bk_poem_id} title: {self.title} author: {self.author}>'
 
 
-def Mashup(db.Model):
+class Mashup(db.Model):
     """Creates a table for API-generated mashup poems
     that the user wants to save."""
 
-    __tablename__ = "saved_mashups"
+    __tablename__ = "mashups"
 
     mashup_id = db.Column(db.Integer,
                         primary_key=True,
@@ -93,31 +89,30 @@ def Mashup(db.Model):
         return f'<Mashup object mashup_id: {self.mashup_id} user_id: {self.user_id}>'
 
 
-def MashupComponent(db.Model):
+class MashupComponent(db.Model):
     """Creates a table for components making up particular 
     mashup poems saved by the user."""
 
-    __tablename__ = "mashup_components"
+    __tablename__ = "mashupcomponents"
 
     component_id = db.Column(db.Integer,
                         primary_key=True,
                         autoincrement=True)
     mashup_id = db.Column(db.Integer,
-                        db.ForeignKey("saved_mashup.mashup_id"))
+                        db.ForeignKey("mashups.mashup_id"))
     author_name = db.Column(db.String(100))
     source_poem = db.Column(db.String(100))
 
     mashup = db.relationship("Mashup", back_populates="components")
 
     def __repr__(self):
-        return f'<MashupComponent object component_id: {self.component_id} 
-        author_name: {self.author_name} source_poem: {self.source_poem}>'
+        return f'<MashupComponent object component_id: {self.component_id} author_name: {self.author_name} source_poem: {self.source_poem}>'
 
 
-def PromptDB(db.Model):
+class PromptDB(db.Model):
     """Database of poetry prompts to choose from."""
 
-    __tablename__ = "prompts_DB"
+    __tablename__ = "prompts"
 
     prompt_id = db.Column(db.Integer,
                         primary_key=True,
@@ -130,10 +125,10 @@ def PromptDB(db.Model):
         return f'<PromptDB object prompt_id: {self.prompt_id}>'
 
 
-def SavedPrompt(db.Model):
+class SavedPrompt(db.Model):
     """Table allowing a user to bookmark a prompt they particularly like."""
 
-    __tablename__ = "saved_prompts"
+    __tablename__ = "savedprompts"
 
     saved_prompt_id = db.Column(db.Integer,
                         primary_key=True,
@@ -141,7 +136,7 @@ def SavedPrompt(db.Model):
     user_id = db.Column(db.Integer,
                         db.ForeignKey("users.user_id"))
     prompt_id = db.Column(db.Integer,
-                        db.ForeignKey("prompts_DB.prompt_id"))
+                        db.ForeignKey("prompts.prompt_id"))
 
     prompt = db.relationship("PromptDB", back_populates="saved_prompts")
     user = db.relationship("User", back_populates="saved_prompts")
@@ -149,11 +144,11 @@ def SavedPrompt(db.Model):
     def __repr__(self):
         return f'<SavedPrompt object saved_prompt_id: {self.saved_prompt_id} user_id: {self.user_id} prompt_id: {self.prompt_id}'
 
-def SavedLinebreak(db.Model):
+class SavedLinebreak(db.Model):
     """Table allowing user to save their poems with randomly generated
     line-breaks."""
 
-    __tablename__ = "saved_userpoems"
+    __tablename__ = "saveduserpoems"
 
     linebreak_id = db.Column(db.Integer,
                         primary_key=True,
@@ -170,7 +165,7 @@ def SavedLinebreak(db.Model):
     
 
 
-def connect_to_db(flask_app, db_uri="postgresql:///ratings", echo=True):
+def connect_to_db(flask_app, db_uri="postgresql:///poetrytoolkitDB", echo=True):
     flask_app.config["SQLALCHEMY_DATABASE_URI"] = db_uri
     flask_app.config["SQLALCHEMY_ECHO"] = echo
     flask_app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
@@ -189,3 +184,4 @@ if __name__ == "__main__":
     # query it executes.
 
     connect_to_db(app)
+    db.create_all()

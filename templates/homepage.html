@@ -1,10 +1,29 @@
 {% extends 'base.html' %}
 
-{% block title %}Homepage{% endblock %}
+{% block title %}Home{% endblock %}
 
 {% block body %}
 <h1>Poetry Toolkit</h1>
 <p>Tools for dorks</p>
-<a href="/sign-up">Click here to sign up</a>
-<a href="/login">Click here to log in</a>
+<div class="container">
+    <div class="row">
+    <div class="col-6">
+        <form action="/login" id="login" method="POST">
+            <label for="login">Log in to Your Account</label><br>
+            Email<br><input type="text" name="email"></input><br>
+            Password<br><input type="password" name="password"></input><br>
+            <button type="submit">Sign In</button>
+        </form>
+    </div>
+    <div class="col-6">
+        <form action="/sign-up" id="sign-up" method="POST">
+            <label for="sign-up">Create an Account</label><br>
+            Email<br><input type="text" name="email"></input><br>
+            Username<br><input type="text" name="username"></input><br>
+            Password<br><input type="password" name="password"></input><br>
+            <button type="submit">Create Account</button>
+        </form>
+    </div>
+    </div>
+</div>
 {% endblock %}
