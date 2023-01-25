@@ -73,11 +73,20 @@ def show_prompt_generator():
 def show_mashup_generator():
     """Render webpage which generates poetry mashups from PoetryDB API."""
 
-@app.route('/userpage')
+    return render_template('mashups.html')
+
+@app.route('/userprofile')
 def user_profile():
     """Render user profile."""
 
-    return render_template('userpage.html')
+    logged_in = session.get('user_id')
+    print(logged_in)
+
+    if session.get('user_id') is None:
+        flash('You are not logged in. Please log in below:')
+        return redirect('/')
+    else:
+        return render_template('userprofile.html')
 
 if __name__ == "__main__":
     connect_to_db(app)

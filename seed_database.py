@@ -65,6 +65,5 @@ for n in range(10):
 
     model.db.session.add(new_user)
 
-
 model.db.session.commit()  
 
