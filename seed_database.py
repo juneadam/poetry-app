@@ -82,5 +82,5 @@ PROMPTS = ["Why are my shoes wet?",
             "Find a poem you like and replace it one word at a time until it is new.",
             "Where did you come from? Do not name a place."
             "Write six lines that don't have anything to do with each other. Rearrange them until they do."
-            
+            "Are you warm enough today? What do you need to keep warm?"
             ]
