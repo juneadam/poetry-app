@@ -3,29 +3,35 @@
 {% block title %}Poems{% endblock %}
 
 {% block body %}
-<div class="container">
+<div class="container-fluid">
     <br><div class="row">
-        <div class="col-10" id="poem-title">
+        <div class="col-9 offset-1" id="poem-title">
             <h1>Title</h1>
         </div>
         <div class="col-2">
             <button type="button" class="btn btn-outline-secondary" id="random-poem">New Poem</button>
-            </div>
-    </div>
-    <div class="row">
-        <div id="poem-author">
-            <h3>by Author</h3>
         </div>
     </div>
     <div class="row">
-        <div class="col-12 col-md-7" id="poem-text">
-        This is where the poem will go.
+        <div class="col-8 offset-1" id="poem-author">
+            <h3>by Author</h3>
+        </div>
+        <div class="col-3">
+            <button type="button" class="btn btn-outline-secondary" id="random-poem">Bookmark Poem and Comment</button>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-8 offset-1" id="poem-text">
+            This is where the poem will go.
+        </div>
+        <div class="col-3">
+            <br><textarea id="comments" name="comments" rows="20" cols="20">Add your comments here...</textarea>
         </div>
     </div><br>
     <div class="row">
     </div>
     <div class="row">
-        <textarea id="comments" name="comments" rows="6" cols="20">Add your comments here...</textarea>
+        
     </div>
 </div>
 
