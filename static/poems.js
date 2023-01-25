@@ -5,9 +5,7 @@
 // in order to later update the innerHTML with API data
 
 const poemTitle = document.querySelector('#poem-title')
-
 const poemAuthor = document.querySelector('#poem-author')
-
 const poemText = document.querySelector('#poem-text')
 
 
@@ -31,7 +29,9 @@ const randomPoem = document.querySelector('#random-poem').addEventListener('clic
 
 
 
-const comments = document.querySelector('#comments')
+// Sets an event listener on the bookmark button that captures all the relevant
+// text on the page and sends it via AJAX to the server to be saved to the 
+// database.
 
 
 const bookmarkPoem = document.querySelector('#bookmark-poem').addEventListener('click', () => {
@@ -60,6 +60,9 @@ const bookmarkPoem = document.querySelector('#bookmark-poem').addEventListener('
     .then((responseBookmark) => {
         if (responseBookmark === 'ok') {
             alert('Poem bookmarked and comment saved!')
+        }
+        if (responseBookmark === 'not ok') {
+            alert('Only users who are logged in can save poems and comments!')
         }
     })
 })

@@ -70,6 +70,10 @@ def create_prompt(prompt):
 
     return model.PromptDB(prompt_text=prompt)
 
+def get_all_prompts():
+
+    return model.PromptDB.query.all()
+
 
 if __name__ == "__main__":
     from server import app

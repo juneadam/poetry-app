@@ -10,6 +10,8 @@ import crud
 
 from jinja2 import StrictUndefined
 
+from random import choice
+
 app = Flask(__name__)
 app.secret_key = "dev"
 app.jinja_env.undefined = StrictUndefined
@@ -74,7 +76,7 @@ def show_poem_generator():
 @app.route('/random-poem')
 def call_random_poem():
     """Calls the API to get a random poem, sends to the JS file to update poems.html, 
-    adds poem data to the session in case poem is bookmarked."""
+    adds poem data to the session in case poem is bookmarked (deprecated)."""
 
     res = requests.get('https://poetrydb.org/random')
     
@@ -104,38 +106,39 @@ def bookmark_random_poem():
 
     lines = lines_string.split('\n')
     
-    user_id = session['user_id']
     bk_poem_id = ''
 
     bookmark_object = crud.find_bookmark_by_title(title)
 
-    print(bookmark_object)
+    if not session.get('user_id'):
 
-    # print(f"bookmark object author is: {bookmark_object.author}")
+        return 'not ok'
 
-    if bookmark_object:
-        if bookmark_object.author == author:
-            bk_poem_id = bookmark_object.bk_poem_id
-    
     else:
-        new_bookmark = crud.create_bookmark(title=title, author=author)
-        db.session.add(new_bookmark)
-        db.session.commit()
+
+        user_id = session['user_id']
+
+        if bookmark_object:
+            if bookmark_object.author == author:
+                bk_poem_id = bookmark_object.bk_poem_id
         
-        bookmark_object = crud.find_bookmark_by_title(title)
-        bk_poem_id = bookmark_object.bk_poem_id
+        else:
+            new_bookmark = crud.create_bookmark(title=title, author=author)
+            db.session.add(new_bookmark)
+            db.session.commit()
+            
+            bookmark_object = crud.find_bookmark_by_title(title)
+            bk_poem_id = bookmark_object.bk_poem_id
 
-        new_lines = crud.create_bookmark_lines(bk_poem_id=bk_poem_id, lines=lines)
-        db.session.add_all(new_lines)
+            new_lines = crud.create_bookmark_lines(bk_poem_id=bk_poem_id, lines=lines)
+            db.session.add_all(new_lines)
+            db.session.commit()
+
+        new_comment = crud.create_comment(user_id=user_id, bk_poem_id=bk_poem_id, user_notes=comments)    
+        db.session.add(new_comment)
         db.session.commit()
 
-    new_comment = crud.create_comment(user_id=user_id, bk_poem_id=bk_poem_id, user_notes=comments)    
-    db.session.add(new_comment)
-    db.session.commit()
-    
-    # flash('Poem bookmarked, and comments saved!')
-
-    return 'ok'
+        return 'ok'
 
 
 # ------------ prompts routes ------------ #
@@ -145,6 +148,19 @@ def show_prompt_generator():
     """Render webpage which generates poetry prompts from the toolkit database."""
 
     return render_template('prompts.html')
+
+
+@app.route('/prompt-hole')
+def call_random_prompt():
+    """Display random poetry prompt on screen."""
+
+    prompts = crud.get_all_prompts()
+
+    new_prompt = choice(prompts)
+
+    return jsonify(new_prompt.prompt_text)
+
+
 
 
 # ------------ mashups routes ------------ #
