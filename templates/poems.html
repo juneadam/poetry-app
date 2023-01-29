@@ -3,9 +3,9 @@
 {% block title %}Poems{% endblock %}
 
 {% block body %}
-<div class="container-fluid">
+<div class="container">
     <br><div class="row">
-        <div class="col-9 offset-1" id="poem-title">
+        <div class="col-10" id="poem-title">
             <h1>Title</h1>
         </div>
         <div class="col-2">
@@ -13,7 +13,7 @@
         </div>
     </div>
     <div class="row">
-        <div class="col-8 offset-1" id="poem-author">
+        <div class="col-9" id="poem-author">
             <h3>by Author</h3>
         </div>
         <div class="col-3">
@@ -21,19 +21,18 @@
         </div>
     </div>
     <div class="row">
-        <div class="col-8 offset-1" id="poem-text">
+        <div class="col-8 col-7-md" id="poem-text">
             This is where the poem will go.
         </div>
-        <div class="col-3">
-            <br><form method="POST">
-            <textarea id="comments" name="comments" rows="20" cols="20">Add your comments here...</textarea>
-            </form>
+        <div class="col-4 col-5-md">
+            <br><label for="text-box-for-adding-comments">Use the space below for any notes or comments you have.</label>
+            <textarea class="form-control" id="comments" name="comments" rows="20" cols="20"></textarea>
         </div>
     </div>
 </div>
 
 <footer class="footer">
-    Powered by <a href="https://poetrydb.org/index.html">PoetryDB</a>.
+    <span>Powered by <a href="https://poetrydb.org/index.html">PoetryDB</a>.</span>
 </footer>
 
 <script src='static/poems.js'></script>

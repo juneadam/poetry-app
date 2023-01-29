@@ -1,7 +1,29 @@
 {% extends 'base.html' %}
 
-{% block title %}User Page{% endblock %}
+{% block title %}{{ username }}{% endblock %}
 
 {% block body %}
+
+<div class="container">
+    <div class="col-10">
+        <h1>{{ username }}</h1>
+    </div>
+</div>
+<div class="container">
+    <div class="col-6-md">
+        <div id="saved-poems-list">
+            <ul>
+            {% for poem in bookmarks %}
+                <li><a href='poems/{{ poem[0] }}'>{{ poem[1] }}  by {{ poem[2] }}</a></li>
+            {% endfor %}
+            </ul>
+        </div>
+    </div>
+    <div class="col-6-md">
+        <div id="saved-prompts-list">
+            prompt list goes here...
+        </div>
+    </div>
+</div>
 
 {% endblock %}

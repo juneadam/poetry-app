@@ -161,6 +161,39 @@ def call_random_prompt():
     return jsonify(new_prompt.prompt_text)
 
 
+@app.route('/save-prompt')
+def save_prompt_and_text():
+    """Lets user bookmark a prompt and save their response to it."""
+
+    prompt_text = request.json.get('prompt_text')
+    user_response = request.json.get('user_response')
+
+    prompt_object = crud.find_prompt_by_text(prompt_text=prompt_text)
+    
+    if not session.get('user_id'):
+
+        return 'nope'
+
+    else:
+        user_id = session['user_id']
+
+        if prompt_object:
+            prompt_id = prompt_object.prompt_id
+
+            # get list of saved prompts by promptID
+            # use a for loop to find the saved prompt that matches the user id
+            # if one is found, use crud function (NEED TO CREATE) to update
+            #   the text of that saved prompt
+            # if one is not found, create a new saved prompt object using
+            #   user id, prompt id, and user response, then add and commit
+            
+            new_prompt_save = crud.save_prompt_response(user_id=user_id, prompt_id=prompt_id, user_text=user_response)
+
+        else:
+
+            return None
+
+
 
 
 # ------------ mashups routes ------------ #
@@ -181,11 +214,45 @@ def user_profile():
     logged_in = session.get('user_id')
     print(logged_in)
 
-    if session.get('user_id') is None:
+    if not logged_in:
         flash('You are not logged in. Please log in below:')
         return redirect('/')
     else:
-        return render_template('userprofile.html')
+        user = crud.find_user_by_id(logged_in)
+        username = user.username
+
+        user_comments = crud.find_all_comments_by_user_id(logged_in)
+        bk_poem_ids = []
+        for comment in user_comments:
+            if comment.bk_poem_id not in bk_poem_ids:
+                bk_poem_ids.append(comment.bk_poem_id)
+        
+        print(f'\n\n\n\n\n bk_poem_ids {bk_poem_ids} \n\n\n\n')
+        
+
+        bookmarks = []
+        for bkid in bk_poem_ids:
+            poem = crud.find_bookmark_by_id(bkid)
+            poem_id = poem.bk_poem_id
+            title = poem.title
+            author = poem.author
+            bookmarks.append((poem_id, title, author))
+
+        print(f'\n\n\n\n\n bookmarks {bookmarks} \n\n\n\n')
+        
+        
+        # user_prompts = crud.find_all_prompts_by_user_id(logged_in)
+        # prompt_texts = []
+        # for prompt in user_prompts:
+        #     prompt_in_db = crud.find_prompt_by_id(prompt.prompt_id)
+        #     prompt_texts.append((prompt.prompt_id, prompt_in_db.prompt_text))
+
+        # print(f'\n\n\n\n\n prompt_texts {prompt_texts} \n\n\n\n')        
+        
+        
+        return render_template('userprofile.html',
+                                username=username,
+                                bookmarks=bookmarks)
 
 if __name__ == "__main__":
     connect_to_db(app)

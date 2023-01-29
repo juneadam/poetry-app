@@ -154,6 +154,7 @@ class SavedPrompt(db.Model):
                         db.ForeignKey("users.user_id"))
     prompt_id = db.Column(db.Integer,
                         db.ForeignKey("prompts.prompt_id"))
+    user_text = db.Column(db.Text)
 
     prompt = db.relationship("PromptDB", back_populates="saved_prompts")
     user = db.relationship("User", back_populates="saved_prompts")
