@@ -62,6 +62,11 @@ def find_bookmark_by_author(author):
 
     return model.Poem.query.filter_by(author=author).all()
 
+def find_bookmark_all_lines_by_id(bk_poem_id):
+    """Generate a list of all the lines of a poem, by id number."""
+
+    return model.PoemLine.query.filter_by(bk_poem_id=bk_poem_id).all()
+
 
 # ------------ comments ------------ #
 

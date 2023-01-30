@@ -46,7 +46,7 @@ class Comment(db.Model):
 
 
     def __repr__(self):
-        return f'<Comment object poem_notes_id: {self.poem_notes_id} user_id: {self.user_id}>'
+        return f'<Comment object bk_poem_id: {self.bk_poem_id} user_id: {self.user_id}>'
 
 
 class Poem(db.Model):
@@ -160,7 +160,7 @@ class SavedPrompt(db.Model):
     user = db.relationship("User", back_populates="saved_prompts")
 
     def __repr__(self):
-        return f'<SavedPrompt object saved_prompt_id: {self.saved_prompt_id} user_id: {self.user_id} prompt_id: {self.prompt_id}'
+        return f'<SavedPrompt object saved_prompt_id: {self.saved_prompt_id} user_id: {self.user_id} prompt_id: {self.prompt_id}>'
 
 class SavedLinebreak(db.Model):
     """Table allowing user to save their poems with randomly generated

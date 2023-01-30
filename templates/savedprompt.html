@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{% block title %}Saved Prompt -- {{username}}{% endblock %}
+
+{% block body %}
+<div class="container">
+    <div class="row">
+        <h1>Poetry Prompts</h1>
+    </div>
+    <div class="row">
+        <div class="col-6 col-8-md" id="saved-prompt-hole">
+        {{ prompt_text }}
+        </div>
+        <div class="col-6 col-4-md">
+            <button type="button" class="btn btn-outline-secondary" id="save-changes">Save Changes to Your Notes</button>
+        </div>
+    </div>
+</div>
+<div class="container">
+    <div class="col-12">
+        <br>
+        <label for="text-box-for-saved-prompt-response">{{ username}} -- Use the space below to update your response.</label>
+        <textarea class="form-control" id="saved-prompt-response" name="saved-prompt-response" rows="20">{{ user_response }}</textarea>
+    </div>
+</div>
+
+<!-- <script src="static/savedprompt.js">
+</script> -->
+
+{% endblock %}

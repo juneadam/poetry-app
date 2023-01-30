@@ -101,9 +101,11 @@ def bookmark_random_poem():
     """Saves comment and, if needed, poem to the database."""
 
     title = request.json.get('title')
-    author = request.json.get('author')
+    author = request.json.get('author')[2:]
     lines_string = request.json.get('lines')
     comments = request.json.get('comments')
+
+    print(author)
 
     lines = lines_string.split('\n')
     
@@ -153,7 +155,7 @@ def show_prompt_generator():
 
 @app.route('/prompt-hole')
 def call_random_prompt():
-    """Display random poetry prompt on screen."""
+    """Display random writing prompt on screen."""
 
     prompts = crud.get_all_prompts()
 
@@ -210,21 +212,82 @@ def save_prompt_and_text():
 
 # ------------ load bookmarks routes ------------#
 
-# @app.route('/poems/<id>', methods=['GET', 'POST'])
-# def load_bookmarked_poem_and_comments():
-#     """When clicking on a link, loads a page with title, author, and text
-#     of a particular poem, and loads the user's stored comments in the
-#     text box."""
+@app.route('/savedpoem', methods=["POST"])
+def load_bookmarked_poem_and_comments():
+    """When clicking on a link, loads a page with title, author, and text
+    of a particular poem, and loads the user's stored comments in the
+    text box."""
 
-#     pass
+    bk_poem_id = int(request.form.get('bk_poem_id'))
+    user_id = session['user_id']
 
-# @app.route('/prompts/<id>', methods=['GET', 'POST'])
-# def load_bookmarked_prompt_and_response():
-#     """When clicking on a link, loads a page with the text of a 
-#     particular prompt, and loads the user's stored response in the
-#     text box."""
+    print(f'\n\n\n{type(bk_poem_id)}\n\n\n')
 
-#     pass
+    poem_object = crud.find_bookmark_by_id(bk_poem_id=bk_poem_id)
+    title = poem_object.title
+    author = poem_object.author
+
+    poem_lines_objs = crud.find_bookmark_all_lines_by_id(bk_poem_id=bk_poem_id)
+    lines = []
+    for line in poem_lines_objs:
+        lines.append(line.line)
+
+    user_obj = crud.find_user_by_id(user_id)
+    username = user_obj.username
+
+    comments = crud.find_all_comments_by_user_id(user_id)
+    comment = ''
+    print(f'\n\n\n comments: {comments}')
+    for comment_obj in comments:
+        if comment_obj.bk_poem_id == bk_poem_id:
+            comment = comment_obj.user_notes
+            print(f'\n\n\n user_notes: {comment_obj.user_notes}')
+
+    print(f"\n\n comment: {comment} \n\n")
+    print(f"\n\n poem_object: {poem_object} \n\n")
+    print(f"\n\n bk_poem_id: {bk_poem_id} \n\n")
+    print(f"\n\n user_id: {user_id} \n\n")
+    print(f"\n\n {lines} \n\n")
+
+    return render_template("savedpoem.html",
+                            title=title,
+                            author=author,
+                            lines=lines,
+                            username=username,
+                            user_text=comment)
+
+
+@app.route('/savedprompt', methods=['POST'])
+def load_bookmarked_prompt_and_response():
+    """When clicking on a link, loads a page with the text of a 
+    particular prompt, and loads the user's stored response in the
+    text box."""
+
+    user_id = session['user_id']
+    user_obj = crud.find_user_by_id(user_id=user_id)
+    username = user_obj.username
+
+    prompt_id = int(request.form.get('prompt_id'))
+    prompt_obj = crud.find_prompt_by_id(prompt_id)
+    prompt_text = prompt_obj.prompt_text
+
+    prompt_response_list = crud.find_all_saved_prompts_by_user_id(user_id)
+    user_response = ''
+    for response in prompt_response_list:
+        if response.prompt_id == prompt_id:
+            user_response = response.user_text
+            print(f'\n\n\n response {response} \n\n\n')
+
+    print(f'\n\n\n prompt_response_list {prompt_response_list}')
+    print(f'\n\n\n prompt_id {prompt_id}')
+    print(f'\n\n\n user_id {user_id}')
+    print(f'\n\n\n prompt_text {prompt_text}')
+    print(f'\n\n\n user_response {user_response}')
+
+    return render_template("savedprompt.html",
+                            username=username,
+                            prompt_text=prompt_text,
+                            user_response=user_response)
 
 
 # ------------ mashups routes ------------ #
@@ -258,7 +321,7 @@ def user_profile():
             if comment.bk_poem_id not in bk_poem_ids:
                 bk_poem_ids.append(comment.bk_poem_id)
         
-        print(f'\n\n\n\n\n bk_poem_ids {bk_poem_ids} \n\n\n\n')
+        # print(f'\n\n\n\n\n bk_poem_ids {bk_poem_ids} \n\n\n\n')
         
 
         bookmarks = []
@@ -269,7 +332,7 @@ def user_profile():
             author = poem.author
             bookmarks.append((poem_id, title, author))
 
-        print(f'\n\n\n\n\n bookmarks {bookmarks} \n\n\n\n')
+        # print(f'\n\n\n\n\n bookmarks {bookmarks} \n\n\n\n')
         
         
         user_prompts = crud.find_all_saved_prompts_by_user_id(logged_in)
@@ -278,7 +341,7 @@ def user_profile():
             prompt_in_db = crud.find_prompt_by_id(saved_prompt.prompt_id)
             prompt_texts.append((saved_prompt.prompt_id, saved_prompt.user_text, prompt_in_db.prompt_text))
 
-        print(f'\n\n\n\n\n prompt_texts {prompt_texts} \n\n\n\n')        
+        # print(f'\n\n\n\n\n prompt_texts {prompt_texts} \n\n\n\n')        
         
         
         return render_template('userprofile.html',

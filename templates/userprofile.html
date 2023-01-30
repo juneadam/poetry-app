@@ -15,7 +15,12 @@
             <div id="saved-poems-list"><h3>Saved Poems</h3>
                 <ul>
                 {% for poem in bookmarks %}
-                    <li><a href='poems/{{ poem[0] }}' class="bookmarked-poem-link" method="POST">{{ poem[1] }} by {{ poem[2] }}</a></li>
+                    <li>
+                        <form action="/savedpoem" method="POST">
+                        <a href='#' class="bookmarked-poem-link">{{ poem[1] }} by {{ poem[2] }}</a>
+                        <input type="submit" name="bk_poem_id" method="POST" value="{{ poem[0] }}" placeholder="View/Edit Comments"></input>
+                        </form>
+                    </li>
                 {% endfor %}
                 </ul>
             </div>
@@ -24,10 +29,18 @@
             <div id="saved-prompts-list"><h3>Saved Prompts</h3>
                 <ul>
                 {% for prompt in prompt_texts %}
-                    <li><a href='prompts/{{ prompt[0] }}' class="saved-prompt-link" method="POST">{{ prompt[2] }}</a>
+                    <li>
+                        <form action="/savedprompt" method="POST">
+                        <a href='#' class="saved-prompt-link">{{ prompt[2] }}</a>
+                        <div class="text-area-converter">
                         <ul>
                             <li>{{ prompt[1] }}</li>
+                            <li>
+                                <input type="submit" name="prompt_id" method="POST" value="{{ prompt[0] }}" placeholder="View/Edit Reponse"></input>
+                            </li>
                         </ul>
+                        </div>
+                        </form>
                     </li>
                 {% endfor %}
                 </ul>
