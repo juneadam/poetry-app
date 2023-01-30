@@ -254,18 +254,19 @@ def user_profile():
         print(f'\n\n\n\n\n bookmarks {bookmarks} \n\n\n\n')
         
         
-        # user_prompts = crud.find_all_prompts_by_user_id(logged_in)
-        # prompt_texts = []
-        # for prompt in user_prompts:
-        #     prompt_in_db = crud.find_prompt_by_id(prompt.prompt_id)
-        #     prompt_texts.append((prompt.prompt_id, prompt_in_db.prompt_text))
+        user_prompts = crud.find_all_saved_prompts_by_user_id(logged_in)
+        prompt_texts = []
+        for saved_prompt in user_prompts:
+            prompt_in_db = crud.find_prompt_by_id(saved_prompt.prompt_id)
+            prompt_texts.append((saved_prompt.prompt_id, saved_prompt.user_text, prompt_in_db.prompt_text))
 
-        # print(f'\n\n\n\n\n prompt_texts {prompt_texts} \n\n\n\n')        
+        print(f'\n\n\n\n\n prompt_texts {prompt_texts} \n\n\n\n')        
         
         
         return render_template('userprofile.html',
                                 username=username,
-                                bookmarks=bookmarks)
+                                bookmarks=bookmarks,
+                                prompt_texts=prompt_texts)
 
 if __name__ == "__main__":
     connect_to_db(app)
