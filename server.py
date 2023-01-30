@@ -161,14 +161,18 @@ def call_random_prompt():
     return jsonify(new_prompt.prompt_text)
 
 
-@app.route('/save-prompt')
+@app.route('/save-prompt', methods=['POST'])
 def save_prompt_and_text():
     """Lets user bookmark a prompt and save their response to it."""
 
-    prompt_text = request.json.get('prompt_text')
+    prompt_text = request.json.get('prompt_text')[1:-1]
     user_response = request.json.get('user_response')
+    print(f'\n\n\n\n prompt_text: {prompt_text} \n\n\n')
+    print(f'\n\n\n\n user_response: {user_response} \n\n\n')
 
-    prompt_object = crud.find_prompt_by_text(prompt_text=prompt_text)
+    promptDB_object = crud.find_prompt_by_text(prompt_text=prompt_text)
+
+    print(f'\n\n\n\n promptDB_object: {promptDB_object} \n\n\n')
     
     if not session.get('user_id'):
 
@@ -177,21 +181,30 @@ def save_prompt_and_text():
     else:
         user_id = session['user_id']
 
-        if prompt_object:
-            prompt_id = prompt_object.prompt_id
-
+        if promptDB_object:
+            prompt_id = promptDB_object.prompt_id
+            
             # get list of saved prompts by promptID
+            prompt_list = crud.find_saved_prompts_by_id(prompt_id)
+
             # use a for loop to find the saved prompt that matches the user id
-            # if one is found, use crud function (NEED TO CREATE) to update
-            #   the text of that saved prompt
+            for prompt in prompt_list:
+                if prompt.user_id == user_id:
+                # if one is found, use crud function (NEED TO CREATE) to update
+                #   the text of that saved prompt
+                    return 'update'
+             
             # if one is not found, create a new saved prompt object using
             #   user id, prompt id, and user response, then add and commit
-            
             new_prompt_save = crud.save_prompt_response(user_id=user_id, prompt_id=prompt_id, user_text=user_response)
+            db.session.add(new_prompt_save)
+            db.session.commit()
+
+            return 'fine'
 
         else:
 
-            return None
+            return 'error'
 
 
 

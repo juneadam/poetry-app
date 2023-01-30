@@ -104,14 +104,14 @@ def get_all_prompts():
 def find_prompt_by_text(prompt_text):
     """Look up a prompt by id number."""
 
-    return model.PromptDB.query.filter(PromptDB.prompt_text==prompt_text).first()
+    return model.PromptDB.query.filter(model.PromptDB.prompt_text==prompt_text).first()
 
 def find_all_prompts_by_user_id(user_id):
     """Generate a list of every prompt saved by a particular user."""
 
     return model.SavedPrompt.query.filter_by(user_id=user_id).all()
 
-def find_saved_prompt_by_id(prompt_id):
+def find_saved_prompts_by_id(prompt_id):
     """Generate a list of all saved prompts by database id number."""
 
     return model.SavedPrompt.query.filter_by(prompt_id=prompt_id).all()
