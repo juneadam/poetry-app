@@ -15,7 +15,7 @@
             <div id="saved-poems-list"><h3>Saved Poems</h3>
                 <ul>
                 {% for poem in bookmarks %}
-                    <li><a href='poems/{{ poem[0] }}'>{{ poem[1] }}  by {{ poem[2] }}</a></li>
+                    <li><a href='poems/{{ poem[0] }}' class="bookmarked-poem-link" method="POST">{{ poem[1] }}  by {{ poem[2] }}</a></li>
                 {% endfor %}
                 </ul>
             </div>
@@ -24,7 +24,7 @@
             <div id="saved-prompts-list"><h3>Saved Prompts</h3>
                 <ul>
                 {% for prompt in prompt_texts %}
-                    <li><a href='prompts/{{ prompt[0] }}'>{{ prompt[2] }}</a>
+                    <li><a href='prompts/{{ prompt[0] }}' class="saved-prompt-link" method="POST">{{ prompt[2] }}</a>
                         <ul>
                             <li>{{ prompt[1] }}</li>
                         </ul>

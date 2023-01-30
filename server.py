@@ -158,14 +158,14 @@ def call_random_prompt():
 
     new_prompt = choice(prompts)
 
-    return jsonify(new_prompt.prompt_text)
+    return new_prompt.prompt_text
 
 
 @app.route('/save-prompt', methods=['POST'])
 def save_prompt_and_text():
     """Lets user bookmark a prompt and save their response to it."""
 
-    prompt_text = request.json.get('prompt_text')[1:-1]
+    prompt_text = request.json.get('prompt_text')
     user_response = request.json.get('user_response')
     print(f'\n\n\n\n prompt_text: {prompt_text} \n\n\n')
     print(f'\n\n\n\n user_response: {user_response} \n\n\n')
@@ -207,6 +207,23 @@ def save_prompt_and_text():
             return 'error'
 
 
+# ------------ load bookmarks routes ------------#
+
+@app.route('/poems/<id>', methods=['GET', 'POST'])
+def load_bookmarked_poem_and_comments():
+    """When clicking on a link, loads a page with title, author, and text
+    of a particular poem, and loads the user's stored comments in the
+    text box."""
+
+    pass
+
+@app.route('/prompts/<id>', methods=['GET', 'POST'])
+def load_bookmarked_prompt_and_response():
+    """When clicking on a link, loads a page with the text of a 
+    particular prompt, and loads the user's stored response in the
+    text box."""
+
+    pass
 
 
 # ------------ mashups routes ------------ #
@@ -267,6 +284,19 @@ def user_profile():
                                 username=username,
                                 bookmarks=bookmarks,
                                 prompt_texts=prompt_texts)
+
+@app.route('/logout')
+def logout():
+    """Removes the user id from the session, logging them out."""
+
+    session['user_id'] = None
+    print(session['user_id'])
+    flash('You have successfully logged out.')
+    return redirect('/')
+
+
+
+
 
 if __name__ == "__main__":
     connect_to_db(app)
