@@ -63,6 +63,17 @@ def user_login():
         flash("User not found, please create an account below!")
         return redirect('/')
 
+@app.route('/logout')
+def logout():
+    """Removes the user id from the session, logging them out."""
+
+    session['user_id'] = None
+    print(session['user_id'])
+    flash('You have successfully logged out.')
+    return redirect('/')
+
+
+
 # ------------ random poem routes ------------ #
 
 @app.route('/poems')
@@ -81,16 +92,6 @@ def call_random_poem():
     res = requests.get('https://poetrydb.org/random')
     
     random_poem = res.json()
-
-    # session['random_poem'] = {}
-
-    # session['random_poem']['title'] = random_poem[0]['title']
-    # session['random_poem']['author'] = random_poem[0]['author']
-    # session['random_poem']['lines'] = random_poem[0]['lines']
-
-    # print(f"session title is: {session['random_poem']['title']}")
-    # print(f"session title is: {session['random_poem']['author']}")
-    # print(f"session title is: {session['random_poem']['lines']}")
 
     return jsonify({'data': random_poem})
 
@@ -209,21 +210,21 @@ def save_prompt_and_text():
 
 # ------------ load bookmarks routes ------------#
 
-@app.route('/poems/<id>', methods=['GET', 'POST'])
-def load_bookmarked_poem_and_comments():
-    """When clicking on a link, loads a page with title, author, and text
-    of a particular poem, and loads the user's stored comments in the
-    text box."""
+# @app.route('/poems/<id>', methods=['GET', 'POST'])
+# def load_bookmarked_poem_and_comments():
+#     """When clicking on a link, loads a page with title, author, and text
+#     of a particular poem, and loads the user's stored comments in the
+#     text box."""
 
-    pass
+#     pass
 
-@app.route('/prompts/<id>', methods=['GET', 'POST'])
-def load_bookmarked_prompt_and_response():
-    """When clicking on a link, loads a page with the text of a 
-    particular prompt, and loads the user's stored response in the
-    text box."""
+# @app.route('/prompts/<id>', methods=['GET', 'POST'])
+# def load_bookmarked_prompt_and_response():
+#     """When clicking on a link, loads a page with the text of a 
+#     particular prompt, and loads the user's stored response in the
+#     text box."""
 
-    pass
+#     pass
 
 
 # ------------ mashups routes ------------ #
@@ -284,15 +285,6 @@ def user_profile():
                                 username=username,
                                 bookmarks=bookmarks,
                                 prompt_texts=prompt_texts)
-
-@app.route('/logout')
-def logout():
-    """Removes the user id from the session, logging them out."""
-
-    session['user_id'] = None
-    print(session['user_id'])
-    flash('You have successfully logged out.')
-    return redirect('/')
 
 
 

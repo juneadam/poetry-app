@@ -27,6 +27,19 @@ const randomPoem = document.querySelector('#random-poem').addEventListener('clic
     })
 });
 
+const randomPoemOnLoad = window.addEventListener('load', () => {
+  fetch('/random-poem')
+    .then((response) => response.json())
+    .then((responseData) => {
+        poemTitle.innerHTML = `<h1>${responseData.data[0].title}</h1>`;
+        poemAuthor.innerHTML = `<h3>by ${responseData.data[0].author}</h3>`;
+        poemText.innerHTML = '';
+        for (line in responseData.data[0].lines) {
+            poemText.insertAdjacentHTML('beforeend', `<div>${responseData.data[0].lines[line]}</div>`)
+        }
+    })
+});
+
 
 
 // Sets an event listener on the bookmark button that captures all the relevant
@@ -66,6 +79,6 @@ const bookmarkPoem = document.querySelector('#bookmark-poem').addEventListener('
         }
         // else {
         //     alert('Error, please try again.')
-        }
+        // }
     })
 })

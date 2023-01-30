@@ -15,7 +15,7 @@
             <div id="saved-poems-list"><h3>Saved Poems</h3>
                 <ul>
                 {% for poem in bookmarks %}
-                    <li><a href='poems/{{ poem[0] }}' class="bookmarked-poem-link" method="POST">{{ poem[1] }}  by {{ poem[2] }}</a></li>
+                    <li><a href='poems/{{ poem[0] }}' class="bookmarked-poem-link" method="POST">{{ poem[1] }} by {{ poem[2] }}</a></li>
                 {% endfor %}
                 </ul>
             </div>
@@ -35,5 +35,8 @@
         </div>
     </div>
 </div>
+
+<script src="static/userprofile.js">
+</script>
 
 {% endblock %}
