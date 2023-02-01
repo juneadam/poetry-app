@@ -18,7 +18,8 @@
                     <li>
                         <form action="/savedpoem" method="POST">
                         <a href='#' class="bookmarked-poem-link">{{ poem[1] }} by {{ poem[2] }}</a>
-                        <input type="submit" name="bk_poem_id" method="POST" value="{{ poem[0] }}" placeholder="View/Edit Comments"></input>
+                        <input type="hidden" name="bk_poem_id" value="{{ poem[0] }}"></input>
+                        <input type="submit" name="bk_poem_id" method="POST" value="View/Edit Comments"></input>
                         </form>
                     </li>
                 {% endfor %}
@@ -36,7 +37,8 @@
                         <ul>
                             <li>{{ prompt[1] }}</li>
                             <li>
-                                <input type="submit" name="prompt_id" method="POST" value="{{ prompt[0] }}" placeholder="View/Edit Reponse"></input>
+                                <input type="hidden" name="prompt_id" value="{{ prompt[0] }}"></input>
+                                <input type="submit" method="POST" value="View/Edit Response"></input>
                             </li>
                         </ul>
                         </div>

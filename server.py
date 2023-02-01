@@ -221,7 +221,7 @@ def load_bookmarked_poem_and_comments():
     bk_poem_id = int(request.form.get('bk_poem_id'))
     user_id = session['user_id']
 
-    print(f'\n\n\n{type(bk_poem_id)}\n\n\n')
+    # print(f'\n\n\n{type(bk_poem_id)}\n\n\n')
 
     poem_object = crud.find_bookmark_by_id(bk_poem_id=bk_poem_id)
     title = poem_object.title
@@ -243,11 +243,11 @@ def load_bookmarked_poem_and_comments():
             comment = comment_obj.user_notes
             print(f'\n\n\n user_notes: {comment_obj.user_notes}')
 
-    print(f"\n\n comment: {comment} \n\n")
-    print(f"\n\n poem_object: {poem_object} \n\n")
-    print(f"\n\n bk_poem_id: {bk_poem_id} \n\n")
-    print(f"\n\n user_id: {user_id} \n\n")
-    print(f"\n\n {lines} \n\n")
+    # print(f"\n\n comment: {comment} \n\n")
+    # print(f"\n\n poem_object: {poem_object} \n\n")
+    # print(f"\n\n bk_poem_id: {bk_poem_id} \n\n")
+    # print(f"\n\n user_id: {user_id} \n\n")
+    # print(f"\n\n {lines} \n\n")
 
     return render_template("savedpoem.html",
                             title=title,
@@ -278,16 +278,89 @@ def load_bookmarked_prompt_and_response():
             user_response = response.user_text
             print(f'\n\n\n response {response} \n\n\n')
 
-    print(f'\n\n\n prompt_response_list {prompt_response_list}')
-    print(f'\n\n\n prompt_id {prompt_id}')
-    print(f'\n\n\n user_id {user_id}')
-    print(f'\n\n\n prompt_text {prompt_text}')
-    print(f'\n\n\n user_response {user_response}')
+    # print(f'\n\n\n prompt_response_list {prompt_response_list}')
+    # print(f'\n\n\n prompt_id {prompt_id}')
+    # print(f'\n\n\n user_id {user_id}')
+    # print(f'\n\n\n prompt_text {prompt_text}')
+    # print(f'\n\n\n user_response {user_response}')
 
     return render_template("savedprompt.html",
                             username=username,
                             prompt_text=prompt_text,
                             user_response=user_response)
+
+
+# ------------ update bookmarks routes ------------#
+
+@app.route('/update-comments', methods=['POST'])
+def update_saved_comments():
+    """Overwrite the users's saved comments in the database
+    with new edits."""
+
+    user_id = session['user_id']
+    # print(f'\n\n\nuser_id type: {type(user_id)}\n\n')
+    updated_text = request.json.get('updated_text')
+    title = request.json.get('title')
+    # author = request.json.get('author')
+    # print(f'\n\n\ntitle: {title} author: {author}\nnew_text: {updated_text}\n\n')
+
+    poem_object = crud.find_bookmark_by_title(title)
+    bk_poem_id = poem_object.bk_poem_id
+    # print(f'\n\n\nbk_poem_id: {bk_poem_id}\n\n\n')
+
+    comments_by_user = crud.find_all_comments_by_user_id(user_id=user_id)
+    comment_to_update = ''
+    for comment_obj in comments_by_user:
+        if comment_obj.bk_poem_id == bk_poem_id:
+            comment_to_update = comment_obj
+    
+    # print(f'\n\n\ncomment_to_update: {comment_to_update.user_notes}\n\n\n')
+
+    if comment_to_update:
+        comment_to_update.user_notes = updated_text
+        db.session.add(comment_to_update)
+        db.session.commit()
+        return "ok"
+    
+    elif not comment_to_update:
+        return "error"
+
+
+@app.route('/update-response', methods=['POST'])
+def update_saved_response():
+    """Overwrite the users's saved prompt response in the database
+    with new edits."""
+    
+    user_id = session['user_id']
+    print(f'\n\n\nuser_id type: {type(user_id)}\n\n')
+
+    updated_response = request.json.get('updated_response')
+    prompt_text = request.json.get('prompt_text')
+
+    print(f'\n\n\nupdated_response: {updated_response}')
+    print(f'\n\n\nprompt_text: {prompt_text}')
+
+    prompt_id = crud.find_prompt_by_text(prompt_text).prompt_id
+    response_obj_list = crud.find_saved_prompts_by_id(prompt_id)
+    print(f'\n\n\nresponse_obj_list: {response_obj_list}')
+
+    response_to_update = ''
+    for response in response_obj_list:
+        if response.user_id == user_id:
+            response_to_update = response
+            print(f'\n\n\nresponse_to_update: {response_to_update.user_text}')
+            response_to_update.user_text = updated_response
+
+    if response_to_update:
+        db.session.add(response_to_update)
+        db.session.commit()
+        return 'ok'
+
+    elif not response_to_update:
+        return 'error'
+
+
+
 
 
 # ------------ mashups routes ------------ #
