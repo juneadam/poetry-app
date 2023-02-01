@@ -376,7 +376,8 @@ def show_mashup_generator():
 
 @app.route('/userprofile')
 def user_profile():
-    """Render user profile."""
+    """Render user profile. This route is built without
+    React and will be deprecated."""
 
     logged_in = session.get('user_id')
     print(logged_in)
@@ -421,6 +422,67 @@ def user_profile():
                                 username=username,
                                 bookmarks=bookmarks,
                                 prompt_texts=prompt_texts)
+
+
+@app.route('/userprofiletest')
+def user_profile_with_react():
+    """user profile"""
+
+    return render_template('userprofiletest.html')
+
+
+@app.route('/username.json')
+def fetch_username_json():
+    """username"""
+
+    user_id = session['user_id']
+
+    user = crud.find_user_by_id(user_id)
+    username = user.username
+
+    return username
+
+@app.route('/user-saved-bookmarks.json')
+def fetch_bookmarks_json():
+    """user bookmarks"""
+    
+    user_id = session['user_id']
+
+    user_comments = crud.find_all_comments_by_user_id(user_id)
+    bk_poem_ids = []
+    for comment in user_comments:
+        if comment.bk_poem_id not in bk_poem_ids:
+            bk_poem_ids.append(comment.bk_poem_id)
+
+    # print(f'\n\n\n\n\n bk_poem_ids {bk_poem_ids} \n\n\n\n')
+
+    bookmarks = []
+    for bkid in bk_poem_ids:
+        poem = crud.find_bookmark_by_id(bkid)
+        poem_id = poem.bk_poem_id
+        title = poem.title
+        author = poem.author
+        bookmarks.append((poem_id, title, author))
+    
+    # print(f'\n\n\n\n\n bookmarks {bookmarks} \n\n\n\n')
+
+    return jsonify({'bookmarks': bookmarks})
+
+@app.route('/user-saved-prompts.json')
+def fetch_prompts_json():
+    """user prompts"""
+
+    user_id = session['user_id']
+
+    user_prompts = crud.find_all_saved_prompts_by_user_id(user_id)
+    prompt_texts = []
+    for saved_prompt in user_prompts:
+        prompt_in_db = crud.find_prompt_by_id(saved_prompt.prompt_id)
+        prompt_texts.append((saved_prompt.prompt_id, saved_prompt.user_text, prompt_in_db.prompt_text))
+
+    # print(f'\n\n\nuser_prompts: {prompt_texts}\n\n\n')
+
+    return jsonify({'user_prompts': prompt_texts}) 
 
 
 
