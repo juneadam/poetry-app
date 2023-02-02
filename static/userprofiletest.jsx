@@ -31,7 +31,7 @@ const UsernameCard = (props) => {
   // ------------ Poem Container ------------ //
 
 
-  // creating a Poem Card React object, which will be a
+  // creating a PoemCard React object, which will be a
   // child component of the UserSavedPoems React Object
   // and will take in the parent's state value of an array
   // of bookmarks and create divs using the information in each.

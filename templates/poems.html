@@ -5,28 +5,33 @@
 {% block body %}
 <div class="container">
     <br><div class="row">
-        <div class="col-10" id="poem-title">
-            <h1>Title</h1>
+        <div class="col-8">
+            <div id="poem-title">
+                <h1>Title</h1>
+            </div>
+            <div id="poem-author">
+                <h3>by Author</h3>
+            </div>
+            <div id="poem-text">
+                This is where the poem will go.
+            </div>
         </div>
-        <div class="col-2">
-            <button type="button" class="btn btn-outline-secondary" id="random-poem">New Poem</button>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-9" id="poem-author">
-            <h3>by Author</h3>
-        </div>
-        <div class="col-3">
-            <button type="button" class="btn btn-outline-secondary" id="bookmark-poem">Bookmark Poem and Comments</button>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-8 col-7-md" id="poem-text">
-            This is where the poem will go.
-        </div>
-        <div class="col-4 col-5-md">
-            <br><label for="text-box-for-adding-comments">Use the space below for any notes or comments you have.</label>
-            <textarea class="form-control" id="comments" name="comments" rows="20" cols="20"></textarea>
+        <div class="col-4">
+            <!-- button for generating new poem, defaults to random if no inputs added-->
+            <button type="submit" class="btn btn-outline-secondary" id="random-poem">New Poem</button><br><br>
+
+            <!-- optional inputs -->
+            <div>Optional Inputs:</div>
+            <div><label for="author-user-input">Author: </label></div><input type="text" id="author-input" name="author"></input>
+            <div><label for="title-user-input">Title(full or keywords): </label></div><input type="text" id="title-input" name="title"></input>
+            <div><label for="line-count-user-input">Line Count: </label></div><input type="text" id="linecount-input" name="linecount"></input><br><br>
+            
+            <!-- button to save comments/bookmark poem -->
+            <button type="button" class="btn btn-outline-secondary" id="bookmark-poem">Bookmark Poem and Comments</button><br><br>
+            
+            <!-- text box for comments -->
+            <label for="text-box-for-adding-comments">Use the space below for any notes or comments you have.</label><br><br>
+            <textarea class="form-control" id="comments" name="comments" rows="20" cols="20"></textarea>            
         </div>
     </div>
 </div>

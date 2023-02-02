@@ -10,7 +10,7 @@ import crud
 
 from jinja2 import StrictUndefined
 
-from random import choice
+from random import choice, randint
 
 app = Flask(__name__)
 app.secret_key = "dev"
@@ -84,14 +84,66 @@ def show_poem_generator():
 
     return render_template('poems.html')
 
-@app.route('/random-poem')
+@app.route('/random-poem.json')
 def call_random_poem():
-    """Calls the API to get a random poem, sends to the JS file to update poems.html, 
-    adds poem data to the session in case poem is bookmarked (deprecated)."""
+    """Calls the API to get a random poem, sends to 
+    the JS file to update poems.html"""
 
     res = requests.get('https://poetrydb.org/random')
     
     random_poem = res.json()
+
+    return jsonify({'data': random_poem})
+
+@app.route('/random-poem-with-inputs.json', methods=['POST'])
+def call_random_poem_with_inputs():
+    """Calls the API to get a random poem based on user inputs -
+    including author, title, and line count - sends to the JS file 
+    to update poems.html"""
+
+    author = request.json.get('author-input')
+    title = request.json.get('title-input')
+    linecount = request.json.get('linecount-input')
+
+    payload = []
+
+    if author:
+        payload.append(('author', author))
+    if title:
+        payload.append(('title', title))
+    if linecount:
+        payload.append(('linecount', linecount))
+
+    input_fields = ''
+    output_fields = ''
+
+    for tup in payload:
+        input_fields = input_fields + tup[0] + ','
+        output_fields = output_fields + tup[1] + ';'
+
+    input_fields = input_fields[:-1]
+    output_fields = output_fields[:-1]
+
+    url = f'https://poetrydb.org/{input_fields}/{output_fields}/all.json'
+    print(f'\n\n url {url}\n\n')
+
+    res = requests.get(url)
+    random_poem = []
+    
+    response_list = res.json()
+    print(response_list)
+
+    if isinstance(response_list, dict):
+        random_poem = [{'title': 'No Results Found', 'author': 'Please try other search parameters.', 'lines': ['Or just empty the inputs and click "New Poem".']}]
+    else:
+        if len(response_list) > 1:
+            random_poem.append(response_list[randint(0, (len(response_list) - 1))])
+        elif len(response_list) == 1:
+            random_poem.append(response_list[0])
+
+    print(random_poem)
+
+    print(f"\n random_poem: {random_poem}\n\n")
 
     return jsonify({'data': random_poem})
 
@@ -276,7 +328,7 @@ def load_bookmarked_prompt_and_response():
     for response in prompt_response_list:
         if response.prompt_id == prompt_id:
             user_response = response.user_text
-            print(f'\n\n\n response {response} \n\n\n')
+            # print(f'\n\n\n response {response} \n\n\n')
 
     # print(f'\n\n\n prompt_response_list {prompt_response_list}')
     # print(f'\n\n\n prompt_id {prompt_id}')
@@ -332,23 +384,23 @@ def update_saved_response():
     with new edits."""
     
     user_id = session['user_id']
-    print(f'\n\n\nuser_id type: {type(user_id)}\n\n')
+    # print(f'\n\n\nuser_id type: {type(user_id)}\n\n')
 
     updated_response = request.json.get('updated_response')
     prompt_text = request.json.get('prompt_text')
 
-    print(f'\n\n\nupdated_response: {updated_response}')
-    print(f'\n\n\nprompt_text: {prompt_text}')
+    # print(f'\n\n\nupdated_response: {updated_response}')
+    # print(f'\n\n\nprompt_text: {prompt_text}')
 
     prompt_id = crud.find_prompt_by_text(prompt_text).prompt_id
     response_obj_list = crud.find_saved_prompts_by_id(prompt_id)
-    print(f'\n\n\nresponse_obj_list: {response_obj_list}')
+    # print(f'\n\n\nresponse_obj_list: {response_obj_list}')
 
     response_to_update = ''
     for response in response_obj_list:
         if response.user_id == user_id:
             response_to_update = response
-            print(f'\n\n\nresponse_to_update: {response_to_update.user_text}')
+            # print(f'\n\n\nresponse_to_update: {response_to_update.user_text}')
             response_to_update.user_text = updated_response
 
     if response_to_update:

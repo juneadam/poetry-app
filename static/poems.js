@@ -7,6 +7,9 @@
 const poemTitle = document.querySelector('#poem-title')
 const poemAuthor = document.querySelector('#poem-author')
 const poemText = document.querySelector('#poem-text')
+const titleInput = document.querySelector('#title-input')
+const authorInput = document.querySelector('#author-input')
+const linecountInput = document.querySelector('#linecount-input')
 
 
 // using an event listener set on a button click, AJAX request to server.py
@@ -15,7 +18,39 @@ const poemText = document.querySelector('#poem-text')
 // (title, author, poetry text in the form of individual lines)
 
 const randomPoem = document.querySelector('#random-poem').addEventListener('click', () => {
-  fetch('/random-poem')
+  const userTitleValue = titleInput.value
+  const userAuthorValue = authorInput.value
+  const userLinecountValue = linecountInput.value
+
+  if (!userTitleValue && !userAuthorValue && !userLinecountValue){
+    fetch('/random-poem.json')
+    .then((response) => response.json())
+    .then((responseData) => {
+        poemTitle.innerHTML = `<h1>${responseData.data[0].title}</h1>`;
+        poemAuthor.innerHTML = `<h3>by ${responseData.data[0].author}</h3>`;
+        poemText.innerHTML = '';
+        for (line in responseData.data[0].lines) {
+            poemText.insertAdjacentHTML('beforeend', `<div>${responseData.data[0].lines[line]}</div>`)
+        }
+    });
+  }
+
+  else {
+    const dataPacket = {
+      'title-input': userTitleValue,
+      'author-input': userAuthorValue,
+      'linecount-input': userLinecountValue
+    }
+
+    console.log(dataPacket)
+
+    fetch('/random-poem-with-inputs.json', {
+      method: 'POST',
+      body: JSON.stringify(dataPacket),
+      headers: {
+          'Content-Type': 'application/json',
+      }
+    })
     .then((response) => response.json())
     .then((responseData) => {
         poemTitle.innerHTML = `<h1>${responseData.data[0].title}</h1>`;
@@ -25,10 +60,11 @@ const randomPoem = document.querySelector('#random-poem').addEventListener('clic
             poemText.insertAdjacentHTML('beforeend', `<div>${responseData.data[0].lines[line]}</div>`)
         }
     })
+  }
 });
 
 const randomPoemOnLoad = window.addEventListener('load', () => {
-  fetch('/random-poem')
+  fetch('/random-poem.json')
     .then((response) => response.json())
     .then((responseData) => {
         poemTitle.innerHTML = `<h1>${responseData.data[0].title}</h1>`;
