@@ -4,4 +4,35 @@
 
 {% block body %}
 
+<div class="container">
+    <br><div class="row">
+        <div class="col-8">
+            <div id="mashup-title">
+                <h1>Title</h1>
+            </div>
+            <div id="mashup-author">
+                <h3>by Author</h3>
+            </div>
+            <div id="mashup-text">
+                This is where the poem will go.
+            </div>
+        </div>
+        <div class="col-4">
+            <!-- button for generating new mashup -->
+            <button type="submit" class="btn btn-outline-secondary" id="mashup-poem">New Mashup</button><br><br>
+
+            <!-- required input -->
+            <div>Required Input:</div>
+            <div><label for="line-count-user-input">Line Count: </label></div><input type="text" id="linecount-input-mashup" name="linecount" size="5" maxlength="3" required><br><br>
+        </div>
+</div>
+
+
+
+<footer class="footer">
+    <span>Powered by <a href="https://poetrydb.org/index.html">PoetryDB</a>.</span>
+</footer>
+
+<script src='static/mashups.js'></script>
+
 {% endblock %}

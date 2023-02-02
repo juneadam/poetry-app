@@ -17,7 +17,7 @@ app.secret_key = "dev"
 app.jinja_env.undefined = StrictUndefined
 
 
-# ------------ home page/login/sign up routes ------------ #
+# ------------ homepage/login/sign up routes ------------ #
 
 @app.route('/')
 def show_homepage():
@@ -118,7 +118,7 @@ def call_random_poem_with_inputs():
     output_fields = ''
 
     for tup in payload:
-        input_fields = input_fields + tup[0] + ','
+        input_fields = input_fields + tup[0] + ',' #/author,title,linecount/shakespeare;sonnet;14
         output_fields = output_fields + tup[1] + ';'
 
     input_fields = input_fields[:-1]
@@ -222,12 +222,12 @@ def save_prompt_and_text():
 
     prompt_text = request.json.get('prompt_text')
     user_response = request.json.get('user_response')
-    print(f'\n\n\n\n prompt_text: {prompt_text} \n\n\n')
-    print(f'\n\n\n\n user_response: {user_response} \n\n\n')
+    # print(f'\n\n\n\n prompt_text: {prompt_text} \n\n\n')
+    # print(f'\n\n\n\n user_response: {user_response} \n\n\n')
 
     promptDB_object = crud.find_prompt_by_text(prompt_text=prompt_text)
 
-    print(f'\n\n\n\n promptDB_object: {promptDB_object} \n\n\n')
+    # print(f'\n\n\n\n promptDB_object: {promptDB_object} \n\n\n')
     
     if not session.get('user_id'):
 
@@ -412,9 +412,6 @@ def update_saved_response():
         return 'error'
 
 
-
-
-
 # ------------ mashups routes ------------ #
 
 @app.route('/mashups')
@@ -422,6 +419,26 @@ def show_mashup_generator():
     """Render webpage which generates poetry mashups from PoetryDB API."""
 
     return render_template('mashups.html')
+
+@app.route('/mashup-generator', methods=['POST'])
+def mashup_generator():
+    """Call the API with user input linecount, generate a random
+    poem mixing and matching lines from the returned list."""
+
+    linecount = int(request.json.get('linecount'))
+
+    res = requests.get(f'https://poetrydb.org/linecount/{linecount}/all.json')
+    mashup_response = res.json()
+
+    poems_by_line_tuples_list = []
+
+    for i in range(0, (linecount - 1)):
+        poem = choice(mashup_response)
+        poems_by_line_tuples_list.append((poem['author'], poem['title'], poem['lines'][i]))
+
+    print(f'\n\n\npoems_list: {poems_by_line_tuples_list}\n\n')
+    
+    return jsonify({'data': poems_by_line_tuples_list})
 
 
 # ------------ user profile routes ------------ #
