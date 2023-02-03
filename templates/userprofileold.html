@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ username }}{% endblock %}
+
+{% block body %}
+
+<div class="container">
+    <div class="col-10">
+        <h1>{{ username }}</h1>
+    </div>
+</div>
+<div class="container">
+    <div class="row">
+        <div class="col-6-md">
+            <div id="saved-poems-list"><h3>Saved Poems</h3>
+                <ul>
+                {% for poem in bookmarks %}
+                    <li>
+                        <form action="/savedpoem" method="POST">
+                        <a href='#' class="bookmarked-poem-link">{{ poem[1] }} by {{ poem[2] }}</a>
+                        <input type="hidden" name="bk_poem_id" value="{{ poem[0] }}"></input>
+                        <input type="submit" name="bk_poem_id" method="POST" value="View/Edit Comments"></input>
+                        </form>
+                    </li>
+                {% endfor %}
+                </ul>
+            </div>
+        </div>
+        <div class="col-6-md">
+            <div id="saved-prompts-list"><h3>Saved Prompts</h3>
+                <ul>
+                {% for prompt in prompt_texts %}
+                    <li>
+                        <form action="/savedprompt" method="POST">
+                        <a href='#' class="saved-prompt-link">{{ prompt[2] }}</a>
+                        <div class="text-area-converter">
+                        <ul>
+                            <li>{{ prompt[1] }}</li>
+                            <li>
+                                <input type="hidden" name="prompt_id" value="{{ prompt[0] }}"></input>
+                                <input type="submit" method="POST" value="View/Edit Response"></input>
+                            </li>
+                        </ul>
+                        </div>
+                        </form>
+                    </li>
+                {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="static/userprofile.js">
+</script>
+
+{% endblock %}
