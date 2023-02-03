@@ -7,23 +7,31 @@
 <div class="container">
     <br><div class="row">
         <div class="col-8">
-            <div id="mashup-title">
-                <h1>Title</h1>
-            </div>
-            <div id="mashup-author">
-                <h3>by Author</h3>
-            </div>
-            <div id="mashup-text">
-                This is where the poem will go.
-            </div>
+            <label for="poem-title">
+                <div id="mashup-title">
+                    <h1>Mashup Generator!</h1>
+                </div>
+            </label>
+            <label for="author-name">
+                <div id="mashup-author">
+                    <h3></h3>
+                </div>
+            </label>
+            <label for="poem-body">
+                <div id="mashup-text">
+                    Enter a value in the line count field to the right to create a new poem!
+                </div>
+            </label>
         </div>
         <div class="col-4">
             <!-- button for generating new mashup -->
             <button type="submit" class="btn btn-outline-secondary" id="mashup-poem">New Mashup</button><br><br>
 
             <!-- required input -->
-            <div>Required Input:</div>
-            <div><label for="line-count-user-input">Line Count: </label></div><input type="text" id="linecount-input-mashup" name="linecount" size="5" maxlength="3" required><br><br>
+            <div><label for="line-count-user-input">Line Count: (required) </label></div><input type="number" id="linecount-input-mashup" size="3" name="linecount" min="1" max="200"><br><br>
+
+            <!-- button to save mashup -->
+            <button type="submit" class="btn btn-outline-secondary" id="save-mashup">Save Mashup</button><br><br>
         </div>
 </div>
 

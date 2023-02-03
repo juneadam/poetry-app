@@ -10,7 +10,7 @@ import crud
 
 from jinja2 import StrictUndefined
 
-from random import choice, randint
+from random import choice, randint, shuffle
 
 app = Flask(__name__)
 app.secret_key = "dev"
@@ -415,7 +415,7 @@ def update_saved_response():
         return 'error'
 
 
-# ------------ mashups routes ------------ #
+# ------------ mashup routes ------------ #
 
 @app.route('/mashups')
 def show_mashup_generator():
@@ -428,20 +428,52 @@ def mashup_generator():
     """Call the API with user input linecount, generate a random
     poem mixing and matching lines from the returned list."""
 
+    user_id = session['user_id']
+    username = crud.find_user_by_id(user_id).username
+
     linecount = int(request.json.get('linecount'))
 
     res = requests.get(f'https://poetrydb.org/linecount/{linecount}/all.json')
     mashup_response = res.json()
 
+    print(f'\n\nmashup_response {mashup_response}\n\n')
+
+    title_list = []
+    for i in range(0, 2):
+        poem = choice(mashup_response)
+        title_choice = poem['title'].split()
+        for word in title_choice:
+            title_list.append(word)
+    
+    shuffle(title_list)
+
+    title = ''
+    if linecount !=3 and linecount != 5 and linecount != 14 and linecount !=19 and linecount !=100:
+        title = f'{title_list[0]} {title_list[1]} {title_list[2]} {title_list[3]}'
+    elif linecount == 3:
+        title = f'Haiku: {title_list[0]} {title_list[1]} {title_list[2]} {title_list[3]}'
+    elif linecount == 5:
+        title = f'Limerick: {title_list[0]} {title_list[1]} {title_list[2]} {title_list[3]}'
+    elif linecount == 14:
+        title = f'Sonnet: {title_list[0]} {title_list[1]} {title_list[2]} {title_list[3]}'
+    elif linecount == 19:
+        title = f'Villanelle: {title_list[0]} {title_list[1]} {title_list[2]} {title_list[3]}'    
+    elif linecount == 100:
+        title = f'Cento: {title_list[0]} {title_list[1]} {title_list[2]} {title_list[3]}'
+
+    # print(title)
+
     poems_by_line_tuples_list = []
 
-    for i in range(0, (linecount - 1)):
+    for i in range(0, linecount):
         poem = choice(mashup_response)
         poems_by_line_tuples_list.append((poem['author'], poem['title'], poem['lines'][i]))
 
-    print(f'\n\n\npoems_list: {poems_by_line_tuples_list}\n\n')
+    # print(f'\n\n\npoems_list: {poems_by_line_tuples_list}\n\n')
     
-    return jsonify({'data': poems_by_line_tuples_list})
+    return jsonify({'data': poems_by_line_tuples_list, 
+                    'username': username,
+                    'title': title})
 
 
 # ------------ user profile routes ------------ #
