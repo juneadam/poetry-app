@@ -526,7 +526,7 @@ def save_mashup():
 
 # ------------ user profile routes ------------ #
 
-@app.route('/userprofile')
+@app.route('/userprofileold')
 def user_profile():
     """Render user profile. This route is built without
     React and will be deprecated."""
@@ -570,22 +570,22 @@ def user_profile():
         # print(f'\n\n\n\n\n prompt_texts {prompt_texts} \n\n\n\n')        
         
         
-        return render_template('userprofile.html',
+        return render_template('userprofileold.html',
                                 username=username,
                                 bookmarks=bookmarks,
                                 prompt_texts=prompt_texts)
 
 
-@app.route('/userprofiletest')
+@app.route('/userprofile')
 def user_profile_with_react():
-    """user profile"""
+    """User profile with React"""
 
-    return render_template('userprofiletest.html')
+    return render_template('userprofile.html')
 
 
 @app.route('/username.json')
 def fetch_username_json():
-    """username"""
+    """Fetch username from the database."""
 
     user_id = session['user_id']
 
@@ -596,7 +596,7 @@ def fetch_username_json():
 
 @app.route('/user-saved-bookmarks.json')
 def fetch_bookmarks_json():
-    """user bookmarks"""
+    """Fetch user bookmarks from the database."""
     
     user_id = session['user_id']
 
@@ -638,7 +638,7 @@ def fetch_prompts_json():
 
 @app.route('/user-saved-mashups.json')
 def fetch_mashups_json():
-    """user mashups"""
+    """Fetch user mashups from the database."""
 
     user_id = session['user_id']
 

@@ -1,57 +1,44 @@
-{% extends 'base.html' %}
+{% extends 'base.html' %} {% block head %}
 
-{% block title %}{{ username }}{% endblock %}
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<script src="https://unpkg.com/react@16/umd/react.development.js"></script>
+<script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
+{% endblock head %} {% block body %}
 
-{% block body %}
+
+<div id="username" class="container"></div>
+
+
 
 <div class="container">
-    <div class="col-10">
-        <h1>{{ username }}</h1>
-    </div>
-</div>
-<div class="container">
-    <div class="row">
-        <div class="col-6-md">
-            <div id="saved-poems-list"><h3>Saved Poems</h3>
-                <ul>
-                {% for poem in bookmarks %}
-                    <li>
-                        <form action="/savedpoem" method="POST">
-                        <a href='#' class="bookmarked-poem-link">{{ poem[1] }} by {{ poem[2] }}</a>
-                        <input type="hidden" name="bk_poem_id" value="{{ poem[0] }}"></input>
-                        <input type="submit" name="bk_poem_id" method="POST" value="View/Edit Comments"></input>
-                        </form>
-                    </li>
-                {% endfor %}
-                </ul>
-            </div>
-        </div>
-        <div class="col-6-md">
-            <div id="saved-prompts-list"><h3>Saved Prompts</h3>
-                <ul>
-                {% for prompt in prompt_texts %}
-                    <li>
-                        <form action="/savedprompt" method="POST">
-                        <a href='#' class="saved-prompt-link">{{ prompt[2] }}</a>
-                        <div class="text-area-converter">
-                        <ul>
-                            <li>{{ prompt[1] }}</li>
-                            <li>
-                                <input type="hidden" name="prompt_id" value="{{ prompt[0] }}"></input>
-                                <input type="submit" method="POST" value="View/Edit Response"></input>
-                            </li>
-                        </ul>
-                        </div>
-                        </form>
-                    </li>
-                {% endfor %}
-                </ul>
-            </div>
-        </div>
+    <div class="row" id="bk-poems-header">
+        <h3>Bookmarked Poems</h3>
     </div>
 </div>
 
-<script src="static/userprofile.js">
-</script>
+<div id="saved_poems" class="container"></div>
 
+
+
+<div class="container">
+    <div class="row" id="saved-prompts-header">
+        <h3>Saved Prompts</h3>
+    </div>
+</div>
+
+<div id="saved_prompts" class="container"></div>
+
+
+
+<div class="container">
+    <div class="row" id="saved-mashups-header">
+        <h3>Saved Mashups</h3>
+    </div>
+</div>
+
+<div id="saved_mashups" class="container"></div>
+
+
+
+<script src="/static/userprofile.jsx" type="text/jsx"></script>
 {% endblock %}
