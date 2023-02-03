@@ -9,6 +9,7 @@ const poemAuthor = document.querySelector('#poem-author')
 const poemText = document.querySelector('#poem-text')
 const titleInput = document.querySelector('#title-input')
 const authorInput = document.querySelector('#author-input')
+const linesInput = document.querySelector('#lines-input')
 const linecountInput = document.querySelector('#linecount-input')
 
 
@@ -20,9 +21,10 @@ const linecountInput = document.querySelector('#linecount-input')
 const randomPoem = document.querySelector('#random-poem').addEventListener('click', () => {
   const userTitleValue = titleInput.value
   const userAuthorValue = authorInput.value
+  const userLinesValue = linesInput.value
   const userLinecountValue = linecountInput.value
 
-  if (!userTitleValue && !userAuthorValue && !userLinecountValue){
+  if (!userTitleValue && !userAuthorValue &&!userLinesValue && !userLinecountValue){
     fetch('/random-poem.json')
     .then((response) => response.json())
     .then((responseData) => {
@@ -39,6 +41,7 @@ const randomPoem = document.querySelector('#random-poem').addEventListener('clic
     const dataPacket = {
       'title-input': userTitleValue,
       'author-input': userAuthorValue,
+      'lines-input': userLinesValue,
       'linecount-input': userLinecountValue
     }
 

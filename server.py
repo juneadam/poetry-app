@@ -103,6 +103,7 @@ def call_random_poem_with_inputs():
 
     author = request.json.get('author-input')
     title = request.json.get('title-input')
+    lines = request.json.get('lines-input')
     linecount = request.json.get('linecount-input')
 
     payload = []
@@ -111,6 +112,8 @@ def call_random_poem_with_inputs():
         payload.append(('author', author))
     if title:
         payload.append(('title', title))
+    if lines:
+        payload.append(('lines', lines))
     if linecount:
         payload.append(('linecount', linecount))
 
