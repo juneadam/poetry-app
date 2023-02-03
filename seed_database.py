@@ -59,8 +59,8 @@ for n in range(10):
 
     new_user = crud.create_user(username, email, password)
 
-    # create 10 comments for the user
-    for x in range(10):
+    # create 4 comments for the user
+    for x in range(4):
         user_notes = f"{x}\nIt's pretty good I guess?"
         poem = choice(poems_in_db)
         # calls create_comment function to create new comment with filler text
@@ -72,6 +72,30 @@ for n in range(10):
     model.db.session.add(new_user)
 
 model.db.session.commit()  
+
+
+# loop to generate 5 mashup objects
+for n in range(5):
+    user_id = randint(1,10)
+    mashup_title = f'Title of Mashup{n}'
+    mashup_author = f'Author of Mashup{n}'
+
+    new_mashup = crud.create_mashup(user_id=user_id, mashup_title=mashup_title, mashup_author=mashup_author)
+
+    model.db.session.add(new_mashup)
+    model.db.session.commit()
+
+    #create 4 lines for each mashup
+    lines = []
+    for x in range(4):
+        line = (f'source_author{n}', f'source_poem{n}', f'this_is_a_line_of_text{n}')
+        lines.append(line)
+    mashup_id = new_mashup.mashup_id
+    new_mashup_lines = crud.create_mashup_lines(mashup_id=mashup_id, lines=lines)
+
+
+    model.db.session.add_all(new_mashup_lines)
+    model.db.session.commit()
 
 
 # database of poetry prompts

@@ -344,6 +344,13 @@ def load_bookmarked_prompt_and_response():
                             prompt_text=prompt_text,
                             user_response=user_response)
 
+@app.route('/savedmashup', methods=['POST'])
+def load_saved_mashup():
+    """When clicking on a button, loads a page with the
+    text, title, and author of a user's saved mashup."""
+
+    pass
+
 
 # ------------ update bookmarks routes ------------#
 
@@ -475,6 +482,47 @@ def mashup_generator():
                     'username': username,
                     'title': title})
 
+@app.route('/save-mashup', methods=['POST'])
+def save_mashup():
+    """Route to save a mashup to the database."""
+
+    user_id = session['user_id']
+    dataList = request.json.get('dataList')
+    title = request.json.get('title')
+    author = request.json.get('author')[3:-13]
+
+    # print(f'\n\n\ndataList {dataList}\n')
+    # print(f'\n\ntitle {title}\n')
+    # print(f'\n\nauthor {author} {len(author)}\n')
+
+    if not user_id:
+        return 'not ok'
+
+    else:
+        
+        new_mashup = crud.create_mashup(user_id=user_id, mashup_title=title, mashup_author=author)
+        db.session.add(new_mashup)
+        db.session.commit()
+
+        mashup_obj = crud.find_mashup_by_title(title)
+        mashup_id = mashup_obj.mashup_id
+        print(f'\n\n\n{mashup_id}\n\n\n')
+
+        mashup_lines = []
+        for line in dataList:
+            split_line = line.split('@')
+            mashup_lines.append(split_line)
+
+        print(mashup_lines)
+
+        new_mashup_lines = crud.create_mashup_lines(mashup_id=mashup_id, lines=mashup_lines)
+        print(new_mashup_lines)
+
+        db.session.add_all(new_mashup_lines)
+        db.session.commit()
+
+        return 'ok'
+
 
 # ------------ user profile routes ------------ #
 
@@ -586,7 +634,21 @@ def fetch_prompts_json():
 
     # print(f'\n\n\nuser_prompts: {prompt_texts}\n\n\n')
 
-    return jsonify({'user_prompts': prompt_texts}) 
+    return jsonify({'user_prompts': prompt_texts})
+
+@app.route('/user-saved-mashups.json')
+def fetch_mashups_json():
+    """user mashups"""
+
+    user_id = session['user_id']
+
+    user_mashups = crud.find_all_mashups_by_user_id(user_id)
+
+    mashups = []
+    for mashup in user_mashups:
+        mashups.append((mashup.mashup_id, mashup.mashup_title))
+
+    return jsonify({'user_mashups': mashups})
 
 
 

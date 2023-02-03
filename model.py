@@ -5,6 +5,8 @@ from flask_sqlalchemy import SQLAlchemy
 db = SQLAlchemy()
 
 
+# ------------ User Data ------------ #
+
 class User(db.Model):
     """Creates a table to save user data."""
 
@@ -25,6 +27,8 @@ class User(db.Model):
     def __repr__(self):
         return f'<User object user_id: {self.user_id} username: {self.username}>'
 
+
+# ------------ Poem Comments/Bookmarks ------------ #
 
 class Comment(db.Model):
     """Creates a table to track user comments associated with
@@ -47,7 +51,6 @@ class Comment(db.Model):
 
     def __repr__(self):
         return f'<Comment object bk_poem_id: {self.bk_poem_id} user_id: {self.user_id}>'
-
 
 class Poem(db.Model):
     """Creates a table for saving API-generated poems that 
@@ -86,6 +89,8 @@ class PoemLine(db.Model):
         return f'<PoemLine object bk_poem_id: {self.bk_poem_id} bk_line_id: {self.bk_line_id}>'
 
 
+# ------------ Mashup ------------ #
+
 class Mashup(db.Model):
     """Creates a table for API-generated mashup poems
     that the user wants to save."""
@@ -97,34 +102,38 @@ class Mashup(db.Model):
                         autoincrement=True)
     user_id = db.Column(db.Integer,
                         db.ForeignKey("users.user_id"))
-    mashup_text = db.Column(db.Text)
+    mashup_title = db.Column(db.Text)
+    mashup_author = db.Column(db.Text)
 
     user = db.relationship("User", back_populates="mashups")
-    components = db.relationship("MashupComponent", back_populates="mashup")
+    lines = db.relationship("MashupLine", back_populates="mashup")
 
     def __repr__(self):
         return f'<Mashup object mashup_id: {self.mashup_id} user_id: {self.user_id}>'
 
 
-class MashupComponent(db.Model):
+class MashupLine(db.Model):
     """Creates a table for components making up particular 
     mashup poems saved by the user."""
 
-    __tablename__ = "mashupcomponents"
+    __tablename__ = "mashuplines"
 
     component_id = db.Column(db.Integer,
                         primary_key=True,
                         autoincrement=True)
     mashup_id = db.Column(db.Integer,
                         db.ForeignKey("mashups.mashup_id"))
-    author_name = db.Column(db.String(100))
-    source_poem = db.Column(db.String(100))
+    author_name = db.Column(db.String(255))
+    source_title = db.Column(db.String(255))
+    line = db.Column(db.Text)
 
-    mashup = db.relationship("Mashup", back_populates="components")
+    mashup = db.relationship("Mashup", back_populates="lines")
 
     def __repr__(self):
-        return f'<MashupComponent object component_id: {self.component_id} author_name: {self.author_name} source_poem: {self.source_poem}>'
+        return f'<MashupLine object mashup_line_id: {self.component_id} author_name: {self.author_name} source_title: {self.source_title} line: {self.line}>'
 
+
+# ------------ Prompts ------------ #
 
 class PromptDB(db.Model):
     """Database of poetry prompts to choose from."""
@@ -162,6 +171,9 @@ class SavedPrompt(db.Model):
     def __repr__(self):
         return f'<SavedPrompt object saved_prompt_id: {self.saved_prompt_id} user_id: {self.user_id} prompt_id: {self.prompt_id}>'
 
+
+# ------------ Line Breaks ------------#
+
 class SavedLinebreak(db.Model):
     """Table allowing user to save their poems with randomly generated
     line-breaks."""
@@ -180,8 +192,9 @@ class SavedLinebreak(db.Model):
 
     def __repr__(self):
         return f'<UserLinebreak object linebreak_id: {self.linebreak_id} user_id: {self.user_id} public: {self.public}'
-    
 
+
+# ------------ Etc. ------------ #
 
 def connect_to_db(flask_app, db_uri="postgresql:///poetrytoolkitDB", echo=True):
     flask_app.config["SQLALCHEMY_DATABASE_URI"] = db_uri

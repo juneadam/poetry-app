@@ -126,6 +126,34 @@ def find_saved_prompts_by_id(prompt_id):
 
     return model.SavedPrompt.query.filter_by(prompt_id=prompt_id).all()
 
+
+# ------------ mashups ------------ #
+
+def create_mashup(user_id, mashup_title, mashup_author):
+    """Create a new mashup entry."""
+
+    return model.Mashup(user_id=user_id, mashup_title=mashup_title, mashup_author=mashup_author)
+
+def create_mashup_lines(mashup_id, lines):
+    """Create a new mashup entry."""
+
+    mashup_lines = []
+
+    for line in lines:
+        mashup_line = model.MashupLine(mashup_id=mashup_id, author_name=line[0], source_title=line[1], line=line[2])
+        mashup_lines.append(mashup_line)
+
+    return mashup_lines
+
+def find_mashup_by_title(title):
+    """Find a mashup in the database using it's title."""
+
+    return model.Mashup.query.filter_by(mashup_title=title).first()
+
+def find_all_mashups_by_user_id(user_id):
+    """Generate a list of mashups from the database using user_id"""
+
+    return model.Mashup.query.filter_by(user_id=user_id).all()
    
 
 

@@ -136,6 +136,50 @@ const UserSavedPrompts = (props) => {
     )
 }
 
+
+// ------------ Mashup Container ------------ //
+
+const MashupCard = (props) => {
+    const MashupCards = [];
+    for (const mashup of props.savedMashups) {
+        MashupCards.push(
+            <form key={prompt[0]} action="/savedmashup" method="POST">
+                <a href='#' className="saved-mashup-link">{mashup[1]}</a>
+                    <div className="mashup-card">
+                        <input type="hidden" name="mashup_id" value={mashup[0]}></input>
+                        <input type="submit" method="POST" value="View/Edit Response"></input>
+                    </div>
+            </form>
+        )
+    }
+    return <section id="MashupCards">{MashupCards}</section>;
+}
+
+const UserSavedMashups = (props) => {
+    const [savedMashups, updateMashups] = React.useState([]);
+
+    const fetchMashups = () => {
+        fetch('/user-saved-mashups.json')
+        .then((response) => response.json())
+        .then((savedMashupsJSON) => {
+            updateMashups(savedMashupsJSON['user_mashups'])
+        })
+    }
+
+    React.useEffect(fetchMashups, [])
+
+
+    return (
+        <div className='container'>
+        
+        <MashupCard savedMashups={savedMashups}/>
+
+        </div>
+    )
+}
+
+
 ReactDOM.render(<UsernameCard />, document.querySelector('#username'))
 ReactDOM.render(<UserSavedPoems />, document.querySelector('#saved_poems'));
-ReactDOM.render(<UserSavedPrompts />, document.querySelector('#saved_prompts'));    
+ReactDOM.render(<UserSavedPrompts />, document.querySelector('#saved_prompts'));  
+ReactDOM.render(<UserSavedMashups />, document.querySelector('#saved_mashups'));    
