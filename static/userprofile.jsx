@@ -46,7 +46,7 @@ const PoemCard = (props) => {
         PoemCards.push(
             <div className="col" key = {poem[0]}>
             <form action="/savedpoem" className="saved-poem-card" method="POST">
-                <a href='#' className="bookmarked-poem-link">{poem[1]} by {poem[2]}</a>
+                <div className="bookmarked-poem-link">{poem[1]} by {poem[2]}</div>
                 <input type="hidden" name="bk_poem_id" value={poem[0]}></input>
                 <input type="submit" method="POST" value="View/Edit Comments"></input>
             </form>
@@ -98,7 +98,7 @@ const PromptCard = (props) => {
             <div className="prompt-card" key={prompt[0]}>
                 <div className="view-prompt">
                     <form action="/savedprompt" method="POST">
-                        <a href='#' className="saved-prompt-link">{prompt[2]}</a>
+                        <div className="saved-prompt-link">{prompt[2]}</div>
                         <div className="promptList">
                             <ul>
                                 <li>{prompt[1]}</li>
@@ -157,16 +157,16 @@ const MashupCard = (props) => {
         MashupCards.push(
             <div key={mashup[0]} className="mashup-card">
                 <div className="view-mashup">
-                <a href='#' className="saved-mashup-link">{mashup[1]}</a>
+                <div className="saved-mashup-link">{mashup[1]}</div>
                     <form action="/savedmashup" method="POST">
                         <input type="hidden" name="mashup_id" value={mashup[0]}/>
-                        <input type="submit" method="POST" value="View/Edit Response"/>
+                        <input type="submit" method="POST" value="View Mashup"/>
                     </form>
                 </div>
                 <div className="make-public-mashup">
                     <form action="/update-public-mashup" method="POST">
                         <input type="checkbox" name="public-check" checked={mashup[2]} />Make this mashup public, so other users can search for it?
-                        <input type="hidden" name="mashup_public" value={mashup[3]}/>
+                        <input type="hidden" name="mashup_public" value={mashup[3]}/><br></br>
                         <input type="submit" method="POST" value="Update"/>
                     </form>
                 </div>
