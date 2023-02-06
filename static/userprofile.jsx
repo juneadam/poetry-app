@@ -93,32 +93,42 @@ const UserSavedPoems = (props) => {
 
 const PromptCard = (props) => {
     const PromptCards = [];
+    let n = 1;
     for (const prompt of props.savedPrompts) {
         PromptCards.push(
-            <div className="prompt-card" key={prompt[0]}>
-                <div className="view-prompt">
-                    <form action="/savedprompt" method="POST">
-                        <div className="saved-prompt-link">{prompt[2]}</div>
-                        <div className="promptList">
-                            <ul>
-                                <li>{prompt[1]}</li>
-                                <li>
-                                    <input type="hidden" name="prompt_id" value={prompt[0]} />
-                                    <input type="submit" method="POST" value="View/Edit Response" />
-                                </li>
-                            </ul>
+            <div className="prompt-card accordion" id={prompt[0]} key={prompt[0]}>
+                <h4 className="saved-prompt-link accordion-header">
+                    <button className="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                        {prompt[2]}
+                    </button>
+                </h4>
+                <div id="collapseOne" className="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
+                    <div className="accordion-body">    
+                        <div className="view-prompt">
+                            <form action="/savedprompt" method="POST">
+                                <div className="prompt-list">
+                                    <ul>
+                                        <li>{prompt[1]}</li>
+                                        <li>
+                                            <input type="hidden" name="prompt_id" value={prompt[0]} />
+                                            <input type="submit" method="POST" value="View/Edit Response" />
+                                        </li>
+                                    </ul>
+                                </div>
+                            </form>
                         </div>
-                    </form>
-                </div>
-                <div className="make-public-prompt">
-                    <form action="/update-public-prompt" method="POST">
-                        <input type="checkbox" name="public-check" checked={prompt[3]} />Make your response public, so other users can search for it?
-                        <input type="hidden" name="mashup_public" value={prompt[4]}/>
-                        <input type="submit" method="POST" value="Update"/>
-                    </form>
+                        <div className="make-public-prompt">
+                            <form action="/update-public-prompt" method="POST">
+                                <input type="checkbox" name="public-check" checked={prompt[3]} />Make your response public, so other users can search for it?
+                                <input type="hidden" name="mashup_public" value={prompt[4]}/>
+                                <input type="submit" method="POST" value="Update"/>
+                            </form>
+                        </div>
+                    </div>
                 </div>
             </div>
         )
+        n++
     }
     return <section id="PromptCards">{PromptCards}</section>;
 }
@@ -152,7 +162,7 @@ const UserSavedPrompts = (props) => {
 
 const MashupCard = (props) => {
     let MashupCards = [];
-    console.log(props.savedMashups);
+    // console.log(props.savedMashups);
     for (const mashup of props.savedMashups) {
         MashupCards.push(
             <div key={mashup[0]} className="mashup-card">
@@ -174,7 +184,7 @@ const MashupCard = (props) => {
             
         )
     }
-    console.log(MashupCards);
+    // console.log(MashupCards);
     return <section id="MashupCards">{MashupCards}</section>;
 }
 
@@ -185,7 +195,7 @@ const UserSavedMashups = (props) => {
         fetch('/user-saved-mashups.json')
         .then((response) => response.json())
         .then((savedMashupsJSON) => {
-            console.log(savedMashupsJSON)
+            // console.log(savedMashupsJSON)
             updateMashups(savedMashupsJSON['user_mashups'])
         })
     }
