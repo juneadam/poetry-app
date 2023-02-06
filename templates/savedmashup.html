@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ title }} by {{ username }}{% endblock %}
+
+{% block body %}
+
+<div class="container">
+    <br><div class="row">
+        <label for="poem-title">
+            <div class="col-12" id="saved-mashup-title">
+                <h1>{{ title }}</h1>
+            </div>
+        </label>
+        <label for="author-name">
+            <div class="col-12" id="saved-mashup-author">
+                <h3>by {{ username }} and <a href='https://www.poetrydb.org'>PoetryDB</a> </h3>
+            </div>
+        </label>
+        <label for="poem-body">
+            <div class="col-12" id="saved-mashup-text">
+                {% for line in lines %}
+                    <div>
+                        <span hidden value="{{ line['author'] }}""></span>
+                        <span hidden value="{{ line['source_title'] }}""></span>
+                        <span value="{{ line['line'] }}"">{{ line['line'] }}</span>
+                    </div>
+                {% endfor %}
+            </div>
+        </label>
+    </div>
+</div>
+
+<footer class="footer">
+    <span>Powered by <a href="https://poetrydb.org/index.html">PoetryDB</a>.</span>
+</footer>
+
+<script src='static/savedmashup.js'></script>
+
+{% endblock %}
