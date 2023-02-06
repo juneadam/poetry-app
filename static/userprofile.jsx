@@ -95,18 +95,29 @@ const PromptCard = (props) => {
     const PromptCards = [];
     for (const prompt of props.savedPrompts) {
         PromptCards.push(
-            <form key={prompt[0]} action="/savedprompt" method="POST">
-                <a href='#' className="saved-prompt-link">{prompt[2]}</a>
-                    <div className="prompt-card">
-                    <ul>
-                        <li>{prompt[1]}</li>
-                        <li>
-                            <input type="hidden" name="prompt_id" value={prompt[0]}></input>
-                            <input type="submit" method="POST" value="View/Edit Response"></input>
-                        </li>
-                    </ul>
-                    </div>
-            </form>
+            <div className="prompt-card" key={prompt[0]}>
+                <div className="view-prompt">
+                    <form action="/savedprompt" method="POST">
+                        <a href='#' className="saved-prompt-link">{prompt[2]}</a>
+                        <div className="promptList">
+                            <ul>
+                                <li>{prompt[1]}</li>
+                                <li>
+                                    <input type="hidden" name="prompt_id" value={prompt[0]} />
+                                    <input type="submit" method="POST" value="View/Edit Response" />
+                                </li>
+                            </ul>
+                        </div>
+                    </form>
+                </div>
+                <div className="make-public-prompt">
+                    <form action="/update-public-prompt" method="POST">
+                        <input type="checkbox" name="public-check" checked={prompt[3]} />Make your response public, so other users can search for it?
+                        <input type="hidden" name="mashup_public" value={prompt[4]}/>
+                        <input type="submit" method="POST" value="Update"/>
+                    </form>
+                </div>
+            </div>
         )
     }
     return <section id="PromptCards">{PromptCards}</section>;
@@ -140,18 +151,30 @@ const UserSavedPrompts = (props) => {
 // ------------ Mashup Container ------------ //
 
 const MashupCard = (props) => {
-    const MashupCards = [];
+    let MashupCards = [];
+    console.log(props.savedMashups);
     for (const mashup of props.savedMashups) {
         MashupCards.push(
-            <form key={prompt[0]} action="/savedmashup" method="POST">
+            <div key={mashup[0]} className="mashup-card">
+                <div className="view-mashup">
                 <a href='#' className="saved-mashup-link">{mashup[1]}</a>
-                    <div className="mashup-card">
-                        <input type="hidden" name="mashup_id" value={mashup[0]}></input>
-                        <input type="submit" method="POST" value="View/Edit Response"></input>
-                    </div>
-            </form>
+                    <form action="/savedmashup" method="POST">
+                        <input type="hidden" name="mashup_id" value={mashup[0]}/>
+                        <input type="submit" method="POST" value="View/Edit Response"/>
+                    </form>
+                </div>
+                <div className="make-public-mashup">
+                    <form action="/update-public-mashup" method="POST">
+                        <input type="checkbox" name="public-check" checked={mashup[2]} />Make this mashup public, so other users can search for it?
+                        <input type="hidden" name="mashup_public" value={mashup[3]}/>
+                        <input type="submit" method="POST" value="Update"/>
+                    </form>
+                </div>
+            </div>
+            
         )
     }
+    console.log(MashupCards);
     return <section id="MashupCards">{MashupCards}</section>;
 }
 
@@ -162,6 +185,7 @@ const UserSavedMashups = (props) => {
         fetch('/user-saved-mashups.json')
         .then((response) => response.json())
         .then((savedMashupsJSON) => {
+            console.log(savedMashupsJSON)
             updateMashups(savedMashupsJSON['user_mashups'])
         })
     }

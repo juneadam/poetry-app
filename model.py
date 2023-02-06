@@ -104,6 +104,7 @@ class Mashup(db.Model):
                         db.ForeignKey("users.user_id"))
     mashup_title = db.Column(db.Text)
     mashup_author = db.Column(db.Text)
+    mashup_public = db.Column(db.Boolean, default=True, nullable=False)
 
     user = db.relationship("User", back_populates="mashups")
     lines = db.relationship("MashupLine", back_populates="mashup")
@@ -164,6 +165,7 @@ class SavedPrompt(db.Model):
     prompt_id = db.Column(db.Integer,
                         db.ForeignKey("prompts.prompt_id"))
     user_text = db.Column(db.Text)
+    prompt_public = db.Column(db.Boolean, default=False, nullable=False)
 
     prompt = db.relationship("PromptDB", back_populates="saved_prompts")
     user = db.relationship("User", back_populates="saved_prompts")

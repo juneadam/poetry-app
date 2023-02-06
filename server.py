@@ -630,7 +630,7 @@ def fetch_prompts_json():
     prompt_texts = []
     for saved_prompt in user_prompts:
         prompt_in_db = crud.find_prompt_by_id(saved_prompt.prompt_id)
-        prompt_texts.append((saved_prompt.prompt_id, saved_prompt.user_text, prompt_in_db.prompt_text))
+        prompt_texts.append((saved_prompt.prompt_id, saved_prompt.user_text, prompt_in_db.prompt_text, saved_prompt.prompt_public, f'{saved_prompt.prompt_id}+{saved_prompt.prompt_public}'))
 
     # print(f'\n\n\nuser_prompts: {prompt_texts}\n\n\n')
 
@@ -646,7 +646,7 @@ def fetch_mashups_json():
 
     mashups = []
     for mashup in user_mashups:
-        mashups.append((mashup.mashup_id, mashup.mashup_title))
+        mashups.append((f'{mashup.mashup_id}', f'{mashup.mashup_title}', f'{mashup.mashup_public}', f'{mashup.mashup_id}-{mashup.mashup_public}'))
 
     return jsonify({'user_mashups': mashups})
 
