@@ -349,7 +349,26 @@ def load_saved_mashup():
     """When clicking on a button, loads a page with the
     text, title, and author of a user's saved mashup."""
 
-    pass
+    user_id = session['user_id']
+    user_obj = crud.find_user_by_id(user_id=user_id)
+    username = user_obj.username
+
+    mashup_id = int(request.form.get('mashup_id'))
+    mashup_obj = crud.find_mashup_by_id(mashup_id)
+    mashup_title = mashup_obj.mashup_title
+    print(mashup_title)
+
+    mashup_lines_list = crud.find_mashup_lines_by_id(mashup_id)
+    print(f'\n\n\nmashup_lines_list {mashup_lines_list}\n\n')
+
+    lines=[]
+    for line in mashup_lines_list:
+        lines.append({'line': line.line, 'author': line.author_name, 'source_title': line.source_title})
+
+    return render_template('savedmashup.html',
+                            username=username,
+                            title=mashup_title,
+                            lines=lines)
 
 
 # ------------ update bookmarks routes ------------#

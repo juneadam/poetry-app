@@ -150,6 +150,16 @@ def find_mashup_by_title(title):
 
     return model.Mashup.query.filter_by(mashup_title=title).first()
 
+def find_mashup_by_id(mashup_id):
+    """Find a mashup in the database using it's id."""
+
+    return model.Mashup.query.filter_by(mashup_id=mashup_id).first()
+
+def find_mashup_lines_by_id(mashup_id):
+    """Generate a list of all mashup lines by id."""
+
+    return model.MashupLine.query.filter_by(mashup_id=mashup_id).all()
+
 def find_all_mashups_by_user_id(user_id):
     """Generate a list of mashups from the database using user_id"""
 
