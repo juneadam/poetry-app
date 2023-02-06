@@ -2,6 +2,13 @@
     text-align: center;
 }
 
+.prompt-card {
+    min-width: 10em;
+    max-width: 15em;
+    border-width: 10px;
+    padding: 10px;
+}
+
 .footer {
     display: flex;
     align-items: center;
