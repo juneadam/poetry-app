@@ -273,6 +273,30 @@ def show_add_prompt_page():
 
     return render_template('add-prompt.html')
 
+@app.route('/save-prompt-to-db.json', methods=['POST'])
+def save_prompt_to_db():
+    """Saves the new prompt to the database."""
+
+    logged_in = session.get('user_id')
+
+    if logged_in:
+
+        user_prompt = request.json.get('new_prompt')
+        print(user_prompt)
+
+        if user_prompt:
+            new_prompt_obj = crud.create_prompt(prompt=user_prompt)
+
+            db.session.add(new_prompt_obj)
+            db.session.commit()
+            return 'ok'
+
+        return 'not ok'
+
+    return 'not logged in'
+
+
+
 
 # ------------ load bookmarks routes ------------#
 

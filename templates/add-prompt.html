@@ -9,19 +9,18 @@
         <h1>Add a new Prompt!</h1>
     </div>
     
-    <form action="/save-prompt-to-db">
-        <div class="row">
-            <div class="col-8">
-                <label for="text-box-for-saved-prompt-response">Add a new prompt to the database to inspire other users!</label>
-            </div>
-            <div class="col-3 offset-1">
-                <button type="submit" class="btn btn-outline-secondary" method="POST">Save Prompt</button>
-            </div>
-        </div><br>
-        <div class="row">
-            <textarea class="form-control" id="user-prompt-add" name="user-prompt-add" rows="5"></textarea>
+    <div class="row">
+        <div class="col-8">
+            <label for="text-box-for-adding-a-new-prompt-to-the-database">Add a new prompt to the database to inspire other users!</label>
         </div>
-    </form>
+        <div class="col-3 offset-1">
+            <button type="button" class="btn btn-outline-secondary" id="save-prompt-btn">Save Prompt</button>
+        </div>
+    </div><br>
+    <div class="row">
+        <textarea class="form-control" id="user-prompt-add" name="user-prompt-add" rows="5"></textarea>
+    </div>
 </div>
 
+<script src="static/add-prompt.js"></script>
 {% endblock %}
