@@ -5,20 +5,18 @@ const ResponseCard = (props) => {
     for (const response of props.responses) {
         responseCards.push(
             <div className="responseCard" key={response[0]}>
-                <form action="/savedprompt" method="POST">
-                    <p><strong>{response[1]}</strong></p>
-                    <p>by {response[2]}</p>
-                    <p>
-                        <button className="btn btn-outline-secondary" type="button" data-bs-toggle="collapse" data-bs-target={`#collapseBody${response[0]}`} aria-expanded="false" aria-controls={'collapseBody{response[0]'}>
-                            View
-                        </button>
-                    </p>
-                    <div className="collapse" id={`collapseBody${response[0]}`}>
-                        <div className="card card-body">
-                            {response[3]}
-                        </div>
+                <p><strong>{response[1]}</strong></p>
+                <p>by {response[2]}</p>
+                <p>
+                    <button className="btn btn-outline-secondary" type="button" data-bs-toggle="collapse" data-bs-target={`#collapseBody${response[0]}`} aria-expanded="false" aria-controls={'collapseBody{response[0]'}>
+                        View
+                    </button>
+                </p>
+                <div className="collapse" id={`collapseBody${response[0]}`}>
+                    <div className="card card-body">
+                        {response[3]}
                     </div>
-                </form>
+                </div>
             </div>
         )
     }

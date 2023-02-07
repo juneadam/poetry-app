@@ -46,9 +46,10 @@ const PoemCard = (props) => {
         PoemCards.push(
             <div className="col" key = {poem[0]}>
             <form action="/savedpoem" className="saved-poem-card" method="POST">
-                <div className="bookmarked-poem-link"><strong>{poem[1]}</strong> by {poem[2]}</div>
+                <div className="bookmarked-poem-link"><strong>{poem[1]}</strong></div> 
+                <div>by {poem[2]}</div>
                 <input type="hidden" name="bk_poem_id" value={poem[0]}></input>
-                <input type="submit" method="POST" value="View/Edit Comments"></input>
+                <button type="submit" className="btn btn-outline-secondary" method="POST"> View/Edit Comments</button>
             </form>
             </div>
         ); 
@@ -96,39 +97,43 @@ const PromptCard = (props) => {
     for (const prompt of props.savedPrompts) {
         PromptCards.push(
             <div className="prompt-card" key={prompt[0]}>
-                <p className="saved-prompt-link">
-                    {prompt[2]}
-                </p>
                 <div>    
                     <div className="view-prompt">
                         <form action="/savedprompt" method="POST">
-                            <div className="prompt-list">
-                                <ul>
-                                    <li>{prompt[1]}</li>
-                                    <li>
-                                        <input type="hidden" name="prompt_id" value={prompt[0]} />
-                                        <input type="submit" method="POST" value="View/Edit Response" />
-                                    </li>
-                                </ul>
-                            </div>
+                            <p><strong>{prompt[2]}</strong></p>
+                            <p>
+                                <button className="btn btn-outline-secondary" type="button" data-bs-toggle="collapse" data-bs-target={`#collapseBody${prompt[0]}`} aria-expanded="false" aria-controls={`collapseBody${prompt[0]}`}>
+                                    View
+                                </button>
+                            </p>
+                            <p><div className="collapse" id={`collapseBody${prompt[0]}`}>
+                                <div className="card card-body">
+                                    {prompt[1]}
+                                </div>
+                            </div></p>
+                            <p>
+                                <input type="hidden" name="prompt_id" value={prompt[0]} />
+                                <button type="submit" className="btn btn-outline-secondary" method="POST">Edit Response</button>
+                            </p>
                         </form>
                     </div>
                     <div className="make-public-prompt">
-                        <form action="/update-public-prompt" method="POST">
+                    <form action="/update-public-prompt" method="POST">
                         <div>
-                            <input type="checkbox" name="public-check" checked={prompt[3]} />
-                            <input type="hidden" name="mashup_public" value={prompt[4]}/>
-                            <input type="submit" method="POST" value="Update"/>
-                        </div>
-                                <a className="btn btn-primary" data-bs-toggle="collapse" href="#moreInfo" role="button" aria-expanded="false" aria-controls="moreInfo">
+                            <input type="checkbox" name="public-check" checked={prompt[3]} /> Public
+                            <div><input type="hidden" name="mashup_public" value={prompt[4]}/>
+                            <input type="submit" className="btn-outline-secondary" method="POST" value="Update"/>                                
+                                <a className="btn btn-secondary-outline" data-bs-toggle="collapse" href={`#moreInfo${prompt[0]}`} role="button" aria-expanded="false" aria-controls={`moreInfo${prompt[0]}`}>
                                 ?
                                 </a>
-                                <div className="collapse" id="moreInfo">
+                                <div className="collapse" id={`moreInfo${prompt[0]}`}>
                                     <div className="card card-body">
                                         Make your response public, so other users can search for it.
                                     </div>
                                 </div>
-                        </form>
+                            </div>
+                        </div>
+                    </form>
                     </div>
                 </div>
             </div>
@@ -174,19 +179,28 @@ const MashupCard = (props) => {
                 <div className="saved-mashup-title"><strong>{mashup[1]}</strong></div>
                     <form action="/savedmashup" method="POST">
                         <input type="hidden" name="mashup_id" value={mashup[0]}/>
-                        <input type="submit" method="POST" value="View Mashup"/>
+                        <button type="submit" className="btn btn-outline-secondary" method="POST">View Mashup</button>
                     </form>
                 </div>
                 <div className="make-public-mashup">
                     <form action="/update-public-mashup" method="POST">
                         <div><input type="checkbox" name="public-check" checked={mashup[2]} />
-                        <input type="hidden" name="mashup_public" value={mashup[3]}/>
-                        <input type="submit" method="POST" value="Update"/></div>
-                        <div>Make this mashup public, so other users can search for it?</div>
+                            <input type="hidden" name="mashup_public" value={mashup[3]}/> Public
+                        </div>
+                        <div>
+                            <input type="submit" method="POST" value="Update"/>
+                            <a className="btn btn-secondary-outline" data-bs-toggle="collapse" href={`#moreInfo${mashup[0]}`} role="button" aria-expanded="false" aria-controls={`moreInfo${mashup[0]}`}>
+                                ?
+                            </a>
+                            <div className="collapse" id={`moreInfo${mashup[0]}`}>
+                                <div className="card card-body">
+                                    Make your response public, so other users can search for it.
+                                </div>
+                            </div>
+                        </div>
                     </form>
                 </div>
             </div>
-            
         )
     }
     // console.log(MashupCards);
