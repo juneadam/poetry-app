@@ -1,21 +1,19 @@
 """server for poetry app"""
+import os
 
+from jinja2 import StrictUndefined
+from random import choice, randint, shuffle
+from passlib.hash import argon2
 from flask import (Flask, render_template, request, flash, session, redirect, jsonify)
-
 import requests
 
 from model import connect_to_db, db
-
 import crud
 
-from jinja2 import StrictUndefined
-
-from random import choice, randint, shuffle
-
-from passlib.hash import argon2
+dev = os.environ['dev']
 
 app = Flask(__name__)
-app.secret_key = "dev"
+app.secret_key = dev
 app.jinja_env.undefined = StrictUndefined
 
 
@@ -77,7 +75,6 @@ def logout():
     # print(session['user_id'])
     flash('You have successfully logged out.')
     return redirect('/')
-
 
 
 # ------------ random poem routes ------------ #
@@ -269,6 +266,12 @@ def save_prompt_and_text():
         else:
 
             return 'error'
+
+@app.route('/add-prompt')
+def show_add_prompt_page():
+    """Renders the page where users can add a new prompt to the database."""
+
+    return render_template('add-prompt.html')
 
 
 # ------------ load bookmarks routes ------------#
@@ -573,7 +576,6 @@ def user_profile():
                 bk_poem_ids.append(comment.bk_poem_id)
         
         # print(f'\n\n\n\n\n bk_poem_ids {bk_poem_ids} \n\n\n\n')
-        
 
         bookmarks = []
         for bkid in bk_poem_ids:
@@ -584,7 +586,6 @@ def user_profile():
             bookmarks.append((poem_id, title, author))
 
         # print(f'\n\n\n\n\n bookmarks {bookmarks} \n\n\n\n')
-        
         
         user_prompts = crud.find_all_saved_prompts_by_user_id(logged_in)
         prompt_texts = []
@@ -605,18 +606,23 @@ def user_profile():
 def user_profile_with_react():
     """User profile with React"""
 
-    return render_template('userprofile.html')
+    logged_in = session.get('user_id')
+    print(logged_in)
+
+    if not logged_in:
+        flash('You are not logged in. Please log in below:')
+        return redirect('/')
+    else:
+
+        return render_template('userprofile.html')
 
 
 @app.route('/username.json')
 def fetch_username_json():
     """Fetch username from the database."""
 
-    user_id = session['user_id']
-
-    user = crud.find_user_by_id(user_id)
-    username = user.username
-
+    username = session['username']
+    
     return username
 
 @app.route('/user-saved-bookmarks.json')
@@ -674,7 +680,6 @@ def fetch_mashups_json():
         mashups.append((f'{mashup.mashup_id}', f'{mashup.mashup_title}', f'{mashup.mashup_public}', f'{mashup.mashup_id}-{mashup.mashup_public}'))
 
     return jsonify({'user_mashups': mashups})
-
 
 
 # ------------ public lists routes ------------ #

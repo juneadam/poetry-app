@@ -18,7 +18,8 @@ os.system('createdb poetrytoolkitDB')
 model.connect_to_db(server.app)
 model.db.create_all()
 
-password = argon2.hash("test")
+test_pw = os.environ['test_pw']
+password = argon2.hash(test_pw)
 userX = model.User(username="userX", password=password, email="test@email.test")
 poemX = model.Poem(title="good_poem_for_sure", author="somebody")
 
@@ -56,8 +57,8 @@ model.db.session.commit()
 for n in range(10):
     email = f'user{n}@test.com'
     username = f'user{n}'
-    password = 'test'
-    hashed_pw = argon2.hash(password)
+    test_pw = os.environ['test_pw']
+    hashed_pw = argon2.hash(test_pw)
 
     new_user = crud.create_user(username, email, password=hashed_pw)
 
