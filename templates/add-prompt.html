@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+{% block title %}Add a Prompt{% endblock %}
+
+{% block body %}
+
+<div class="container">
+    <div class="row">
+        <h1>Add a new Prompt!</h1>
+    </div>
+    
+    <form action="/save-prompt-to-db">
+        <div class="row">
+            <div class="col-8">
+                <label for="text-box-for-saved-prompt-response">Add a new prompt to the database to inspire other users!</label>
+            </div>
+            <div class="col-3 offset-1">
+                <button type="submit" class="btn btn-outline-secondary" method="POST">Save Prompt</button>
+            </div>
+        </div><br>
+        <div class="row">
+            <textarea class="form-control" id="user-prompt-add" name="user-prompt-add" rows="5"></textarea>
+        </div>
+    </form>
+</div>
+
+{% endblock %}
