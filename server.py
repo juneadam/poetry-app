@@ -68,7 +68,7 @@ def logout():
     """Removes the user id from the session, logging them out."""
 
     session['user_id'] = None
-    print(session['user_id'])
+    # print(session['user_id'])
     flash('You have successfully logged out.')
     return redirect('/')
 
@@ -128,7 +128,7 @@ def call_random_poem_with_inputs():
     output_fields = output_fields[:-1]
 
     url = f'https://poetrydb.org/{input_fields}/{output_fields}/all.json'
-    print(f'\n\n url {url}\n\n')
+    # print(f'\n\n url {url}\n\n')
 
     res = requests.get(url)
     random_poem = []
@@ -160,7 +160,7 @@ def bookmark_random_poem():
     lines_string = request.json.get('lines')
     comments = request.json.get('comments')
 
-    print(author)
+    # print(author)
 
     lines = lines_string.split('\n')
     
@@ -331,7 +331,7 @@ def load_bookmarked_prompt_and_response():
     for response in prompt_response_list:
         if response.prompt_id == prompt_id:
             user_response = response.user_text
-            # print(f'\n\n\n response {response} \n\n\n')
+            # print(f'\n\n\n respons e {response} \n\n\n')
 
     # print(f'\n\n\n prompt_response_list {prompt_response_list}')
     # print(f'\n\n\n prompt_id {prompt_id}')
@@ -356,10 +356,10 @@ def load_saved_mashup():
     mashup_id = int(request.form.get('mashup_id'))
     mashup_obj = crud.find_mashup_by_id(mashup_id)
     mashup_title = mashup_obj.mashup_title
-    print(mashup_title)
+    # print(mashup_title)
 
     mashup_lines_list = crud.find_mashup_lines_by_id(mashup_id)
-    print(f'\n\n\nmashup_lines_list {mashup_lines_list}\n\n')
+    # print(f'\n\n\nmashup_lines_list {mashup_lines_list}\n\n')
 
     lines=[]
     for line in mashup_lines_list:
@@ -525,17 +525,17 @@ def save_mashup():
 
         mashup_obj = crud.find_mashup_by_title(title)
         mashup_id = mashup_obj.mashup_id
-        print(f'\n\n\n{mashup_id}\n\n\n')
+        # print(f'\n\n\n{mashup_id}\n\n\n')
 
         mashup_lines = []
         for line in dataList:
             split_line = line.split('@')
             mashup_lines.append(split_line)
 
-        print(mashup_lines)
+        # print(mashup_lines)
 
         new_mashup_lines = crud.create_mashup_lines(mashup_id=mashup_id, lines=mashup_lines)
-        print(new_mashup_lines)
+        # print(new_mashup_lines)
 
         db.session.add_all(new_mashup_lines)
         db.session.commit()
@@ -670,6 +670,40 @@ def fetch_mashups_json():
     return jsonify({'user_mashups': mashups})
 
 
+
+# ------------ public lists routes ------------ #
+
+@app.route('/search-responses')
+def show_prompts_list():
+    """Render the page that displays public user prompt responses."""
+
+    return render_template('publicprompts.html')
+
+@app.route('/public-prompts.json')
+def fetch_public_prompts():
+    """Generate a list of public prompt objects using crud function."""
+
+    prompts_list = crud.find_all_public_prompts()
+    print(prompts_list)
+
+    pass
+
+@app.route('/search-mashups')
+def show_mashups_list():
+    """Render the page that displays public user mashups."""
+
+    return render_template('publicmashups.html')
+
+@app.route('/public-mashups.json')
+def fetch_public_mashups():
+    """Generate a list of public prompt objects using crud function."""
+
+    mashups_list = crud.find_all_public_mashups()
+    mashups_data = []
+    for mashup in mashups_list:
+        mashups_data.append((mashup.mashup_id, mashup.mashup_title, mashup.mashup_author))
+
+    return jsonify({'mashups': mashups_data})
 
 
 

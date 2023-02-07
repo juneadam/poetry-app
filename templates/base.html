@@ -17,14 +17,23 @@
                 <div class="navbar-nav">
                     <a class="nav-link active" aria-current="page" href="/">Home</a>
                     <a class="nav-link" href="/poems">Poems</a>
-                    <a class="nav-link" href="/prompts">Prompts</a>
-                    <a class="nav-link" href="/mashups">Mashups</a>
+                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Prompts</a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="/prompts">Prompts</a></li>
+                            <li><a class="dropdown-item" href="/add-prompt">Add Prompt</a></li>
+                            <li><a class="dropdown-item" href="/search-responses">Public User Responses</a></li>
+                        </ul>
+                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Mashups</a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="/mashups">Mashups</a></li>
+                            <li><a class="dropdown-item" href="/add-prompt">User Mashups</a></li>
+                            <li><a class="dropdown-item" href="/search-mashups">Public User Mashups</a></li>
+                        </ul>
                     <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Account</a>
                         <ul class="dropdown-menu">
                             <li><a class="dropdown-item" href="/userprofile">Profile</a></li>
                             <li><a class="dropdown-item" href="/logout">Logout</a></li>
                         </ul>
-                <!-- <a class="nav-link disabled">Disabled</a> -->
               </div>
         
         </div>

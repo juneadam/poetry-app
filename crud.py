@@ -126,6 +126,12 @@ def find_saved_prompts_by_id(prompt_id):
 
     return model.SavedPrompt.query.filter_by(prompt_id=prompt_id).all()
 
+def find_all_public_prompts():
+    """Generate a list of all mashup objects from the database
+    where the mashup_public attribute is set to True."""
+
+    return model.SavedPrompt.query.filter_by(prompt_public=True).all()
+
 
 # ------------ mashups ------------ #
 
@@ -164,6 +170,12 @@ def find_all_mashups_by_user_id(user_id):
     """Generate a list of mashups from the database using user_id"""
 
     return model.Mashup.query.filter_by(user_id=user_id).all()
+
+def find_all_public_mashups():
+    """Generate a list of all mashup objects from the database
+    where the mashup_public attribute is set to True."""
+
+    return model.Mashup.query.filter_by(mashup_public=True).all()
    
 
 
