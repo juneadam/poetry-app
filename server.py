@@ -12,6 +12,8 @@ from jinja2 import StrictUndefined
 
 from random import choice, randint, shuffle
 
+from passlib.hash import argon2
+
 app = Flask(__name__)
 app.secret_key = "dev"
 app.jinja_env.undefined = StrictUndefined
@@ -31,12 +33,13 @@ def user_sign_up():
     email = request.form.get('email')
     username = request.form.get('username')
     password = request.form.get('password')
+    hashed_pw = argon2.hash(password)
     user = crud.find_user_by_email(email=email)
 
     if user:
         flash("This email is already associated with an account. Please log in below.")
     else:
-        new_user = crud.create_user(email=email, username=username, password=password)
+        new_user = crud.create_user(email=email, username=username, password=hashed_pw)
         db.session.add(new_user)
         db.session.commit()
         flash('Your account was created successfully! You may now login.')
@@ -51,11 +54,14 @@ def user_login():
     user = crud.find_user_by_email(email=email)
 
     if user:
-        if user.password == password:
-            session['user_id'] = user.user_id
-            flash("You have logged in successfully!")
-            return redirect('/')
-        else:
+        while True:
+            if argon2.verify(password, user.password):
+            # if user.password == password:
+                session['user_id'] = user.user_id
+                session['username'] = user.username
+                flash("You have logged in successfully!")
+                return redirect('/')
+            # else:
             session['user_id'] = None
             flash("Email and password do not match, please try again.")
             return redirect('/')

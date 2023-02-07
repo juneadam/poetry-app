@@ -1,9 +1,10 @@
 """Script to seed database."""
 
 import os
-import json
+# import json
 from random import choice, randint
-from datetime import datetime
+# from datetime import datetime
+from passlib.hash import argon2
 
 import crud
 import model
@@ -17,8 +18,8 @@ os.system('createdb poetrytoolkitDB')
 model.connect_to_db(server.app)
 model.db.create_all()
 
-
-userX = model.User(username="userX", password="test", email="test@email.test")
+password = argon2.hash("test")
+userX = model.User(username="userX", password=password, email="test@email.test")
 poemX = model.Poem(title="good_poem_for_sure", author="somebody")
 
 model.db.session.add(userX)
@@ -56,8 +57,9 @@ for n in range(10):
     email = f'user{n}@test.com'
     username = f'user{n}'
     password = 'test'
+    hashed_pw = argon2.hash(password)
 
-    new_user = crud.create_user(username, email, password)
+    new_user = crud.create_user(username, email, password=hashed_pw)
 
     # create 4 comments for the user
     for x in range(4):
