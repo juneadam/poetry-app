@@ -684,9 +684,19 @@ def fetch_public_prompts():
     """Generate a list of public prompt objects using crud function."""
 
     prompts_list = crud.find_all_public_prompts()
-    print(prompts_list)
+    # print(prompts_list)
 
-    pass
+    prompts_data = []
+    for prompt in prompts_list:
+        prompt_text = crud.find_prompt_by_id(prompt.prompt_id).prompt_text
+        # print(prompt_text)
+        author_username = crud.find_user_by_id(prompt.user_id).username
+        
+        prompts_data.append((prompt.saved_prompt_id, prompt_text, author_username, prompt.user_text))
+
+    shuffle(prompts_data)
+
+    return jsonify({'responses': prompts_data})
 
 @app.route('/search-mashups')
 def show_mashups_list():
@@ -702,6 +712,8 @@ def fetch_public_mashups():
     mashups_data = []
     for mashup in mashups_list:
         mashups_data.append((mashup.mashup_id, mashup.mashup_title, mashup.mashup_author))
+
+    shuffle(mashups_data)
 
     return jsonify({'mashups': mashups_data})
 

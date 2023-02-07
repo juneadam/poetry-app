@@ -6,7 +6,7 @@ const MashupCard = (props) => {
         mashupCards.push(
             <div className="mashupCard" key={mashup[0]}>
                 <form action="/savedmashup" method="POST">
-                    <p>{mashup[1]} by {mashup[2]}</p>
+                    <p><strong>{mashup[1]}</strong> by {mashup[2]}</p>
                     <input type="hidden" name="mashup_id" value={mashup[0]}></input>
                     <input type="submit" method="POST" value="View"></input>
                 </form>

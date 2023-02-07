@@ -1,8 +1,28 @@
 // React file for generating HTML for public prompts template
 
 const ResponseCard = (props) => {
-        responseCards = []
-        
+    const responseCards = []
+    for (const response of props.responses) {
+        responseCards.push(
+            <div className="responseCard" key={response[0]}>
+                <form action="/savedprompt" method="POST">
+                    <p><strong>{response[1]}</strong></p>
+                    <p>by {response[2]}</p>
+                    <p>
+                        <button className="btn btn-outline-secondary" type="button" data-bs-toggle="collapse" data-bs-target={`#collapseBody${response[0]}`} aria-expanded="false" aria-controls={'collapseBody{response[0]'}>
+                            View
+                        </button>
+                    </p>
+                    <div className="collapse" id={`collapseBody${response[0]}`}>
+                        <div className="card card-body">
+                            {response[3]}
+                        </div>
+                    </div>
+                </form>
+            </div>
+        )
+    }
+    return <section id="responseCards">{responseCards}</section>;
 };
 
 
@@ -18,7 +38,7 @@ const PublicResponses = (props) => {
         fetch('/public-prompts.json')
         .then((response) => response.json())
         .then((responses_list) => {
-            addResponses(responses_list['prompt']);
+            addResponses(responses_list['responses']);
         });
     }
     
@@ -34,3 +54,7 @@ const PublicResponses = (props) => {
         </div>
     );
   }
+
+
+  ReactDOM.render(<PublicResponses />, document.querySelector('#display-responses')); 
+
