@@ -64,8 +64,14 @@ const saveMashupButton = document.querySelector('#save-mashup').addEventListener
       })
     .then((response) => response.text())
     .then((mashupDataJson) => {
-        if (mashupDataJson === 'ok') {
-            alert('fine.')
+        if (mashupDataJson === 'not ok') {
+            alert('Please log in to save mashups.')
+        }
+        else if (mashupDataJson === 'empty') {
+            alert('Please generate a new mashup before saving.')
+        }
+        else if (mashupDataJson === 'ok') {
+            alert('Mashup saved.')
         }
     }   
   )

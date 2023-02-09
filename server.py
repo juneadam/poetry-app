@@ -543,14 +543,23 @@ def save_mashup():
     title = request.json.get('title')
     author = request.json.get('author')[3:-13]
 
-    # print(f'\n\n\ndataList {dataList}\n')
+    print(f'\n\n\ndataList {dataList}\n')
     # print(f'\n\ntitle {title}\n')
     # print(f'\n\nauthor {author} {len(author)}\n')
+
+    mashup_obj = crud.find_mashup_by_title(title)
+
+    if mashup_obj:
+        print(f'\n\n\nmashup_lines {mashup_obj.lines}\n\n')
+        print(f'\n\n dataList {dataList}\n\n')
 
     if not user_id:
         return 'not ok'
 
     else:
+        
+        if dataList == []:
+            return 'empty'
         
         new_mashup = crud.create_mashup(user_id=user_id, mashup_title=title, mashup_author=author)
         db.session.add(new_mashup)
