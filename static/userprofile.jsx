@@ -1,6 +1,6 @@
 // React test to generate HTML for user profile
 
-  // ------------ Username Container ------------ //
+  // ============ Username Container ============ //
 
 const UsernameCard = (props) => {
     const [username, setUsername] = React.useState('');
@@ -28,7 +28,7 @@ const UsernameCard = (props) => {
 
   
 
-  // ------------ Poem Container ------------ //
+  // ============ Poem Container ============ //
 
 
   // creating a PoemCard React object, which will be a
@@ -90,7 +90,7 @@ const UserSavedPoems = (props) => {
   }
 
 
-  // ------------ Prompt Container ------------ //
+  // ============ Prompt Container ============ //
 
 
 const PromptCard = (props) => {
@@ -202,7 +202,7 @@ const UserSavedPrompts = (props) => {
 }
 
 
-// ------------ Mashup Container ------------ //
+// ============ Mashup Container ============ //
 
 const MashupCard = (props) => {
 
@@ -301,7 +301,26 @@ const UserSavedMashups = (props) => {
 }
 
 
+// ============ Deactivate Component ============ //
+
+const DeactivateAccount = (props) => {
+
+    return (
+    <React.Fragment>
+        <p>
+            Would you like to deactivate your account?
+        </p>
+        <form action="/deactivate-account-check">
+            <button className="btn btn-outline-danger" id="deactivate-button">Deactivate</button>
+        </form>
+    </React.Fragment>
+    )
+}
+
+
+
 ReactDOM.render(<UsernameCard />, document.querySelector('#username'))
 ReactDOM.render(<UserSavedPoems />, document.querySelector('#saved_poems'));
 ReactDOM.render(<UserSavedPrompts />, document.querySelector('#saved_prompts'));  
-ReactDOM.render(<UserSavedMashups />, document.querySelector('#saved_mashups'));    
+ReactDOM.render(<UserSavedMashups />, document.querySelector('#saved_mashups'));
+ReactDOM.render(<DeactivateAccount />, document.querySelector('#account-settings'))    

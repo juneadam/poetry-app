@@ -17,7 +17,7 @@ app.secret_key = dev
 app.jinja_env.undefined = StrictUndefined
 
 
-# ------------ homepage/login/sign up routes ------------ #
+# ============ homepage/login/sign up routes ============ #
 
 @app.route('/')
 def show_homepage():
@@ -55,6 +55,9 @@ def user_login():
         while True:
             if argon2.verify(password, user.password):
             # if user.password == password:
+                if user.active_account == False:
+                    return redirect('/reactivate-account-check')
+
                 session['user_id'] = user.user_id
                 session['username'] = user.username
                 flash("You have logged in successfully!")
@@ -77,7 +80,7 @@ def logout():
     return redirect('/')
 
 
-# ------------ random poem routes ------------ #
+# ============ random poem routes ============ #
 
 @app.route('/poems')
 def show_poem_generator():
@@ -201,7 +204,7 @@ def bookmark_random_poem():
         return 'ok'
 
 
-# ------------ prompts routes ------------ #
+# ============ prompts routes ============ #
 
 @app.route('/prompts')
 def show_prompt_generator():
@@ -295,7 +298,7 @@ def save_prompt_to_db():
     return 'not ok'
 
 
-# ------------ load bookmarks routes ------------#
+# ============ load bookmarks routes ============#
 
 @app.route('/savedpoem', methods=["POST"])
 def load_bookmarked_poem_and_comments():
@@ -401,7 +404,7 @@ def load_saved_mashup():
                             lines=lines)
 
 
-# ------------ update bookmarks routes ------------#
+# ============ update bookmarks routes ============#
 
 @app.route('/update-comments', methods=['POST'])
 def update_saved_comments():
@@ -471,7 +474,7 @@ def update_saved_response():
         return 'error'
 
 
-# ------------ mashup routes ------------ #
+# ============ mashup routes ============ #
 
 @app.route('/mashups')
 def show_mashup_generator():
@@ -582,55 +585,7 @@ def save_mashup():
         return 'ok'
 
 
-# ------------ user profile routes ------------ #
-
-@app.route('/userprofileold')
-def user_profile():
-    """Render user profile. This route is built without
-    React and will be deprecated."""
-
-    logged_in = session.get('user_id')
-    print(logged_in)
-
-    if not logged_in:
-        flash('You are not logged in. Please log in below:')
-        return redirect('/')
-    else:
-        user = crud.find_user_by_id(logged_in)
-        username = user.username
-
-        user_comments = crud.find_all_comments_by_user_id(logged_in)
-        bk_poem_ids = []
-        for comment in user_comments:
-            if comment.bk_poem_id not in bk_poem_ids:
-                bk_poem_ids.append(comment.bk_poem_id)
-        
-        # print(f'\n\n\n\n\n bk_poem_ids {bk_poem_ids} \n\n\n\n')
-
-        bookmarks = []
-        for bkid in bk_poem_ids:
-            poem = crud.find_bookmark_by_id(bkid)
-            poem_id = poem.bk_poem_id
-            title = poem.title
-            author = poem.author
-            bookmarks.append((poem_id, title, author))
-
-        # print(f'\n\n\n\n\n bookmarks {bookmarks} \n\n\n\n')
-        
-        user_prompts = crud.find_all_saved_prompts_by_user_id(logged_in)
-        prompt_texts = []
-        for saved_prompt in user_prompts:
-            prompt_in_db = crud.find_prompt_by_id(saved_prompt.prompt_id)
-            prompt_texts.append((saved_prompt.prompt_id, saved_prompt.user_text, prompt_in_db.prompt_text))
-
-        # print(f'\n\n\n\n\n prompt_texts {prompt_texts} \n\n\n\n')        
-        
-        
-        return render_template('userprofileold.html',
-                                username=username,
-                                bookmarks=bookmarks,
-                                prompt_texts=prompt_texts)
-
+# ============ user profile routes ============ #
 
 @app.route('/userprofile')
 def user_profile_with_react():
@@ -710,8 +665,9 @@ def fetch_mashups_json():
         mashups.append((mashup.mashup_id, mashup.mashup_title, mashup.mashup_public))
 
     return jsonify({'user_mashups': mashups})
+
     
-# ------------ public / private toggle routes ------------#
+# ============ public / private toggle routes ============#
 
 @app.route('/update-prompt-bool.json', methods=["POST"])
 def update_prompt_bool_in_db():
@@ -762,7 +718,102 @@ def update_mashup_bool_in_db():
     return 'ok'
 
 
-# ------------ public lists routes ------------ #
+# ============ deactivate/reactivate account routes ============ #
+
+@app.route('/deactivate-account-check', methods=["GET", "POST"])
+def render_deactivate_page():
+    """Renders the page where users can enter their password to deactivate their account."""
+
+    return render_template("/deactivate-splash.html")
+
+@app.route('/deactivate-account', methods=["POST"])
+def deactivate_account():
+    """Logic for deactivating a user's account."""
+
+    email = request.form.get('user-email')
+    password1 = request.form.get('password1')
+    password2 = request.form.get('password2')
+    user_id = session['user_id']
+    # print(f'\n\nemail {email}\n')
+    # print(f'\n\nuser_id {user_id}\n')
+
+    user = crud.find_user_by_email(email=email)
+    # print(f'user.user_id {user.user_id}\n')
+
+    if password1 != password2:
+        flash("Passwords do not match, please try again.")
+        return redirect('/deactivate-account-check')
+
+    if not user or user.user_id != user_id:
+        flash("Please make sure you are logged in to the correct account.")
+        return redirect('/deactivate-account-check')
+
+    if not argon2.verify(password1, user.password):
+        flash("Account credentials incorrect.")
+        return redirect('/deactivate-account-check')
+
+    if argon2.verify(password1, user.password):
+        user.active_account = False
+        db.session.add(user)
+        db.session.commit()
+
+        user_mashups = crud.find_all_mashups_by_user_id(user_id)
+        for mashup in user_mashups:
+            mashup.mashup_public = False
+        db.session.add_all(user_mashups)
+        db.session.commit()
+
+        user_prompts = crud.find_all_saved_prompts_by_user_id(user_id)
+        for prompt in user_prompts:
+            prompt.prompt_public = False
+        db.session.add_all(user_prompts)
+        db.session.commit()
+
+    flash("Account successfully deactivated.")
+    return redirect('/')
+
+@app.route('/reactivate-account-check')
+def render_reactivate_page():
+    """Splash page to let user reactivate their account if they wish."""
+
+    return render_template("/reactivate-account.html")
+
+@app.route('/reactivate-account', methods=["POST"])
+def reactivate_account():
+    """Logic for reactivating a user's account."""
+    
+    email = request.form.get('user-email')
+    password1 = request.form.get('password1')
+    password2 = request.form.get('password2')
+    user_id = session['user_id']
+    # print(f'\n\nemail {email}\n')
+    # print(f'\n\nuser_id {user_id}\n')
+
+    user = crud.find_user_by_email(email=email)
+    # print(f'user.user_id {user.user_id}\n')
+
+    if password1 != password2:
+        flash("Passwords do not match, please try again.")
+        return redirect('/reactivate-account-check')
+
+    if not user or user.user_id != user_id:
+        flash("Please make sure you are logged in to the correct account.")
+        return redirect('/reactivate-account-check')
+
+    if not argon2.verify(password1, user.password):
+        flash("Account credentials incorrect.")
+        return redirect('/reactivate-account-check')
+
+    if argon2.verify(password1, user.password):
+        user.active_account = True
+        db.session.add(user)
+        db.session.commit()
+
+    flash("Account successfully reactivated! We're glad to have you back :)")
+    return redirect('/userprofile')
+
+
+# ============ public lists routes ============ #
 
 @app.route('/search-responses')
 def show_prompts_list():

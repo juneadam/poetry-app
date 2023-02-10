@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+
+{% block title %}Reactivate{% endblock %}
+
+{% block body %}
+
+<div class="container">
+    <div>
+        <p>
+            This account was previously marked as inactive. Would you like to reactivate your account?
+        </p>
+    </div>
+    <div id="react-form" class="col-6 offset-2">
+        <form action="/reactivate-account" method="POST">
+            <div>
+                <label for="enter-your-email">Enter your email: </label><br>
+                <input type="email" name="user-email">
+            </div>
+            <div>
+                <label for="enter-your-password">Enter your password: </label><br>
+                <input type="password" name="password1">
+            </div>
+            <div>
+                <label for="confirm-your-password">Confirm your password: </label><br>
+                <input type="password" name="password2">
+            </div>
+            <br><button type="submit" class="btn btn-outline-danger">Reactivate</button>
+        </form>
+    </div>
+</div>
+
+{% endblock %}
