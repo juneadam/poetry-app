@@ -4,7 +4,8 @@ import os
 from jinja2 import StrictUndefined
 from random import choice, randint, shuffle
 from passlib.hash import argon2
-from flask import (Flask, render_template, request, flash, session, redirect, jsonify)
+from flask import Flask, render_template, request, flash, session, redirect, jsonify
+from functools import wraps
 import requests
 
 from model import connect_to_db, db
@@ -16,6 +17,22 @@ app = Flask(__name__)
 app.secret_key = dev
 app.jinja_env.undefined = StrictUndefined
 
+
+# ============ logged in decorator ============ #
+
+def logged_in(route_function):
+    
+    @wraps(route_function)
+    def wrapper(*args, **kwargs):
+        user_id = session.get('user_id')
+        if user_id is None:
+            flash('You must be logged in to access this feature.')
+            return redirect('/')
+        else:
+            route = route_function(*args, **kwargs)
+            return route
+    
+    return wrapper
 
 # ============ homepage/login/sign up routes ============ #
 
@@ -71,10 +88,12 @@ def user_login():
         return redirect('/')
 
 @app.route('/logout')
+@logged_in
 def logout():
     """Removes the user id from the session, logging them out."""
 
     session['user_id'] = None
+    session['username'] = None
     # print(session['user_id'])
     flash('You have successfully logged out.')
     return redirect('/')
@@ -223,7 +242,7 @@ def call_random_prompt():
 
     return new_prompt.prompt_text
 
-
+@logged_in
 @app.route('/save-prompt', methods=['POST'])
 def save_prompt_and_text():
     """Lets user bookmark a prompt and save their response to it."""
@@ -269,7 +288,9 @@ def save_prompt_and_text():
 
             return 'error'
 
+
 @app.route('/add-prompt')
+@logged_in
 def show_add_prompt_page():
     """Renders the page where users can add a new prompt to the database."""
 
@@ -301,6 +322,7 @@ def save_prompt_to_db():
 # ============ load bookmarks routes ============#
 
 @app.route('/savedpoem', methods=["POST"])
+@logged_in
 def load_bookmarked_poem_and_comments():
     """When clicking on a link, loads a page with title, author, and text
     of a particular poem, and loads the user's stored comments in the
@@ -352,8 +374,7 @@ def load_bookmarked_prompt_and_response():
     text box."""
 
     user_id = session['user_id']
-    user_obj = crud.find_user_by_id(user_id=user_id)
-    username = user_obj.username
+    username = session['username']
 
     prompt_id = int(request.form.get('prompt_id'))
     prompt_obj = crud.find_prompt_by_id(prompt_id)
@@ -487,8 +508,9 @@ def mashup_generator():
     """Call the API with user input linecount, generate a random
     poem mixing and matching lines from the returned list."""
 
-    user_id = session['user_id']
-    username = crud.find_user_by_id(user_id).username
+    username = session.get('username')
+    if username is None:
+        username = 'Guest'
 
     linecount = int(request.json.get('linecount'))
 
@@ -588,18 +610,11 @@ def save_mashup():
 # ============ user profile routes ============ #
 
 @app.route('/userprofile')
+@logged_in
 def user_profile_with_react():
     """User profile with React"""
 
-    logged_in = session.get('user_id')
-    print(logged_in)
-
-    if not logged_in:
-        flash('You are not logged in. Please log in below:')
-        return redirect('/')
-    else:
-
-        return render_template('userprofile.html')
+    return render_template('userprofile.html')
 
 
 @app.route('/username.json')
@@ -702,16 +717,16 @@ def update_mashup_bool_in_db():
     public_check = bool(request.json.get('public_check'))
     saved_mashup_id = int(request.json.get('saved_mashup_id'))
 
-    print(f'\nuser_id {user_id}\npublic_check {public_check}\nsaved_mashup_id {saved_mashup_id}\n')
+    # print(f'\nuser_id {user_id}\npublic_check {public_check}\nsaved_mashup_id {saved_mashup_id}\n')
 
     saved_mashup = crud.find_mashup_by_id(mashup_id=saved_mashup_id)
-    print(f'\n\nsaved_mashup{saved_mashup.user_id}\n\n')
+    # print(f'\n\nsaved_mashup{saved_mashup.user_id}\n\n')
     
     if saved_mashup.user_id != user_id:
         return 'wrong user'
     
     saved_mashup.mashup_public = public_check
-    print(f'\n\nsaved_mashup_public {saved_mashup.mashup_public}\n\n')
+    # print(f'\n\nsaved_mashup_public {saved_mashup.mashup_public}\n\n')
     db.session.add(saved_mashup)
     db.session.commit()
 
@@ -816,6 +831,7 @@ def reactivate_account():
 # ============ public lists routes ============ #
 
 @app.route('/search-responses')
+@logged_in
 def show_prompts_list():
     """Render the page that displays public user prompt responses."""
 
@@ -841,6 +857,7 @@ def fetch_public_prompts():
     return jsonify({'responses': prompts_data})
 
 @app.route('/search-mashups')
+@logged_in
 def show_mashups_list():
     """Render the page that displays public user mashups."""
 
