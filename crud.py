@@ -121,6 +121,11 @@ def find_all_saved_prompts_by_user_id(user_id):
 
     return model.SavedPrompt.query.filter_by(user_id=user_id).all()
 
+def find_saved_prompt_by_saved_prompt_id(saved_prompt_id):
+    """Look up a saved prompt by the saved prompt id number."""
+
+    return model.SavedPrompt.query.filter_by(saved_prompt_id=saved_prompt_id).first()
+
 def find_saved_prompts_by_id(prompt_id):
     """Generate a list of all saved prompts by database id number."""
 
@@ -157,7 +162,7 @@ def find_mashup_by_title(title):
     return model.Mashup.query.filter_by(mashup_title=title).first()
 
 def find_mashup_by_id(mashup_id):
-    """Find a mashup in the database using it's id."""
+    """Find a mashup in the database using its id."""
 
     return model.Mashup.query.filter_by(mashup_id=mashup_id).first()
 
@@ -176,7 +181,6 @@ def find_all_public_mashups():
     where the mashup_public attribute is set to True."""
 
     return model.Mashup.query.filter_by(mashup_public=True).all()
-   
 
 
 

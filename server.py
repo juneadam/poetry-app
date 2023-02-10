@@ -691,7 +691,7 @@ def fetch_prompts_json():
     prompt_texts = []
     for saved_prompt in user_prompts:
         prompt_in_db = crud.find_prompt_by_id(saved_prompt.prompt_id)
-        prompt_texts.append((saved_prompt.prompt_id, saved_prompt.user_text, prompt_in_db.prompt_text, saved_prompt.prompt_public, f'{saved_prompt.prompt_id}+{saved_prompt.prompt_public}'))
+        prompt_texts.append((saved_prompt.saved_prompt_id, saved_prompt.user_text, prompt_in_db.prompt_text, saved_prompt.prompt_public))
 
     # print(f'\n\n\nuser_prompts: {prompt_texts}\n\n\n')
 
@@ -707,38 +707,59 @@ def fetch_mashups_json():
 
     mashups = []
     for mashup in user_mashups:
-        mashups.append((f'{mashup.mashup_id}', f'{mashup.mashup_title}', f'{mashup.mashup_public}', f'{mashup.mashup_id}-{mashup.mashup_public}'))
+        mashups.append((mashup.mashup_id, mashup.mashup_title, mashup.mashup_public))
 
     return jsonify({'user_mashups': mashups})
     
 # ------------ public / private toggle routes ------------#
 
-@app.route('/update-prompt-bool')
+@app.route('/update-prompt-bool.json', methods=["POST"])
 def update_prompt_bool_in_db():
     """Allows the user to change the boolean in the database that controls
     whether a prompt and response they've saved are publicly visible."""
 
-    user_id = session.get('user_id')
-    public_check = request.json.get('public_check')
-    saved_prompt_id = request.json.get('saved_prompt_id')
+    user_id = session['user_id']
+    public_check = bool(request.json.get('public_check'))
+    saved_prompt_id = int(request.json.get('saved_prompt_id'))
+    # print(f'\n\nsaved_prompt_id type{type(saved_prompt_id)}\n\n')
+    # print(f'\nuser_id {user_id}\npublic_check {public_check}\nsaved_prompt_id {saved_prompt_id}\n')
 
-    print(f'\nuser_id {user_id}\npublic_check {public_check}\nsaved_prompt_id {saved_prompt_id}\n')
+    saved_prompt = crud.find_saved_prompt_by_saved_prompt_id(saved_prompt_id=saved_prompt_id)
+    print(f'\n\nsaved_prompt{saved_prompt.user_id}\n\n')
+    
+    if saved_prompt.user_id != user_id:
+        return 'wrong user'
+    
+    saved_prompt.prompt_public = public_check
+    # print(f'\n\nsaved_prompt_public {saved_prompt.prompt_public}\n\n')
+    db.session.add(saved_prompt)
+    db.session.commit()
 
-    return
+    return 'ok'
 
-@app.route('/update-mashup-bool')
+@app.route('/update-mashup-bool.json', methods=["POST"])
 def update_mashup_bool_in_db():
     """Allows the user to change the boolean in the database that controls
     whether a mashup they've saved is publicly visible."""
 
     user_id = session.get('user_id')
-    public_check = request.json.get('public_check')
-    saved_mashup_id = request.json.get('saved_mashup_id')
+    public_check = bool(request.json.get('public_check'))
+    saved_mashup_id = int(request.json.get('saved_mashup_id'))
 
-    print(f'\nuser_id {user_id}\npublic_check {public_check}\nsaved_mashup_id {saved_prompt_id}\n')
+    print(f'\nuser_id {user_id}\npublic_check {public_check}\nsaved_mashup_id {saved_mashup_id}\n')
 
+    saved_mashup = crud.find_mashup_by_id(mashup_id=saved_mashup_id)
+    print(f'\n\nsaved_mashup{saved_mashup.user_id}\n\n')
+    
+    if saved_mashup.user_id != user_id:
+        return 'wrong user'
+    
+    saved_mashup.mashup_public = public_check
+    print(f'\n\nsaved_mashup_public {saved_mashup.mashup_public}\n\n')
+    db.session.add(saved_mashup)
+    db.session.commit()
 
-    return
+    return 'ok'
 
 
 # ------------ public lists routes ------------ #

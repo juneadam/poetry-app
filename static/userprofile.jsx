@@ -99,22 +99,31 @@ const PromptCard = (props) => {
     const prompt = props.prompt;
 
     function updatePromptBoolInDB () {
-        let publicCheck = document.querySelector(`#${prompt[0]}-public-check`).checked
 
-        fetch('/update-prompt-bool', {
+        fetch('/update-prompt-bool.json', {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
             },
             body: JSON.stringify({
-                "public_check": publicCheck,
+                "public_check": publicPromptBool,
                 "saved_prompt_id": prompt[0]
                 })
             })
-        .then((response) => response.json())
+        .then((response) => response.text())
         .then((responseJSON) => {
-            alert("hold on")
-        })
+            // console.log(responseJSON)
+            // console.log(publicPromptBool)
+            if (responseJSON === "wrong user") {
+                alert("There appears to be an error - please confirm you are logged in to the correct account.")
+            }
+            if (responseJSON == "ok" && publicPromptBool == true) {
+                alert("Your response has been set to public - other users can now view it.")
+            }
+            else if (responseJSON == "ok" && publicPromptBool == false) {
+                alert("Your response has been set to private - only you can see it.")
+            }
+        });
     }
 
     return (
@@ -197,25 +206,35 @@ const UserSavedPrompts = (props) => {
 
 const MashupCard = (props) => {
 
-    let mashup = props.mashup
+    const mashup = props.mashup
     const [publicMashupBool, updatePublicMashupBool] = React.useState(mashup[0])
 
+    // console.log(mashup[0])
     function updateMashupBoolInDB () {
-        let publicCheck = document.querySelector(`#${mashup[0]}-public-check`).checked
 
-        fetch('/update-prompt-bool', {
+        fetch('/update-mashup-bool.json', {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
             },
             body: JSON.stringify({
-                "public_check": publicCheck,
+                "public_check": publicMashupBool,
                 "saved_mashup_id": mashup[0]
                 })
             })
-        .then((response) => response.json())
+        .then((response) => response.text())
         .then((responseJSON) => {
-            alert("hold on")
+            // console.log(responseJSON)
+            // console.log(publicMashupBool)
+            if (responseJSON === "wrong user") {
+                alert("There appears to be an error - please confirm you are logged in to the correct account.")
+            }
+            if (responseJSON == "ok" && publicMashupBool == true) {
+                alert("This mashup has been set to public - other users can now view it.")
+            }
+            else if (responseJSON == "ok" && publicMashupBool == false) {
+                alert("This mashup has been set to private - only you can see it.")
+            }
         })
     }
 
@@ -232,7 +251,7 @@ const MashupCard = (props) => {
                     <form action="/update-public-mashup" method="POST">
                         <div>
                             <input type="checkbox" id={`${mashup[0]}-public-check`} name="public-check" checked={publicMashupBool} onChange={(event) => updatePublicMashupBool(event.target.checked)} />
-                            <input type="hidden" name="mashup_public" value={mashup[3]}/> Public
+                            Public
                         </div>
                         <div>
                             <input type="button" method="POST" onClick={updateMashupBoolInDB} value="Update"/>
