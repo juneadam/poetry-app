@@ -43,6 +43,7 @@ const UsernameCard = (props) => {
 const PoemCard = (props) => {
     const PoemCards = [];
     for (const poem of props.bookmarks) {
+
         PoemCards.push(
             <div className="col" key = {poem[0]}>
             <form action="/savedpoem" className="saved-poem-card" method="POST">
@@ -93,53 +94,72 @@ const UserSavedPoems = (props) => {
 
 
 const PromptCard = (props) => {
-    const PromptCards = [];
-    for (const prompt of props.savedPrompts) {
-        PromptCards.push(
-            <div className="prompt-card" key={prompt[0]}>
-                <div>    
-                    <div className="view-prompt">
-                        <form action="/savedprompt" method="POST">
-                            <p><strong>{prompt[2]}</strong></p>
-                            <p>
-                                <button className="btn btn-outline-secondary" type="button" data-bs-toggle="collapse" data-bs-target={`#collapseBody${prompt[0]}`} aria-expanded="false" aria-controls={`collapseBody${prompt[0]}`}>
-                                    View
-                                </button>
-                            </p>
-                            <p><div className="collapse" id={`collapseBody${prompt[0]}`}>
+
+    const [publicPromptBool, updatePublicPromptBool] = React.useState(props.prompt[3]);
+    const prompt = props.prompt;
+
+    function updateBoolInDB () {
+        let publicCheck = document.querySelector(`#${prompt[0]}-public-check`).checked
+
+        fetch('/update-prompt-bool', {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                "public_check": publicCheck,
+                "saved_prompt_id": prompt[0]
+                })
+            })
+        .then((response) => response.json())
+        .then((responseJSON) => {
+            alert("hold on")
+        })
+    }
+
+    return (
+        <div className="prompt-card" key={prompt[0]}>
+            <div>    
+                <div className="view-prompt">
+                    <form action="/savedprompt" method="POST">
+                        <p><strong>{prompt[2]}</strong></p>
+                        <p>
+                            <button className="btn btn-outline-secondary" type="button" data-bs-toggle="collapse" data-bs-target={`#collapseBody${prompt[0]}`} aria-expanded="false" aria-controls={`collapseBody${prompt[0]}`}>
+                                View
+                            </button>
+                        </p>
+                        <div className="collapse" id={`collapseBody${prompt[0]}`}>
+                            <div className="card card-body">
+                                {prompt[1]}
+                            </div>
+                        </div>
+                        <p>
+                            <input type="hidden" name="prompt_id" value={prompt[0]} />
+                            <button type="submit" className="btn btn-outline-secondary" method="POST">Edit Response</button>
+                        </p>
+                    </form>
+                </div>
+                <div className="make-public-prompt">
+                <form action="/update-public-prompt" method="POST">
+                    <div>
+                        <input type="checkbox" name="public-check" id={`${prompt[0]}-public-check`} checked={publicPromptBool} onChange={(event) => updatePublicPromptBool(event.target.checked)}/> Public
+                        <div><input type="hidden" name="mashup_public" value={prompt[4]}/>
+                        <input type="button" className="update-btn" method="POST" value="Update" onClick={updateBoolInDB}/>                                
+                            <a className="btn btn-secondary-outline" data-bs-toggle="collapse" href={`#moreInfo${prompt[0]}`} role="button" aria-expanded="false" aria-controls={`moreInfo${prompt[0]}`}>
+                            ?
+                            </a>
+                            <div className="collapse" id={`moreInfo${prompt[0]}`}>
                                 <div className="card card-body">
-                                    {prompt[1]}
-                                </div>
-                            </div></p>
-                            <p>
-                                <input type="hidden" name="prompt_id" value={prompt[0]} />
-                                <button type="submit" className="btn btn-outline-secondary" method="POST">Edit Response</button>
-                            </p>
-                        </form>
-                    </div>
-                    <div className="make-public-prompt">
-                    <form action="/update-public-prompt" method="POST">
-                        <div>
-                            <input type="checkbox" name="public-check" checked={prompt[3]} /> Public
-                            <div><input type="hidden" name="mashup_public" value={prompt[4]}/>
-                            <input type="submit" className="btn-outline-secondary" method="POST" value="Update"/>                                
-                                <a className="btn btn-secondary-outline" data-bs-toggle="collapse" href={`#moreInfo${prompt[0]}`} role="button" aria-expanded="false" aria-controls={`moreInfo${prompt[0]}`}>
-                                ?
-                                </a>
-                                <div className="collapse" id={`moreInfo${prompt[0]}`}>
-                                    <div className="card card-body">
-                                        Make your response public, so other users can search for it.
-                                    </div>
+                                    Make your response public, so other users can search for it.
                                 </div>
                             </div>
                         </div>
-                    </form>
                     </div>
+                </form>
                 </div>
             </div>
-        )
-    }
-    return <section id="PromptCards">{PromptCards}</section>;
+        </div>
+    )
 }
 
 
@@ -156,13 +176,19 @@ const UserSavedPrompts = (props) => {
 
     React.useEffect(fetchPrompts, [])
 
+    let promptCards = [];
+    for (let prompt of savedPrompts) {
+        promptCards.push(<PromptCard key={prompt[0]} prompt={prompt} />);
+    }
 
     return (
+        <section id="PromptCards">
         <div className='container'>
         
-        <PromptCard savedPrompts={savedPrompts}/>
+            {promptCards}
 
         </div>
+        </section>
     )
 }
 
@@ -170,10 +196,11 @@ const UserSavedPrompts = (props) => {
 // ------------ Mashup Container ------------ //
 
 const MashupCard = (props) => {
-    let MashupCards = [];
-    // console.log(props.savedMashups);
-    for (const mashup of props.savedMashups) {
-        MashupCards.push(
+
+    let mashup = props.mashup
+    const [publicMashupBool, updatePublicMashupBool] = React.useState(mashup[0])
+
+    return (
             <div key={mashup[0]} className="mashup-card">
                 <div className="view-mashup">
                 <div className="saved-mashup-title"><strong>{mashup[1]}</strong></div>
@@ -184,11 +211,12 @@ const MashupCard = (props) => {
                 </div>
                 <div className="make-public-mashup">
                     <form action="/update-public-mashup" method="POST">
-                        <div><input type="checkbox" name="public-check" checked={mashup[2]} />
+                        <div>
+                            <input type="checkbox" name="public-check" checked={publicMashupBool} onChange={(event) => updatePublicMashupBool(event.target.checked)} />
                             <input type="hidden" name="mashup_public" value={mashup[3]}/> Public
                         </div>
                         <div>
-                            <input type="submit" method="POST" value="Update"/>
+                            <input type="button" method="POST" value="Update"/>
                             <a className="btn btn-secondary-outline" data-bs-toggle="collapse" href={`#moreInfo${mashup[0]}`} role="button" aria-expanded="false" aria-controls={`moreInfo${mashup[0]}`}>
                                 ?
                             </a>
@@ -203,9 +231,6 @@ const MashupCard = (props) => {
             </div>
         )
     }
-    // console.log(MashupCards);
-    return <section id="MashupCards">{MashupCards}</section>;
-}
 
 const UserSavedMashups = (props) => {
     const [savedMashups, updateMashups] = React.useState([]);
@@ -221,11 +246,17 @@ const UserSavedMashups = (props) => {
 
     React.useEffect(fetchMashups, [])
 
+    let mashupCards = []
+    for (let mashup of savedMashups) {
+        mashupCards.push(<MashupCard key={mashup[0]} mashup={mashup}/>)
+    };
 
     return (
         <div className='container'>
-        
-        <MashupCard savedMashups={savedMashups}/>
+
+            <section id="MashupCards">
+                {mashupCards}
+            </section>
 
         </div>
     )

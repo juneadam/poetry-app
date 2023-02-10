@@ -137,7 +137,7 @@ def call_random_poem_with_inputs():
     random_poem = []
     
     response_list = res.json()
-    print(response_list)
+    # print(response_list)
 
     if isinstance(response_list, dict):
         random_poem = [{'title': 'No Results Found', 'author': 'Please try other search parameters.', 'lines': ['Or just empty the inputs and click "New Poem".']}]
@@ -147,9 +147,8 @@ def call_random_poem_with_inputs():
         elif len(response_list) == 1:
             random_poem.append(response_list[0])
 
-    print(random_poem)
-
-    print(f"\n random_poem: {random_poem}\n\n")
+    # print(random_poem)
+    # print(f"\n random_poem: {random_poem}\n\n")
 
     return jsonify({'data': random_poem})
 
@@ -279,23 +278,21 @@ def save_prompt_to_db():
 
     logged_in = session.get('user_id')
 
-    if logged_in:
+    if not logged_in:
 
-        user_prompt = request.json.get('new_prompt')
-        print(user_prompt)
+        return 'not logged in'
 
-        if user_prompt:
-            new_prompt_obj = crud.create_prompt(prompt=user_prompt)
+    user_prompt = request.json.get('new_prompt')
+    print(user_prompt)
 
-            db.session.add(new_prompt_obj)
-            db.session.commit()
-            return 'ok'
+    if user_prompt:
+        new_prompt_obj = crud.create_prompt(prompt=user_prompt)
 
-        return 'not ok'
+        db.session.add(new_prompt_obj)
+        db.session.commit()
+        return 'ok'
 
-    return 'not logged in'
-
-
+    return 'not ok'
 
 
 # ------------ load bookmarks routes ------------#
@@ -543,7 +540,7 @@ def save_mashup():
     title = request.json.get('title')
     author = request.json.get('author')[3:-13]
 
-    print(f'\n\n\ndataList {dataList}\n')
+    # print(f'\n\n\ndataList {dataList}\n')
     # print(f'\n\ntitle {title}\n')
     # print(f'\n\nauthor {author} {len(author)}\n')
 
@@ -713,6 +710,28 @@ def fetch_mashups_json():
         mashups.append((f'{mashup.mashup_id}', f'{mashup.mashup_title}', f'{mashup.mashup_public}', f'{mashup.mashup_id}-{mashup.mashup_public}'))
 
     return jsonify({'user_mashups': mashups})
+    
+# ------------ public / private toggle routes ------------#
+
+@app.route('/update-prompt-bool')
+def update_prompt_bool_in_db():
+    """Allows the user to change the boolean in the database that controls
+    whether a prompt and response they've saved are publicly visible."""
+
+    user_id = session.get('user_id')
+    public_check = request.json.get('public_check')
+    saved_prompt_id = request.json.get('saved_prompt_id')
+
+    print(f'\nuser_id {user_id}\npublic_check {public_check}\nsaved_prompt_id {saved_prompt_id}\n')
+
+    return
+
+@app.route('/update-mashup-bool')
+def update_mashup_bool_in_db():
+    """Allows the user to change the boolean in the database that controls
+    whether a mashup they've saved is publicly visible."""
+
+    pass
 
 
 # ------------ public lists routes ------------ #
