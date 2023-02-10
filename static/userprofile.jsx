@@ -98,7 +98,7 @@ const PromptCard = (props) => {
     const [publicPromptBool, updatePublicPromptBool] = React.useState(props.prompt[3]);
     const prompt = props.prompt;
 
-    function updateBoolInDB () {
+    function updatePromptBoolInDB () {
         let publicCheck = document.querySelector(`#${prompt[0]}-public-check`).checked
 
         fetch('/update-prompt-bool', {
@@ -144,7 +144,7 @@ const PromptCard = (props) => {
                     <div>
                         <input type="checkbox" name="public-check" id={`${prompt[0]}-public-check`} checked={publicPromptBool} onChange={(event) => updatePublicPromptBool(event.target.checked)}/> Public
                         <div><input type="hidden" name="mashup_public" value={prompt[4]}/>
-                        <input type="button" className="update-btn" method="POST" value="Update" onClick={updateBoolInDB}/>                                
+                        <input type="button" className="update-btn" method="POST" value="Update" onClick={updatePromptBoolInDB}/>                                
                             <a className="btn btn-secondary-outline" data-bs-toggle="collapse" href={`#moreInfo${prompt[0]}`} role="button" aria-expanded="false" aria-controls={`moreInfo${prompt[0]}`}>
                             ?
                             </a>
@@ -200,6 +200,25 @@ const MashupCard = (props) => {
     let mashup = props.mashup
     const [publicMashupBool, updatePublicMashupBool] = React.useState(mashup[0])
 
+    function updateMashupBoolInDB () {
+        let publicCheck = document.querySelector(`#${mashup[0]}-public-check`).checked
+
+        fetch('/update-prompt-bool', {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                "public_check": publicCheck,
+                "saved_mashup_id": mashup[0]
+                })
+            })
+        .then((response) => response.json())
+        .then((responseJSON) => {
+            alert("hold on")
+        })
+    }
+
     return (
             <div key={mashup[0]} className="mashup-card">
                 <div className="view-mashup">
@@ -212,11 +231,11 @@ const MashupCard = (props) => {
                 <div className="make-public-mashup">
                     <form action="/update-public-mashup" method="POST">
                         <div>
-                            <input type="checkbox" name="public-check" checked={publicMashupBool} onChange={(event) => updatePublicMashupBool(event.target.checked)} />
+                            <input type="checkbox" id={`${mashup[0]}-public-check`} name="public-check" checked={publicMashupBool} onChange={(event) => updatePublicMashupBool(event.target.checked)} />
                             <input type="hidden" name="mashup_public" value={mashup[3]}/> Public
                         </div>
                         <div>
-                            <input type="button" method="POST" value="Update"/>
+                            <input type="button" method="POST" onClick={updateMashupBoolInDB} value="Update"/>
                             <a className="btn btn-secondary-outline" data-bs-toggle="collapse" href={`#moreInfo${mashup[0]}`} role="button" aria-expanded="false" aria-controls={`moreInfo${mashup[0]}`}>
                                 ?
                             </a>
