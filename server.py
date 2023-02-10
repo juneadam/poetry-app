@@ -731,7 +731,14 @@ def update_mashup_bool_in_db():
     """Allows the user to change the boolean in the database that controls
     whether a mashup they've saved is publicly visible."""
 
-    pass
+    user_id = session.get('user_id')
+    public_check = request.json.get('public_check')
+    saved_mashup_id = request.json.get('saved_mashup_id')
+
+    print(f'\nuser_id {user_id}\npublic_check {public_check}\nsaved_mashup_id {saved_prompt_id}\n')
+
+
+    return
 
 
 # ------------ public lists routes ------------ #
