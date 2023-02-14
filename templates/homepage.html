@@ -10,23 +10,31 @@
 
 <div class="container">
     <div class="row">
-    <div class="col-6">
-        <form action="/login" id="login" method="POST">
-            <label for="login">Log in to Your Account</label><br>
-            Email<br><input type="text" name="email"></input><br>
-            Password<br><input type="password" name="password"></input><br>
-            <button type="submit">Sign In</button>
-        </form>
-    </div>
-    <div class="col-6">
-        <form action="/sign-up" id="sign-up" method="POST">
-            <label for="sign-up">Create an Account</label><br>
-            Email<br><input type="text" name="email"></input><br>
-            Username<br><input type="text" name="username"></input><br>
-            Password<br><input type="password" name="password"></input><br>
-            <button type="submit">Create Account</button>
-        </form>
-    </div>
-    </div>
+        <div class="col-6">
+            <form class="row g-1" action="/login" id="login" method="POST">
+                Log in to Your Account
+                <div class="col-auto"></div>
+                <label for="login-enter-email" class="form-label">Email</label>
+                    <input type="text" class="form-control" name="email"></input>    
+                <label for="login-enter-password" class="form-label">Password</label>
+                    <input type="password" class="form-control" name="password"></input>
+                <button type="submit" class="btn btn-outline-secondary">Sign In</button>
+            </form>
+        </div>
+        <div class="col-6">
+            <form action="/sign-up" class="row g-1" id="sign-up" method="POST">
+                Create an Account
+                <label for="sign-up-enter-email" class="form-label">Email</label>
+                    <input class="form-control" type="text" name="email"></input>
+                <label for="sign-up-enter-username" class="form-label">Username</label>    
+                    <input class="form-control" type="text" name="username"></input>
+                <label for="sign-up-enter-password" class="form-label">Password</label>
+                    <input class="form-control" type="password" name="password1"></input>
+                <label for="sign-up-confirm-password" class="form-label">Confirm Password</label>
+                    <input class="form-control" type="password" name="password2"></input>
+                <button class="btn btn-outline-secondary" type="submit">Create Account</button>
+            </form>
+        </div>
+    </div>  
 </div>
 {% endblock %}

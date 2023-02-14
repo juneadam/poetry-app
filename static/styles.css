@@ -1,5 +1,5 @@
 body {
-    background-image: static/imgs/olga-thelavart-vS3idIiYxX0-unsplash.jpg;
+    background-image: url(static/imgs/olga-thelavart-vS3idIiYxX0-unsplash.jpg);
 }
 
 #random-poem {

@@ -32,13 +32,17 @@ def user_sign_up():
     """allows the user to create a new account"""
     email = request.form.get('email')
     username = request.form.get('username')
-    password = request.form.get('password')
+    password1 = request.form.get('password1')
+    password2 = request.form.get('password2')    
     hashed_pw = argon2.hash(password)
     user = crud.find_user_by_email(email=email)
 
     if user:
         flash("This email is already associated with an account. Please log in below.")
     else:
+        if password1 != password2:
+            flash("Passwords do not match, please try again.")
+            return redirect('/')
         new_user = crud.create_user(email=email, username=username, password=hashed_pw)
         db.session.add(new_user)
         db.session.commit()
