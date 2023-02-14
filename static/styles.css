@@ -1,17 +1,42 @@
 body {
     background-image: url(/static/imgs/olga-thelavart-vS3idIiYxX0-unsplash.jpg);
-    font-family: sans-serif;
+    /* font-family: ; */
+    }
+
+#poem-hole {
+    font-family: EBGaramond;
+    src: url("C:\Users\juned\AppData\Local\Microsoft\Windows\Fonts\EBGaramond-VariableFont_wght.ttf") format("woff2-variations");
 }
 
 /* #random-poem {
     font-weight: 900;
 } */
 
-.prompt-card {
-    min-width: 10em;
-    max-width: 15em;
-    border-width: 10px;
-    padding: 10px;
+.view-prompt {
+    border: 1px solid gainsboro;
+    border-radius: 5px;
+    padding: 1em;
+    margin-top: 1em;
+}
+
+.view-mashup {
+    border: 1px solid gainsboro;
+    border-radius: 5px;
+    padding: 1em;
+    margin-top: 1em;
+}
+
+.saved-poem-card {
+    border: 1px solid gainsboro;
+    border-radius: 5px;
+    padding: 1em;
+    margin-top: 1em;
+}
+
+#inputs-body {
+    border: 1px solid gainsboro;
+    border-top: 0px solid gainsboro;
+    border-radius: 0px 0px 5px 5px;
 }
 
 .footer {
