@@ -10,6 +10,7 @@ import requests
 
 from model import connect_to_db, db
 import crud
+from utils import logged_in, form_easter_egg
 
 dev = os.environ['dev']
 
@@ -17,22 +18,6 @@ app = Flask(__name__)
 app.secret_key = dev
 app.jinja_env.undefined = StrictUndefined
 
-
-# ============ logged in decorator ============ #
-
-def logged_in(route_function):
-    
-    @wraps(route_function)
-    def wrapper(*args, **kwargs):
-        user_id = session.get('user_id')
-        if user_id is None:
-            flash('You must be logged in to access this feature.')
-            return redirect('/')
-        else:
-            route = route_function(*args, **kwargs)
-            return route
-    
-    return wrapper
 
 # ============ homepage/login/sign up routes ============ #
 
@@ -330,6 +315,7 @@ def load_bookmarked_poem_and_comments():
 
     bk_poem_id = int(request.form.get('bk_poem_id'))
     user_id = session['user_id']
+    username=session['username']
 
     # print(f'\n\n\n{type(bk_poem_id)}\n\n\n')
 
@@ -341,9 +327,6 @@ def load_bookmarked_poem_and_comments():
     lines = []
     for line in poem_lines_objs:
         lines.append(line.line)
-
-    user_obj = crud.find_user_by_id(user_id)
-    username = user_obj.username
 
     comments = crud.find_all_comments_by_user_id(user_id)
     comment = ''
@@ -369,30 +352,32 @@ def load_bookmarked_poem_and_comments():
 
 @app.route('/savedprompt', methods=['POST'])
 def load_bookmarked_prompt_and_response():
-    """When clicking on a link, loads a page with the text of a 
+    """When clicking on a button, loads a page with the text of a 
     particular prompt, and loads the user's stored response in the
     text box."""
 
     user_id = session['user_id']
     username = session['username']
 
-    prompt_id = int(request.form.get('prompt_id'))
-    prompt_obj = crud.find_prompt_by_id(prompt_id)
-    prompt_text = prompt_obj.prompt_text
+    saved_prompt_id = int(request.form.get('prompt_id'))
+    prompt_id = ''
 
     prompt_response_list = crud.find_all_saved_prompts_by_user_id(user_id)
     user_response = ''
-    for response in prompt_response_list:
-        if response.prompt_id == prompt_id:
-            user_response = response.user_text
-            # print(f'\n\n\n respons e {response} \n\n\n')
-
     # print(f'\n\n\n prompt_response_list {prompt_response_list}')
-    # print(f'\n\n\n prompt_id {prompt_id}')
+    for response in prompt_response_list:
+        # print(f'\n\nresponse {response} \n response.prompt_id {type(response.prompt_id)} {response.prompt_id} \n prompt_id {prompt_id} \n text{response.user_text}')
+        if int(response.saved_prompt_id) == saved_prompt_id:
+            user_response = response.user_text
+            prompt_id = response.prompt_id
+            # print(f'\n\n\n response {response} \n\n\n')\
+
+    prompt_obj = crud.find_prompt_by_id(prompt_id)
+    prompt_text = prompt_obj.prompt_text
+    # print(f'\n\n\n prompt_id {saved_prompt_id}')
     # print(f'\n\n\n user_id {user_id}')
     # print(f'\n\n\n prompt_text {prompt_text}')
     # print(f'\n\n\n user_response {user_response}')
-
     return render_template("savedprompt.html",
                             username=username,
                             prompt_text=prompt_text,
@@ -434,12 +419,13 @@ def update_saved_comments():
 
     user_id = session['user_id']
     # print(f'\n\n\nuser_id type: {type(user_id)}\n\n')
-    updated_text = request.json.get('updated_text')
+    # updated_text = request.json.get('updated_text')
     title = request.json.get('title')
     # author = request.json.get('author')
     # print(f'\n\n\ntitle: {title} author: {author}\nnew_text: {updated_text}\n\n')
 
     poem_object = crud.find_bookmark_by_title(title)
+    # print(f'\n\npoem_object {poem_object}')
     bk_poem_id = poem_object.bk_poem_id
     # print(f'\n\n\nbk_poem_id: {bk_poem_id}\n\n\n')
 
@@ -528,20 +514,10 @@ def mashup_generator():
     
     shuffle(title_list)
 
-    title = ''
-    if linecount !=3 and linecount != 5 and linecount != 14 and linecount !=19 and linecount !=100:
-        title = f'{title_list[0]} {title_list[1]} {title_list[2]} {title_list[3]}'
-    elif linecount == 3:
-        title = f'Haiku: {title_list[0]} {title_list[1]} {title_list[2]} {title_list[3]}'
-    elif linecount == 5:
-        title = f'Limerick: {title_list[0]} {title_list[1]} {title_list[2]} {title_list[3]}'
-    elif linecount == 14:
-        title = f'Sonnet: {title_list[0]} {title_list[1]} {title_list[2]} {title_list[3]}'
-    elif linecount == 19:
-        title = f'Villanelle: {title_list[0]} {title_list[1]} {title_list[2]} {title_list[3]}'    
-    elif linecount == 100:
-        title = f'Cento: {title_list[0]} {title_list[1]} {title_list[2]} {title_list[3]}'
-
+    title = f'{title_list[0]} {title_list[1]} {title_list[2]} {title_list[3]}'
+    linecount_prefix = form_easter_egg(linecount)
+    if linecount_prefix:
+        title = linecount_prefix + title
     # print(title)
 
     poems_by_line_tuples_list = []
@@ -549,7 +525,6 @@ def mashup_generator():
     for i in range(0, linecount):
         poem = choice(mashup_response)
         poems_by_line_tuples_list.append((poem['author'], poem['title'], poem['lines'][i]))
-
     # print(f'\n\n\npoems_list: {poems_by_line_tuples_list}\n\n')
     
     return jsonify({'data': poems_by_line_tuples_list, 
@@ -579,7 +554,6 @@ def save_mashup():
         return 'not ok'
 
     else:
-        
         if dataList == []:
             return 'empty'
         
@@ -595,7 +569,6 @@ def save_mashup():
         for line in dataList:
             split_line = line.split('@')
             mashup_lines.append(split_line)
-
         # print(mashup_lines)
 
         new_mashup_lines = crud.create_mashup_lines(mashup_id=mashup_id, lines=mashup_lines)
@@ -628,7 +601,6 @@ def fetch_username_json():
 @app.route('/user-saved-bookmarks.json')
 def fetch_bookmarks_json():
     """Fetch user bookmarks from the database."""
-    
     user_id = session['user_id']
 
     user_comments = crud.find_all_comments_by_user_id(user_id)
@@ -636,7 +608,6 @@ def fetch_bookmarks_json():
     for comment in user_comments:
         if comment.bk_poem_id not in bk_poem_ids:
             bk_poem_ids.append(comment.bk_poem_id)
-
     # print(f'\n\n\n\n\n bk_poem_ids {bk_poem_ids} \n\n\n\n')
 
     bookmarks = []
@@ -646,7 +617,6 @@ def fetch_bookmarks_json():
         title = poem.title
         author = poem.author
         bookmarks.append((poem_id, title, author))
-    
     # print(f'\n\n\n\n\n bookmarks {bookmarks} \n\n\n\n')
 
     return jsonify({'bookmarks': bookmarks})
@@ -654,7 +624,6 @@ def fetch_bookmarks_json():
 @app.route('/user-saved-prompts.json')
 def fetch_prompts_json():
     """user prompts"""
-
     user_id = session['user_id']
 
     user_prompts = crud.find_all_saved_prompts_by_user_id(user_id)
@@ -662,7 +631,6 @@ def fetch_prompts_json():
     for saved_prompt in user_prompts:
         prompt_in_db = crud.find_prompt_by_id(saved_prompt.prompt_id)
         prompt_texts.append((saved_prompt.saved_prompt_id, saved_prompt.user_text, prompt_in_db.prompt_text, saved_prompt.prompt_public))
-
     # print(f'\n\n\nuser_prompts: {prompt_texts}\n\n\n')
 
     return jsonify({'user_prompts': prompt_texts})
@@ -670,9 +638,7 @@ def fetch_prompts_json():
 @app.route('/user-saved-mashups.json')
 def fetch_mashups_json():
     """Fetch user mashups from the database."""
-
     user_id = session['user_id']
-
     user_mashups = crud.find_all_mashups_by_user_id(user_id)
 
     mashups = []
