@@ -1,10 +1,11 @@
 body {
-    background-image: url(static/imgs/olga-thelavart-vS3idIiYxX0-unsplash.jpg);
+    background-image: url(/static/imgs/olga-thelavart-vS3idIiYxX0-unsplash.jpg);
+    font-family: sans-serif;
 }
 
-#random-poem {
-    text-align: center;
-}
+/* #random-poem {
+    font-weight: 900;
+} */
 
 .prompt-card {
     min-width: 10em;

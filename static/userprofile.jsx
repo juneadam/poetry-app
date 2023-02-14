@@ -1,4 +1,4 @@
-// React test to generate HTML for user profile
+// React file to generate HTML for user profile
 
   // ============ Username Container ============ //
 

@@ -60,7 +60,6 @@ def user_login():
     if user:
         while True:
             if argon2.verify(password, user.password):
-            # if user.password == password:
                 if user.active_account == False:
                     return redirect('/reactivate-account-check')
 
@@ -150,6 +149,8 @@ def call_random_poem_with_inputs():
     response_list = res.json()
     # print(response_list)
 
+    # PoetryDB API sends a dictionary {404: "not found"} if it returns no results - otherwise,
+    # format is always a list of dictionaries [{}]
     if isinstance(response_list, dict):
         random_poem = [{'title': 'No Results Found', 'author': 'Please try other search parameters.', 'lines': ['Or just empty the inputs and click "New Poem".']}]
     else:
@@ -226,7 +227,6 @@ def call_random_prompt():
     """Display random writing prompt on screen."""
 
     prompts = crud.get_all_prompts()
-
     new_prompt = choice(prompts)
 
     return new_prompt.prompt_text
@@ -241,8 +241,7 @@ def save_prompt_and_text():
     # print(f'\n\n\n\n prompt_text: {prompt_text} \n\n\n')
     # print(f'\n\n\n\n user_response: {user_response} \n\n\n')
 
-    promptDB_object = crud.find_prompt_by_text(prompt_text=prompt_text)
-
+    promptDB_object = crud.find_prompt_by_text(prompt_text=prompt_text) 
     # print(f'\n\n\n\n promptDB_object: {promptDB_object} \n\n\n')
     
     if not session.get('user_id'):
@@ -261,8 +260,9 @@ def save_prompt_and_text():
             # use a for loop to find the saved prompt that matches the user id
             for prompt in prompt_list:
                 if prompt.user_id == user_id:
-                # if one is found, use crud function (NEED TO CREATE) to update
-                #   the text of that saved prompt
+                    prompt.user_text = user_text
+                    db.session.add(prompt)
+                    db.session.commit()
                     return 'update'
              
             # if one is not found, create a new saved prompt object using
@@ -270,11 +270,9 @@ def save_prompt_and_text():
             new_prompt_save = crud.save_prompt_response(user_id=user_id, prompt_id=prompt_id, user_text=user_response)
             db.session.add(new_prompt_save)
             db.session.commit()
-
             return 'fine'
 
         else:
-
             return 'error'
 
 
@@ -319,7 +317,7 @@ def load_bookmarked_poem_and_comments():
 
     bk_poem_id = int(request.form.get('bk_poem_id'))
     user_id = session['user_id']
-    username=session['username']
+    username = session['username']
 
     # print(f'\n\n\n{type(bk_poem_id)}\n\n\n')
 
@@ -334,12 +332,11 @@ def load_bookmarked_poem_and_comments():
 
     comments = crud.find_all_comments_by_user_id(user_id)
     comment = ''
-    print(f'\n\n\n comments: {comments}')
+    # print(f'\n\n\n comments: {comments}')
     for comment_obj in comments:
         if comment_obj.bk_poem_id == bk_poem_id:
             comment = comment_obj.user_notes
-            print(f'\n\n\n user_notes: {comment_obj.user_notes}')
-
+            # print(f'\n\n\n user_notes: {comment_obj.user_notes}')
     # print(f"\n\n comment: {comment} \n\n")
     # print(f"\n\n poem_object: {poem_object} \n\n")
     # print(f"\n\n bk_poem_id: {bk_poem_id} \n\n")
