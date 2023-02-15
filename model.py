@@ -5,7 +5,7 @@ from flask_sqlalchemy import SQLAlchemy
 db = SQLAlchemy()
 
 
-# ------------ User Data ------------ #
+# ============ User Data ============ #
 
 class User(db.Model):
     """Creates a table to save user data."""
@@ -28,7 +28,7 @@ class User(db.Model):
         return f'<User object user_id: {self.user_id} username: {self.username}>'
 
 
-# ------------ Poem Comments/Bookmarks ------------ #
+# ============ Poem Comments/Bookmarks ============ #
 
 class Comment(db.Model):
     """Creates a table to track user comments associated with
@@ -89,7 +89,7 @@ class PoemLine(db.Model):
         return f'<PoemLine object bk_poem_id: {self.bk_poem_id} bk_line_id: {self.bk_line_id}>'
 
 
-# ------------ Mashup ------------ #
+# ============ Mashup ============ #
 
 class Mashup(db.Model):
     """Creates a table for API-generated mashup poems
@@ -134,7 +134,7 @@ class MashupLine(db.Model):
         return f'<MashupLine object mashup_line_id: {self.component_id} author_name: {self.author_name} source_title: {self.source_title} line: {self.line}>'
 
 
-# ------------ Prompts ------------ #
+# ============ Prompts ============ #
 
 class PromptDB(db.Model):
     """Database of poetry prompts to choose from."""
@@ -174,7 +174,7 @@ class SavedPrompt(db.Model):
         return f'<SavedPrompt object saved_prompt_id: {self.saved_prompt_id} user_id: {self.user_id} prompt_id: {self.prompt_id}>'
 
 
-# ------------ Line Breaks ------------#
+# ============ Line Breaks ============#
 
 class SavedLinebreak(db.Model):
     """Table allowing user to save their poems with randomly generated
@@ -196,7 +196,7 @@ class SavedLinebreak(db.Model):
         return f'<UserLinebreak object linebreak_id: {self.linebreak_id} user_id: {self.user_id} public: {self.public}'
 
 
-# ------------ Etc. ------------ #
+# ============ Etc. ============ #
 
 def connect_to_db(flask_app, db_uri="postgresql:///poetrytoolkitDB", echo=True):
     flask_app.config["SQLALCHEMY_DATABASE_URI"] = db_uri

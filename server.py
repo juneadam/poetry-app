@@ -1,13 +1,12 @@
 """server for poetry app"""
 import os
-
 from jinja2 import StrictUndefined
 from random import choice, randint, shuffle
 from passlib.hash import argon2
 from flask import Flask, render_template, request, flash, session, redirect, jsonify
 from functools import wraps
 import requests
-
+import pytest
 from model import connect_to_db, db
 import crud
 from utils import logged_in, form_easter_egg
@@ -72,6 +71,7 @@ def user_login():
             flash("Email and password do not match, please try again.")
             return redirect('/')
     else:
+        session['user_id'] = None
         flash("User not found, please create an account below!")
         return redirect('/')
 
@@ -503,8 +503,7 @@ def mashup_generator():
 
     res = requests.get(f'https://poetrydb.org/linecount/{linecount}/all.json')
     mashup_response = res.json()
-
-    print(f'\n\nmashup_response {mashup_response}\n\n')
+    # print(f'\n\nmashup_response {mashup_response}\n\n')
 
     title_list = []
     for i in range(0, 2):
@@ -848,3 +847,6 @@ def fetch_public_mashups():
 if __name__ == "__main__":
     connect_to_db(app)
     app.run(host="0.0.0.0", debug=True)
+    import sys
+    if sys.argv[-1] == "jstest":
+        JS_TESTING_MODE = True
