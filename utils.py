@@ -24,7 +24,23 @@ def logged_in(route_function):
     return wrapper
 
 
-# ============ form easter egg ============= #
+
+# ============ linecount range modifier ============ #
+
+def range_modifier(linecount):
+    """modifier to add deeper selection criteria to smaller linecount datasets"""
+
+    plus_amount = 0
+    if linecount < 4:
+        plus_amount = 5
+    else:
+        plus_amount = 2
+
+    return plus_amount
+        
+
+
+# ============ poem form easter egg ============= #
 
 def form_easter_egg(linecount):
     """Easter egg that adds line-specific form names to mashup titles."""
@@ -39,4 +55,5 @@ def form_easter_egg(linecount):
         return "Villanelle: "
     if linecount == 100:
         return "Cento: "
+
 

@@ -9,7 +9,7 @@ import requests
 import pytest
 from model import connect_to_db, db
 import crud
-from utils import logged_in, form_easter_egg
+from utils import logged_in, form_easter_egg, range_modifier
 
 dev = os.environ['dev']
 
@@ -158,7 +158,6 @@ def call_random_poem_with_inputs():
             random_poem.append(response_list[randint(0, (len(response_list) - 1))])
         elif len(response_list) == 1:
             random_poem.append(response_list[0])
-
     # print(random_poem)
     # print(f"\n random_poem: {random_poem}\n\n")
 
@@ -173,7 +172,6 @@ def bookmark_random_poem():
     author = request.json.get('author')[2:]
     lines_string = request.json.get('lines')
     comments = request.json.get('comments')
-
     # print(author)
 
     lines = lines_string.split('\n')
@@ -420,22 +418,20 @@ def update_saved_comments():
 
     user_id = session['user_id']
     # print(f'\n\n\nuser_id type: {type(user_id)}\n\n')
-    # updated_text = request.json.get('updated_text')
+    updated_text = request.json.get('updated_text')
     title = request.json.get('title')
-    # author = request.json.get('author')
     # print(f'\n\n\ntitle: {title} author: {author}\nnew_text: {updated_text}\n\n')
 
     poem_object = crud.find_bookmark_by_title(title)
-    # print(f'\n\npoem_object {poem_object}')
     bk_poem_id = poem_object.bk_poem_id
+    # print(f'\n\npoem_object {poem_object}')
     # print(f'\n\n\nbk_poem_id: {bk_poem_id}\n\n\n')
 
     comments_by_user = crud.find_all_comments_by_user_id(user_id=user_id)
     comment_to_update = ''
     for comment_obj in comments_by_user:
         if comment_obj.bk_poem_id == bk_poem_id:
-            comment_to_update = comment_obj
-    
+            comment_to_update = comment_obj  
     # print(f'\n\n\ncomment_to_update: {comment_to_update.user_notes}\n\n\n')
 
     if comment_to_update:
@@ -458,7 +454,6 @@ def update_saved_response():
 
     updated_response = request.json.get('updated_response')
     prompt_text = request.json.get('prompt_text')
-
     # print(f'\n\n\nupdated_response: {updated_response}')
     # print(f'\n\n\nprompt_text: {prompt_text}')
 
@@ -490,7 +485,7 @@ def show_mashup_generator():
 
     return render_template('mashups.html')
 
-@app.route('/mashup-generator', methods=['POST'])
+@app.route('/mashup-generator.json', methods=['POST'])
 def mashup_generator():
     """Call the API with user input linecount, generate a random
     poem mixing and matching lines from the returned list."""
@@ -501,12 +496,14 @@ def mashup_generator():
 
     linecount = int(request.json.get('linecount'))
 
-    res = requests.get(f'https://poetrydb.org/linecount/{linecount}/all.json')
-    mashup_response = res.json()
-    # print(f'\n\nmashup_response {mashup_response}\n\n')
+    mashup_response = []
+    for i in range(linecount, (linecount + range_modifier(linecount))):
+        res = requests.get(f'https://poetrydb.org/linecount/{i}/all.json')
+        mashup_response.extend(res.json())
+    print(f'\n\nmashup_response {mashup_response}\n\n')
 
     title_list = []
-    for i in range(0, 2):
+    for i in range(0, 4):
         poem = choice(mashup_response)
         title_choice = poem['title'].split()
         for word in title_choice:
@@ -531,7 +528,7 @@ def mashup_generator():
                     'username': username,
                     'title': title})
 
-@app.route('/save-mashup', methods=['POST'])
+@app.route('/save-mashup.json', methods=['POST'])
 def save_mashup():
     """Route to save a mashup to the database."""
 
@@ -539,7 +536,6 @@ def save_mashup():
     dataList = request.json.get('dataList')
     title = request.json.get('title')
     author = request.json.get('author')[3:-13]
-
     # print(f'\n\n\ndataList {dataList}\n')
     # print(f'\n\ntitle {title}\n')
     # print(f'\n\nauthor {author} {len(author)}\n')

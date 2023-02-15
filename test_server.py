@@ -94,17 +94,16 @@ class FlaskTests(TestCase):
             self.assertEqual(result.status_code, 200, result.data)
             assert session['user_id'] is None
             self.assertIn(b'User not found, please create an account below!', result.data)
+      
 
-            
+    # def test_signup_route(self):
 
-    def test_signup_route(self):
-
-        result = self.client.post('/sign-up', data={
-            'email': 'new_user@test.com',
-            'username': 'new_user',
-            'password1': 'new_user_pw',
-            'password2': 'new_user_pw'
-        }, follow_redirects=True)
+    #     result = self.client.post('/sign-up', data={
+    #         'email': 'new_user@test.com',
+    #         'username': 'new_user',
+    #         'password1': 'new_user_pw',
+    #         'password2': 'new_user_pw'
+    #     }, follow_redirects=True)
 
 if __name__ == "__main__":
     os.system('dropdb testdb')

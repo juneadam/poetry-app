@@ -13,25 +13,36 @@
         <div class="col-6">
             <form class="row g-1" action="/login" id="login" method="POST">
                 Log in to Your Account
-                <div class="col-auto"></div>
-                <label for="login-enter-email" class="form-label">Email</label>
-                    <input type="text" class="form-control" name="email"></input>    
-                <label for="login-enter-password" class="form-label">Password</label>
-                    <input type="password" class="form-control" name="password"></input>
+                    <div class="form-floating mb-1">
+                        <input type="text" class="form-control" name="email" id="login-enter-email" placeholder="Email"></input>  
+                        <label for="login-enter-email" class="form-label">Email</label> 
+                    </div> 
+                    <div class="form-floating mb-1">
+                        <input type="password" class="form-control" name="password" id="login-enter-password" placeholder="Password"></input>
+                        <label for="login-enter-password" class="form-label">Password</label>
+                    </div>
                 <button type="submit" class="btn btn-outline-secondary">Sign In</button>
             </form>
         </div>
         <div class="col-6">
             <form action="/sign-up" class="row g-1" id="sign-up" method="POST">
                 Create an Account
-                <label for="sign-up-enter-email" class="form-label">Email</label>
-                    <input class="form-control" type="text" name="email"></input>
-                <label for="sign-up-enter-username" class="form-label">Username</label>    
-                    <input class="form-control" type="text" name="username"></input>
-                <label for="sign-up-enter-password" class="form-label">Password</label>
-                    <input class="form-control" type="password" name="password1"></input>
-                <label for="sign-up-confirm-password" class="form-label">Confirm Password</label>
-                    <input class="form-control" type="password" name="password2"></input>
+                <div class="form-floating mb-1">
+                    <input class="form-control" type="email" name="email" id="sign-up-enter-email" placeholder="Email"></input>
+                    <label for="sign-up-enter-email" class="form-label">Email</label>
+                </div>
+                <div class="form-floating mb-1">
+                    <input class="form-control" type="text" name="username" id="sign-up-enter-username" placeholder="Username"></input>
+                    <label for="sign-up-enter-username" class="form-label">Username</label>    
+                </div>
+                <div class="form-floating mb-1">
+                    <input class="form-control" type="password" name="password1" id="sign-up-enter-password" placeholder="Password"></input>
+                    <label for="sign-up-enter-password" class="form-label">Password</label>
+                </div>
+                <div class="form-floating mb-1">
+                    <input class="form-control" type="password" name="password2" id="sign-up-confirm-password" placeholder="Confirm Password"></input>
+                    <label for="sign-up-confirm-password" class="form-label">Confirm Password</label>
+                </div>
                 <button class="btn btn-outline-secondary" type="submit">Create Account</button>
             </form>
         </div>

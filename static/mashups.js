@@ -13,7 +13,7 @@ const mashupButton = document.querySelector('#mashup-poem').addEventListener('cl
         'linecount' : linecount
     };
 
-    fetch('/mashup-generator', {
+    fetch('/mashup-generator.json', {
         method: 'POST',
         body: JSON.stringify(dataPacket),
         headers: {
@@ -55,7 +55,7 @@ const saveMashupButton = document.querySelector('#save-mashup').addEventListener
         'author' : author
     };
 
-    fetch('/save-mashup', {
+    fetch('/save-mashup.json', {
         method: 'POST',
         body: JSON.stringify(dataPacket),
         headers: {
