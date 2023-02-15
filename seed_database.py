@@ -74,8 +74,6 @@ def seed_database():
 
     model.db.session.commit()  
 
-    return
-
     # Creates 5 mashup objects and 4 lines for each for testing the database.
 
     # loop to generate 5 mashup objects
@@ -132,6 +130,8 @@ def seed_database():
 
     model.db.session.add_all(prompt_objects)
     model.db.session.commit()
+
+    return
 
 
 if __name__ == "__main__":

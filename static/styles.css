@@ -1,7 +1,25 @@
+/* poetry app styling */
+
+
+/* ============ base.html ============ */
+
 body {
     background-image: url(/static/imgs/olga-thelavart-vS3idIiYxX0-unsplash.jpg);
     /* font-family: ; */
     }
+
+.navbar {
+    background-color: #af9bff80;
+}
+
+.footer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 3em;
+}
+
+/* ============ poems.html ============ */
 
 #poem-hole {
     font-family: EBGaramond;
@@ -11,6 +29,16 @@ body {
 /* #random-poem {
     font-weight: 900;
 } */
+
+/* ============ user profile jsx ============ */
+
+#username {
+    margin-top: 2em;
+    margin-bottom: 2em;
+    padding: 0.5em 1em;
+    border: 2px solid gainsboro;
+    border-radius: 10px;
+}
 
 .view-prompt {
     border: 1px solid gainsboro;
@@ -39,10 +67,7 @@ body {
     border-radius: 0px 0px 5px 5px;
 }
 
-.footer {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin: 3em;
-}
+
+
+
 

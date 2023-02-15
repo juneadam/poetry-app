@@ -225,6 +225,7 @@ def call_random_prompt():
     """Display random writing prompt on screen."""
 
     prompts = crud.get_all_prompts()
+    print(prompts)
     new_prompt = choice(prompts)
 
     return new_prompt.prompt_text
