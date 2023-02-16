@@ -1,12 +1,12 @@
 """server for poetry app"""
 import os
+from functools import wraps
+from flask import Flask, render_template, request, flash, session, redirect, jsonify
+from passlib.hash import argon2
+import pytest
 from jinja2 import StrictUndefined
 from random import choice, randint, shuffle
-from passlib.hash import argon2
-from flask import Flask, render_template, request, flash, session, redirect, jsonify
-from functools import wraps
 import requests
-import pytest
 from model import connect_to_db, db
 import crud
 from utils import logged_in, logged_in_JSON, form_easter_egg, range_modifier
@@ -33,7 +33,7 @@ def user_sign_up():
     username = request.form.get('username')
     password1 = request.form.get('password1')
     password2 = request.form.get('password2')    
-    hashed_pw = argon2.hash(password)
+    hashed_pw = argon2.hash(password1)
     user = crud.find_user_by_email(email=email)
 
     if user:

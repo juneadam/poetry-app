@@ -22,7 +22,7 @@ const mashupButton = document.querySelector('#mashup-poem').addEventListener('cl
       })
     .then((response) => response.json())
     .then((mashupDataJson) => {
-        mashupTitle.innerHTML = `<h1>${mashupDataJson['title']}`
+        mashupTitle.innerHTML = `<h1>${mashupDataJson['title']}</h1>`
 
         mashupAuthor.innerHTML = `<h2>by ${mashupDataJson['username']} and <a href='https://www.poetrydb.org'>PoetryDB</a></h2>`;
 
