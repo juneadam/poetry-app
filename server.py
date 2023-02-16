@@ -9,7 +9,7 @@ import requests
 import pytest
 from model import connect_to_db, db
 import crud
-from utils import logged_in, form_easter_egg, range_modifier
+from utils import logged_in, logged_in_JSON, form_easter_egg, range_modifier
 
 dev = os.environ['dev']
 
@@ -164,7 +164,8 @@ def call_random_poem_with_inputs():
     return jsonify({'data': random_poem})
 
 
-@app.route('/bookmark', methods=["POST"])
+@app.route('/bookmark.json', methods=["POST"])
+@logged_in_JSON
 def bookmark_random_poem():
     """Saves comment and, if needed, poem to the database."""
 
@@ -175,40 +176,32 @@ def bookmark_random_poem():
     # print(author)
 
     lines = lines_string.split('\n')
-    
     bk_poem_id = ''
-
     bookmark_object = crud.find_bookmark_by_title(title)
 
-    if not session.get('user_id'):
+    user_id = session['user_id']
 
-        return 'not ok'
-
-    else:
-
-        user_id = session['user_id']
-
-        if bookmark_object:
-            if bookmark_object.author == author:
-                bk_poem_id = bookmark_object.bk_poem_id
-        
-        else:
-            new_bookmark = crud.create_bookmark(title=title, author=author)
-            db.session.add(new_bookmark)
-            db.session.commit()
-            
-            bookmark_object = crud.find_bookmark_by_title(title)
+    if bookmark_object:
+        if bookmark_object.author == author:
             bk_poem_id = bookmark_object.bk_poem_id
+    
+    else:
+        new_bookmark = crud.create_bookmark(title=title, author=author)
+        db.session.add(new_bookmark)
+        db.session.commit()
+        
+        bookmark_object = crud.find_bookmark_by_title(title)
+        bk_poem_id = bookmark_object.bk_poem_id
 
-            new_lines = crud.create_bookmark_lines(bk_poem_id=bk_poem_id, lines=lines)
-            db.session.add_all(new_lines)
-            db.session.commit()
-
-        new_comment = crud.create_comment(user_id=user_id, bk_poem_id=bk_poem_id, user_notes=comments)    
-        db.session.add(new_comment)
+        new_lines = crud.create_bookmark_lines(bk_poem_id=bk_poem_id, lines=lines)
+        db.session.add_all(new_lines)
         db.session.commit()
 
-        return 'ok'
+    new_comment = crud.create_comment(user_id=user_id, bk_poem_id=bk_poem_id, user_notes=comments)    
+    db.session.add(new_comment)
+    db.session.commit()
+
+    return 'ok'
 
 
 # ============ prompts routes ============ #
@@ -220,7 +213,7 @@ def show_prompt_generator():
     return render_template('prompts.html')
 
 
-@app.route('/prompt-hole')
+@app.route('/prompt-hole.json')
 def call_random_prompt():
     """Display random writing prompt on screen."""
 
@@ -230,8 +223,8 @@ def call_random_prompt():
 
     return new_prompt.prompt_text
 
-@logged_in
-@app.route('/save-prompt', methods=['POST'])
+@app.route('/save-prompt.json', methods=['POST'])
+@logged_in_JSON
 def save_prompt_and_text():
     """Lets user bookmark a prompt and save their response to it."""
 
@@ -242,37 +235,32 @@ def save_prompt_and_text():
 
     promptDB_object = crud.find_prompt_by_text(prompt_text=prompt_text) 
     # print(f'\n\n\n\n promptDB_object: {promptDB_object} \n\n\n')
-    
-    if not session.get('user_id'):
 
-        return 'nope'
+    user_id = session['user_id']
+
+    if promptDB_object:
+        prompt_id = promptDB_object.prompt_id
+        
+        # get list of saved prompts by promptID
+        prompt_list = crud.find_saved_prompts_by_id(prompt_id)
+
+        # use a for loop to find the saved prompt that matches the user id
+        for prompt in prompt_list:
+            if prompt.user_id == user_id:
+                prompt.user_text = user_response
+                db.session.add(prompt)
+                db.session.commit()
+                return 'update'
+            
+        # if one is not found, create a new saved prompt object using
+        #   user id, prompt id, and user response, then add and commit
+        new_prompt_save = crud.save_prompt_response(user_id=user_id, prompt_id=prompt_id, user_text=user_response)
+        db.session.add(new_prompt_save)
+        db.session.commit()
+        return 'fine'
 
     else:
-        user_id = session['user_id']
-
-        if promptDB_object:
-            prompt_id = promptDB_object.prompt_id
-            
-            # get list of saved prompts by promptID
-            prompt_list = crud.find_saved_prompts_by_id(prompt_id)
-
-            # use a for loop to find the saved prompt that matches the user id
-            for prompt in prompt_list:
-                if prompt.user_id == user_id:
-                    prompt.user_text = user_text
-                    db.session.add(prompt)
-                    db.session.commit()
-                    return 'update'
-             
-            # if one is not found, create a new saved prompt object using
-            #   user id, prompt id, and user response, then add and commit
-            new_prompt_save = crud.save_prompt_response(user_id=user_id, prompt_id=prompt_id, user_text=user_response)
-            db.session.add(new_prompt_save)
-            db.session.commit()
-            return 'fine'
-
-        else:
-            return 'error'
+        return 'error'
 
 
 @app.route('/add-prompt')
@@ -283,17 +271,12 @@ def show_add_prompt_page():
     return render_template('add-prompt.html')
 
 @app.route('/save-prompt-to-db.json', methods=['POST'])
+@logged_in_JSON
 def save_prompt_to_db():
     """Saves the new prompt to the database."""
 
-    logged_in = session.get('user_id')
-
-    if not logged_in:
-
-        return 'not logged in'
-
     user_prompt = request.json.get('new_prompt')
-    print(user_prompt)
+    # print(user_prompt)
 
     if user_prompt:
         new_prompt_obj = crud.create_prompt(prompt=user_prompt)
@@ -349,8 +332,8 @@ def load_bookmarked_poem_and_comments():
                             username=username,
                             user_text=comment)
 
-
 @app.route('/savedprompt', methods=['POST'])
+@logged_in
 def load_bookmarked_prompt_and_response():
     """When clicking on a button, loads a page with the text of a 
     particular prompt, and loads the user's stored response in the
@@ -384,6 +367,7 @@ def load_bookmarked_prompt_and_response():
                             user_response=user_response)
 
 @app.route('/savedmashup', methods=['POST'])
+@logged_in
 def load_saved_mashup():
     """When clicking on a button, loads a page with the
     text, title, and author of a user's saved mashup."""
@@ -530,6 +514,7 @@ def mashup_generator():
                     'title': title})
 
 @app.route('/save-mashup.json', methods=['POST'])
+@logged_in_JSON
 def save_mashup():
     """Route to save a mashup to the database."""
 
@@ -547,34 +532,30 @@ def save_mashup():
         print(f'\n\n\nmashup_lines {mashup_obj.lines}\n\n')
         print(f'\n\n dataList {dataList}\n\n')
 
-    if not user_id:
-        return 'not ok'
+    if dataList == []:
+        return 'empty'
+    
+    new_mashup = crud.create_mashup(user_id=user_id, mashup_title=title, mashup_author=author)
+    db.session.add(new_mashup)
+    db.session.commit()
 
-    else:
-        if dataList == []:
-            return 'empty'
-        
-        new_mashup = crud.create_mashup(user_id=user_id, mashup_title=title, mashup_author=author)
-        db.session.add(new_mashup)
-        db.session.commit()
+    mashup_obj = crud.find_mashup_by_title(title)
+    mashup_id = mashup_obj.mashup_id
+    # print(f'\n\n\n{mashup_id}\n\n\n')
 
-        mashup_obj = crud.find_mashup_by_title(title)
-        mashup_id = mashup_obj.mashup_id
-        # print(f'\n\n\n{mashup_id}\n\n\n')
+    mashup_lines = []
+    for line in dataList:
+        split_line = line.split('@')
+        mashup_lines.append(split_line)
+    # print(mashup_lines)
 
-        mashup_lines = []
-        for line in dataList:
-            split_line = line.split('@')
-            mashup_lines.append(split_line)
-        # print(mashup_lines)
+    new_mashup_lines = crud.create_mashup_lines(mashup_id=mashup_id, lines=mashup_lines)
+    # print(new_mashup_lines)
 
-        new_mashup_lines = crud.create_mashup_lines(mashup_id=mashup_id, lines=mashup_lines)
-        # print(new_mashup_lines)
+    db.session.add_all(new_mashup_lines)
+    db.session.commit()
 
-        db.session.add_all(new_mashup_lines)
-        db.session.commit()
-
-        return 'ok'
+    return 'ok'
 
 
 # ============ user profile routes ============ #
@@ -659,7 +640,7 @@ def update_prompt_bool_in_db():
     # print(f'\nuser_id {user_id}\npublic_check {public_check}\nsaved_prompt_id {saved_prompt_id}\n')
 
     saved_prompt = crud.find_saved_prompt_by_saved_prompt_id(saved_prompt_id=saved_prompt_id)
-    print(f'\n\nsaved_prompt{saved_prompt.user_id}\n\n')
+    # print(f'\n\nsaved_prompt{saved_prompt.user_id}\n\n')
     
     if saved_prompt.user_id != user_id:
         return 'wrong user'

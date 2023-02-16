@@ -7,9 +7,10 @@ from passlib.hash import argon2
 from flask import Flask, render_template, request, flash, session, redirect, jsonify
 from functools import wraps
 
-# ============ logged in decorator ============ #
+# ============ logged in decorators ============ #
 
 def logged_in(route_function):
+    """Decorator for checking if a user is logged in, for rendering routes."""
     
     @wraps(route_function)
     def wrapper(*args, **kwargs):
@@ -21,6 +22,20 @@ def logged_in(route_function):
             route = route_function(*args, **kwargs)
             return route
     
+    return wrapper
+
+
+def logged_in_JSON(route_function):
+    """Decorator for checking if a user is logged in, for JSON routes."""
+
+    @wraps(route_function)
+    def wrapper(*args, **kwargs):
+        if not session.get('user_id'):
+            return 'not logged in'
+        else:
+            route = route_function(*args, **kwargs)
+            return route
+        
     return wrapper
 
 

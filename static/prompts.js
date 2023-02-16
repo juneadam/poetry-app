@@ -6,7 +6,7 @@
 const promptHole = document.querySelector('#prompt-hole')
 
 const randomPrompt = document.querySelector('#prompt-btn').addEventListener('click', () => {
-    fetch('/prompt-hole')
+    fetch('/prompt-hole.json')
       .then((response) => response.text())
       .then((responseData) => {
           promptHole.innerHTML = responseData
@@ -15,7 +15,7 @@ const randomPrompt = document.querySelector('#prompt-btn').addEventListener('cli
 
 
 const randomPromptOnLoad = window.addEventListener('load', () => {
-    fetch('/prompt-hole')
+    fetch('/prompt-hole.json')
       .then((response) => response.text())
       .then((responseData) => {
           promptHole.innerHTML = responseData
@@ -32,15 +32,15 @@ const savePrompt = document.querySelector('#save-prompt').addEventListener('clic
     const promptText = document.querySelector('#prompt-hole').innerText
     const userResponse = document.querySelector('#prompt-response').value
     
-    console.log(promptText)
-    console.log(userResponse)
+    // console.log(promptText)
+    // console.log(userResponse)
 
     const dataPacket = {
         'prompt_text': promptText,
         'user_response': userResponse
     }
 
-    fetch('/save-prompt', {
+    fetch('/save-prompt.json', {
         method: 'POST',
         body: JSON.stringify(dataPacket),
         headers: {
@@ -49,18 +49,18 @@ const savePrompt = document.querySelector('#save-prompt').addEventListener('clic
       })
       .then((response) => response.text())
       .then((responseData) => {
-        console.log(responseData)
+        // console.log(responseData)
         if (responseData == 'fine') {
             alert('Prompt and response saved!');
         }
         else if (responseData == 'update') {
              alert('Response updated and saved! (FUNCTIONALITY NOT YET BUILT)');
         }
-        else if (responseData === 'nope') {
+        else if (responseData === 'not logged in') {
             alert('Only users who are logged in can save prompts and responses!');
         }
-        // else {
-        //     alert('Error, please try again.')
-        // }
+        else if (responseData === "error") {
+            alert('Error, please try again.')
+        }
     })
 }); 

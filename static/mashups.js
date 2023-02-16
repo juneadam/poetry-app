@@ -64,7 +64,7 @@ const saveMashupButton = document.querySelector('#save-mashup').addEventListener
       })
     .then((response) => response.text())
     .then((mashupDataJson) => {
-        if (mashupDataJson === 'not ok') {
+        if (mashupDataJson === 'not logged in') {
             alert('Please log in to save mashups.')
         }
         else if (mashupDataJson === 'empty') {

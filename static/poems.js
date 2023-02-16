@@ -99,9 +99,9 @@ const bookmarkPoem = document.querySelector('#bookmark-poem').addEventListener('
     'comments': comments
   }
 
-  console.log(dataPacket)
+  // console.log(dataPacket)
 
-  fetch('/bookmark', {
+  fetch('/bookmark.json', {
     method: 'POST',
     body: JSON.stringify(dataPacket),
     headers: {
@@ -113,7 +113,7 @@ const bookmarkPoem = document.querySelector('#bookmark-poem').addEventListener('
         if (responseBookmark === 'ok') {
             alert('Poem bookmarked and comment saved!')
         }
-        if (responseBookmark === 'not ok') {
+        if (responseBookmark === 'not logged in') {
             alert('Only users who are logged in can save poems and comments!')
         }
         // else {
