@@ -19,3 +19,5 @@ SQLAlchemy==1.4.25
 tomli==2.0.1
 Werkzeug==2.0.1requests
 
+chromedriver-py==107.0.5304.62
+selenium

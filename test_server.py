@@ -1,4 +1,4 @@
-# testing
+# testing server
 import os
 from unittest import TestCase
 import unittest
@@ -300,6 +300,48 @@ class FlaskTestsPoemsJSON(TestCase):
         db.drop_all()
 
     # def test_call_random_poem():
+
+    # ============ testing update booksmarks POST routes ============ #
+
+class FlaskTestsPoemsJSON(TestCase):
+
+    def setUp(self):
+        """Stuff to do before every test."""
+
+        # Get the Flask test client
+        self.client = app.test_client()
+
+        # Show Flask errors that happen during tests
+        app.config['TESTING'] = True
+
+        # Connect to test database
+        connect_to_db(app, db_uri="postgresql:///testdb", echo=False)
+
+        # Create tables and add sample data
+        db.create_all()
+        seed_database()
+
+    def tearDown(self):
+        """Do at end of every test."""
+
+        db.session.close()
+        db.drop_all()
+
+    # def test_update_comments(self):
+
+    #     with self.client.session_transaction() as sess:
+    #         sess["user_id"] = 1
+
+    #     with self.client:
+    #         result = self.client.post('/update-comments', data={
+    #             'updated_text': 'test text only',
+    #             'title': 'good_poem_for_sure '
+    #         }, follow_redirects=True)
+
+    #         self.assertEqual(result.status_code, 200, result.data)
+    #         assert session['user_id'] is None
+    #         self.assertIn(b'User not found, please create an account below!', result.data)
+
 
 
 

@@ -119,24 +119,6 @@ def call_random_poem_with_inputs():
     lines = request.json.get('lines-input')
     linecount = request.json.get('linecount-input')
 
-    # payload = []
-
-    # if author:
-    #     payload.append(('author', author))
-    # if title:
-    #     payload.append(('title', title))
-    # if lines:
-    #     payload.append(('lines', lines))
-    # if linecount:
-    #     payload.append(('linecount', linecount))
-
-    # input_fields = ''
-    # output_fields = ''
-
-    # for tup in payload:
-    #     input_fields = input_fields + tup[0] + ',' #/author,title,linecount/shakespeare;sonnet;14
-    #     output_fields = output_fields + tup[1] + ';'
-
     input_fields, output_fields = get_payload(author=author, title=title, lines=lines, linecount=linecount)
 
     url = f'https://poetrydb.org/{input_fields}/{output_fields}/all.json'
@@ -481,7 +463,7 @@ def mashup_generator():
     for i in range(linecount, (linecount + range_modifier(linecount))):
         res = requests.get(f'https://poetrydb.org/linecount/{i}/all.json')
         mashup_response.extend(res.json())
-    print(f'\n\nmashup_response {mashup_response}\n\n')
+    # print(f'\n\nmashup_response {mashup_response}\n\n')
 
     title_list = []
     for i in range(0, 4):

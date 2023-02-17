@@ -41,7 +41,7 @@ def logged_in_JSON(route_function):
 
 # ============ poems: url payload generator ============#
 
-def get_payload(author, title, lines, linecount):
+def get_payload(author='', title='', lines='', linecount=''):
     """checks to see if user is using certain parameters, and if so,
     adds a tuple to the payload list to be formatted into a usable URL
     for an API call."""
