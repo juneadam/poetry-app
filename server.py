@@ -372,13 +372,10 @@ def load_saved_mashup():
     """When clicking on a button, loads a page with the
     text, title, and author of a user's saved mashup."""
 
-    user_id = session['user_id']
-    user_obj = crud.find_user_by_id(user_id=user_id)
-    username = user_obj.username
-
     mashup_id = int(request.form.get('mashup_id'))
     mashup_obj = crud.find_mashup_by_id(mashup_id)
     mashup_title = mashup_obj.mashup_title
+    username = mashup_obj.user.username
     # print(mashup_title)
 
     mashup_lines_list = crud.find_mashup_lines_by_id(mashup_id)

@@ -16,7 +16,7 @@ def seed_database():
 
     test_pw = os.environ['test_pw']
     password = argon2.hash(test_pw)
-    userX = model.User(username="serX", password=password, email="test@email.test")
+    userX = model.User(username="userX", password=password, email="test@email.test")
     poemX = model.Poem(title="good_poem_for_sure", author="somebody")
 
     model.db.session.add(userX)

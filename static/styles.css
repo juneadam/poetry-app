@@ -8,15 +8,15 @@ body {
     /* font-family: ; */
     }
 
-.navbar {
-    background-color: #af9bff80;
-}
-
 .footer {
     display: flex;
     align-items: center;
     justify-content: center;
     margin: 3em;
+}
+
+.purple {
+    background-color: #af9bff60;
 }
 
 /* ============ poems.html ============ */
@@ -29,6 +29,32 @@ body {
 /* #random-poem {
     font-weight: 900;
 } */
+
+/* ============ public shared items routes ============ */
+
+#public-responses-header {
+    margin: 2em;
+}
+
+#public-mashups-header {
+    margin: 2em;
+}
+
+.responseCard {
+    margin-top: 2em;
+    margin-bottom: 2em;
+    padding: 0.5em 1em;
+    border: 2px solid gainsboro;
+    border-radius: 10px;
+}
+
+.mashupCard {
+    margin-top: 2em;
+    margin-bottom: 2em;
+    padding: 0.5em 1em;
+    border: 2px solid gainsboro;
+    border-radius: 10px;
+}
 
 /* ============ user profile jsx ============ */
 

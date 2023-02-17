@@ -10,7 +10,7 @@ const updateComments = document.querySelector('#save-changes').addEventListener(
       'prompt_text' : prompt_text,
     }
 
-    console.log(dataPacket)
+    // console.log(dataPacket)
   
     fetch('/update-response', {
       method: 'POST',

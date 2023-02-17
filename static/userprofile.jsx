@@ -45,8 +45,8 @@ const PoemCard = (props) => {
     for (const poem of props.bookmarks) {
 
         PoemCards.push(
-            <div className="col" key = {poem[0]}>
-                <form action="/savedpoem" className="saved-poem-card" method="POST">
+            <div className="col-4" key = {poem[0]}>
+                <form action="/savedpoem" className="saved-poem-card purple" method="POST">
                     <div className="bookmarked-poem-link"><strong>{poem[1]}</strong></div> 
                     <div>by {poem[2]}</div>
                     <input type="hidden" name="bk_poem_id" value={poem[0]}></input>
@@ -127,9 +127,9 @@ const PromptCard = (props) => {
     }
 
     return (
-        <div className="prompt-card" key={prompt[0]}>
+        <div className="prompt-card col-4" key={prompt[0]}>
             <div>    
-                <div className="view-prompt">
+                <div className="view-prompt purple">
                     <form action="/savedprompt" method="POST">
                         <p>
                             <strong>{prompt[2]}</strong>
@@ -241,8 +241,8 @@ const MashupCard = (props) => {
     }
 
     return (
-            <div key={mashup[0]} className="mashup-card">
-                <div className="view-mashup">
+            <div key={mashup[0]} className="mashup-card col-4">
+                <div className="view-mashup purple">
                     <div className="saved-mashup-title"><strong>{mashup[1]}</strong></div>
                     <form action="/savedmashup" method="POST">
                         <input type="hidden" name="mashup_id" value={mashup[0]}/>

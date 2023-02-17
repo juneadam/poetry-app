@@ -1,4 +1,8 @@
-{% extends 'base.html' %} {% block head %}
+{% extends 'base.html' %} 
+{% block title %}User Mashups{% endblock %}
+{% block head %}
+
+
 
 <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 <script src="https://unpkg.com/react@16/umd/react.development.js"></script>
@@ -8,7 +12,11 @@
 <div class="container" id="public-mashups-header">
     <h1>User Mashups</h1>
 </div>
-<div id="display-results" class="container"></div>
+<div class="container">
+    <div id="display-results" class="d-flex flex-row">
+
+    </div>
+</div>
 
 <script src="/static/publicmashups.jsx" type="text/jsx"></script>
 {% endblock %}

@@ -4,7 +4,7 @@ const MashupCard = (props) => {
     const mashupCards = []
     for (const mashup of props.mashups) {
         mashupCards.push(
-            <div className="mashupCard" key={mashup[0]}>
+            <div className="mashupCard col-4 purple" key={mashup[0]}>
                 <form action="/savedmashup" method="POST">
                     <p><strong>{mashup[1]}</strong> by {mashup[2]}</p>
                     <input type="hidden" name="mashup_id" value={mashup[0]}></input>
