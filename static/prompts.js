@@ -3,7 +3,7 @@
 // Sets an event listener on the new prompt button that requests
 // random prompt text from the database.
 
-const promptHole = document.querySelector('#prompt-hole')
+const promptHole = document.querySelector('#prompt-hole strong')
 
 const randomPrompt = document.querySelector('#prompt-btn').addEventListener('click', () => {
     fetch('/prompt-hole.json')

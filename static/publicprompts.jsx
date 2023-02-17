@@ -4,7 +4,7 @@ const ResponseCard = (props) => {
     const responseCards = []
     for (const response of props.responses) {
         responseCards.push(
-            <div className="responseCard col-4 purple" key={response[0]}>
+            <div className="responseCard  col-md-3 col-sm-6 col-auto purple" key={response[0]}>
                 <p><strong>{response[1]}</strong></p>
                 <p>by {response[2]}</p>
                 <p>

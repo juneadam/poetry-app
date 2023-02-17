@@ -41,13 +41,11 @@ const UsernameCard = (props) => {
 
 
 const PoemCard = (props) => {
-    const PoemCards = [];
-    for (const poem of props.bookmarks) {
-
-        PoemCards.push(
-            <div className="col-4" key = {poem[0]}>
-                <form action="/savedpoem" className="saved-poem-card purple" method="POST">
-                    <div className="bookmarked-poem-link"><strong>{poem[1]}</strong></div> 
+    let poem = props.poem
+    return (
+            <div className="col-md-4 col-sm-6 col-12 saved-poem-card purple" key = {poem[0]}>
+                <form action="/savedpoem" method="POST">
+                    <div className="bookmarked-poem-title"><strong>{poem[1]}</strong></div> 
                     <div>by {poem[2]}</div>
                     <input type="hidden" name="bk_poem_id" value={poem[0]}></input>
                     <button type="submit" className="btn btn-outline-secondary" method="POST"> View/Edit Comments</button>
@@ -55,10 +53,6 @@ const PoemCard = (props) => {
             </div>
         ); 
     }
-
-    return <section className="PoemCards">{PoemCards}</section>;
-};
-
 
 // Creating a container for the poem cards, that sets bookmarks
 // as a state variable, uses a fetch request in a function to
@@ -77,15 +71,19 @@ const UserSavedPoems = (props) => {
     }
     
     React.useEffect(fetchBookmarks, [])
+
+    const poemCards = []
+
+    for (let bookmark of bookmarks) {
+        poemCards.push(<PoemCard key={bookmark[0]} poem={bookmark} />);
+    }
       
     return (
-        <div>
+        <section className="col-12 d-flex flex-wrap" id="PoemCards">
 
-            <div className="container">
-            <PoemCard bookmarks={bookmarks} />
-            </div>
+            {poemCards}
 
-        </div>
+        </section>
     );
   }
 
@@ -127,7 +125,7 @@ const PromptCard = (props) => {
     }
 
     return (
-        <div className="prompt-card col-4" key={prompt[0]}>
+        <div className="prompt-card col-md-3 col-sm-6 col-12" key={prompt[0]}>
             <div>    
                 <div className="view-prompt purple">
                     <form action="/savedprompt" method="POST">
@@ -193,12 +191,8 @@ const UserSavedPrompts = (props) => {
     }
 
     return (
-        <section id="PromptCards">
-        <div className='container'>
-        
+        <section className="col-12 d-flex flex-wrap" id="PromptCards">
             {promptCards}
-
-        </div>
         </section>
     )
 }
@@ -241,7 +235,7 @@ const MashupCard = (props) => {
     }
 
     return (
-            <div key={mashup[0]} className="mashup-card col-4">
+            <div key={mashup[0]} className="mashup-card col-md-3 col-sm-6 col-12">
                 <div className="view-mashup purple">
                     <div className="saved-mashup-title"><strong>{mashup[1]}</strong></div>
                     <form action="/savedmashup" method="POST">
@@ -292,13 +286,13 @@ const UserSavedMashups = (props) => {
     };
 
     return (
-        <div className='container'>
+        <React.Fragment>
 
-            <section id="MashupCards">
+            <section className="col-12 d-flex flex-wrap" id="MashupCards">
                 {mashupCards}
             </section>
 
-        </div>
+        </ React.Fragment>
     )
 }
 

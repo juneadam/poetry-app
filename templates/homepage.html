@@ -3,16 +3,16 @@
 {% block title %}Home{% endblock %}
 
 {% block body %}
-<div class="container">
+<div class="container page-header">
     <h1>Poetry Toolkit</h1>
     <h4>Tools for dorks</h4>
 </div>
 
-<div class="container">
+<div class="container d-flex flex-wrap" id="front-page-forms">
     <div class="row">
-        <div class="col-6">
+        <div class="col-md-5 offset-1 col-auto form-border">
             <form class="row g-1" action="/login" id="login" method="POST">
-                Log in to Your Account
+                <h4>Log in to Your Account</h4>
                     <div class="form-floating mb-1">
                         <input type="text" class="form-control" name="email" id="login-enter-email" placeholder="Email"></input>  
                         <label for="login-enter-email" class="form-label">Email</label> 
@@ -24,9 +24,9 @@
                 <button type="submit" class="btn btn-outline-secondary">Sign In</button>
             </form>
         </div>
-        <div class="col-6">
+        <div class="col-md-5 offset-1 col-auto form-border">
             <form action="/sign-up" class="row g-1" id="sign-up" method="POST">
-                Create an Account
+                <h4>Create an Account</h4>
                 <div class="form-floating mb-1">
                     <input class="form-control" type="email" name="email" id="sign-up-enter-email" placeholder="Email"></input>
                     <label for="sign-up-enter-email" class="form-label">Email</label>
