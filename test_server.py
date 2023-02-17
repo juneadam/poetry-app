@@ -275,6 +275,32 @@ class FlaskTestsLogout(TestCase):
 
     # ============ testing poems JSON routes ============ #
 
+class FlaskTestsPoemsJSON(TestCase):
+
+    def setUp(self):
+        """Stuff to do before every test."""
+
+        # Get the Flask test client
+        self.client = app.test_client()
+
+        # Show Flask errors that happen during tests
+        app.config['TESTING'] = True
+
+        # Connect to test database
+        connect_to_db(app, db_uri="postgresql:///testdb", echo=False)
+
+        # Create tables and add sample data
+        db.create_all()
+        seed_database()
+
+    def tearDown(self):
+        """Do at end of every test."""
+
+        db.session.close()
+        db.drop_all()
+
+    # def test_call_random_poem():
+
 
 
 

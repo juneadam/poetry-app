@@ -39,8 +39,38 @@ def logged_in_JSON(route_function):
     return wrapper
 
 
+# ============ poems: url payload generator ============#
 
-# ============ linecount range modifier ============ #
+def get_payload(author, title, lines, linecount):
+    """checks to see if user is using certain parameters, and if so,
+    adds a tuple to the payload list to be formatted into a usable URL
+    for an API call."""
+
+    payload = []
+
+    if author:
+        payload.append(('author', author))
+    if title:
+        payload.append(('title', title))
+    if lines:
+        payload.append(('lines', lines))
+    if linecount:
+        payload.append(('linecount', linecount))
+
+    input_fields = ''
+    output_fields = ''
+
+    for tup in payload:
+        input_fields = input_fields + tup[0] + ',' #/author,title,linecount/shakespeare;sonnet;14
+        output_fields = output_fields + tup[1] + ';'
+
+    input_fields = input_fields[:-1]
+    output_fields = output_fields[:-1]
+
+    return (input_fields, output_fields)
+
+
+# ============ mashups: linecount range modifier ============ #
 
 def range_modifier(linecount):
     """modifier to add deeper selection criteria to smaller linecount datasets"""
@@ -55,7 +85,7 @@ def range_modifier(linecount):
         
 
 
-# ============ poem form easter egg ============= #
+# ============ mashups: poem form easter egg ============= #
 
 def form_easter_egg(linecount):
     """Easter egg that adds line-specific form names to mashup titles."""
