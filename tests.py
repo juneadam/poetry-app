@@ -290,7 +290,39 @@ class FlaskTestsPoemsJSON(TestCase):
         db.session.close()
         db.drop_all()
 
-    # def test_call_random_poem():
+    def _mock_call_random_poem():
+        """Mock API call for a random poem."""
+
+        return({'data': [
+            {'title': 'This is a Test',
+            'author': "Emily Emily",
+            'lines': [
+                'Thou blind fool',
+                'This is just a test',
+                'Why are you taking it so seriously?'
+            ],
+            'linecount':'3'}
+        ]})
+
+    server.call_random_poem = _mock_call_random_poem
+
+    def test_poems_route_API(self):
+        """Testing HTML render for the poems page."""
+
+        result = self.client.get('/poems')
+        self.assertEqual(result.status_code, 200)
+        self.assertIn(b'This is just a test', result.data)
+
+    # def _mock_call_random_poem_with_inputs_404():
+    #     """Mock API call where the inputs return a 404 dictionary."""
+
+    #     return({
+    #         'status': 404
+    #         'reason': "Not found"
+    #     })
+
+    # server.call_random_poem_with_inputs.response_list = _mock_call_random_poem_with_inputs_404
+
 
     # ============ testing update bookmarks POST routes ============ #
 

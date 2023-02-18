@@ -116,8 +116,4 @@ const bookmarkPoem = document.querySelector('#bookmark-poem').addEventListener('
         if (responseBookmark === 'not logged in') {
             alert('Only users who are logged in can save poems and comments!')
         }
-        // else {
-        //     alert('Error, please try again.')
-        // }
-    })
 })
