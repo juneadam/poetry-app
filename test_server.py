@@ -356,10 +356,6 @@ class FlaskTestsPoemsJSON(TestCase):
             assert b'error' in result.data
 
 
-
-
-
-
 if __name__ == "__main__":
     os.system('dropdb testdb')
     os.system('createdb testdb')

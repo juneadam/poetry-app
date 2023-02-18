@@ -1,5 +1,7 @@
 attrs==21.4.0
+chromedriver-py==107.0.5304.62
 click==8.0.1
+coverage==7.1.0
 Flask==2.0.1
 Flask-SQLAlchemy==2.5.1
 greenlet==1.1.2
@@ -15,9 +17,8 @@ psycopg2-binary==2.9.1
 py==1.11.0
 pyparsing==3.0.8
 pytest==7.1.2
+selenium
 SQLAlchemy==1.4.25
 tomli==2.0.1
 Werkzeug==2.0.1requests
 
-chromedriver-py==107.0.5304.62
-selenium
