@@ -154,7 +154,7 @@ const PromptCard = (props) => {
                             <input type="checkbox" name="public-check" id={`${prompt[0]}-public-check`} checked={publicPromptBool} onChange={(event) => updatePublicPromptBool(event.target.checked)}/> Public
                             <div><input type="hidden" name="mashup_public" value={prompt[4]}/>
                             <input type="button" className="update-btn" method="POST" value="Update" onClick={updatePromptBoolInDB}/>                                
-                                <a className="btn btn-secondary-outline" data-bs-toggle="collapse" href={`#moreInfo${prompt[0]}`} role="button" aria-expanded="false" aria-controls={`moreInfo${prompt[0]}`}>
+                                <a className="btn btn-secondary-outline q" data-bs-toggle="collapse" href={`#moreInfo${prompt[0]}`} role="button" aria-expanded="false" aria-controls={`moreInfo${prompt[0]}`}>
                                 ?
                                 </a>
                                 <div className="collapse" id={`moreInfo${prompt[0]}`}>
@@ -251,7 +251,7 @@ const MashupCard = (props) => {
                         </div>
                         <div>
                             <input type="button" method="POST" onClick={updateMashupBoolInDB} value="Update"/>
-                            <a className="btn btn-secondary-outline" data-bs-toggle="collapse" href={`#moreInfo${mashup[0]}`} role="button" aria-expanded="false" aria-controls={`moreInfo${mashup[0]}`}>
+                            <a className="btn btn-secondary-outline q" data-bs-toggle="collapse" href={`#moreInfo${mashup[0]}`} role="button" aria-expanded="false" aria-controls={`moreInfo${mashup[0]}`}>
                                 ?
                             </a>
                             <div className="collapse" id={`moreInfo${mashup[0]}`}>

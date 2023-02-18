@@ -10,6 +10,10 @@ body {
     font-family: 'Lora', serif;
     }
 
+h3 {
+    font-style: italic;
+}
+
 .footer {
     display: flex;
     align-items: center;
@@ -27,6 +31,14 @@ body {
 
 .purple-3 {
     border-color: #7d5cff99;
+}
+
+.btn {
+    box-shadow: 3px 3px 3px #7d5cff60;
+}
+
+.q {
+    box-shadow: none;
 }
 
 .alt-btn {
@@ -64,6 +76,8 @@ body {
 #optional-inputs-menu {
     border: 1px solid gainsboro;
     border-radius: 7px;
+    box-shadow: 3px 3px 3px #7d5cff60;
+
 }
 
 /* ============ savedmashup.html ============ */
@@ -105,7 +119,7 @@ body {
     display: inline-block;
     margin: 1em 2em 1em 2em;
     padding: 0.5em 1em;
-    border: 2px solid gainsboro;
+    border: 2px solid #dcdcdc;
     border-radius: 7px;
 }
 
