@@ -79,7 +79,7 @@ const UserSavedPoems = (props) => {
     }
       
     return (
-        <section className="col-12 d-flex flex-wrap" id="PoemCards">
+        <section className="col-12 d-flex flex-wrap justify-content-evenly align-items-stretch" id="PoemCards">
 
             {poemCards}
 
@@ -125,7 +125,7 @@ const PromptCard = (props) => {
     }
 
     return (
-        <div className="prompt-card col-md-3 col-sm-6 col-12" key={prompt[0]}>
+        <div className="prompt-card col-md-4 col-sm-6 col-12" key={prompt[0]}>
             <div>    
                 <div className="view-prompt purple">
                     <form action="/savedprompt" method="POST">
@@ -191,7 +191,7 @@ const UserSavedPrompts = (props) => {
     }
 
     return (
-        <section className="col-12 d-flex flex-wrap" id="PromptCards">
+        <section className="col-12 d-flex flex-wrap justify-content-evenly align-items-stretch" id="PromptCards">
             {promptCards}
         </section>
     )
@@ -235,7 +235,7 @@ const MashupCard = (props) => {
     }
 
     return (
-            <div key={mashup[0]} className="mashup-card col-md-3 col-sm-6 col-12">
+            <div key={mashup[0]} className="mashup-card col-md-4 col-sm-6 col-12">
                 <div className="view-mashup purple">
                     <div className="saved-mashup-title"><strong>{mashup[1]}</strong></div>
                     <form action="/savedmashup" method="POST">
@@ -288,7 +288,7 @@ const UserSavedMashups = (props) => {
     return (
         <React.Fragment>
 
-            <section className="col-12 d-flex flex-wrap" id="MashupCards">
+            <section className="col-12 d-flex flex-wrap justify-content-evenly align-items-stretch" id="MashupCards">
                 {mashupCards}
             </section>
 

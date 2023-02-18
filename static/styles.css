@@ -28,7 +28,8 @@ body {
     margin-bottom: 2em;
     padding: 0.5em 1em;
     border: 2px solid gainsboro;
-    border-radius: 10px;
+    border-radius: 7px;
+    background-color: #af9bff60;
 }
 
 .form-border {
@@ -36,7 +37,8 @@ body {
     margin: 2em;
     padding: 0.5em 1em;
     border: 2px solid gainsboro;
-    border-radius: 10px;
+    border-radius: 7px;
+    background-color: #af9bff60;
 }
 
 /* ============ poems.html ============ */
@@ -46,9 +48,11 @@ body {
     src: url("C:\Users\juned\AppData\Local\Microsoft\Windows\Fonts\EBGaramond-VariableFont_wght.ttf") format("woff2-variations");
 }
 
-/* #random-poem {
-    font-weight: 900;
-} */
+#optional-inputs-menu {
+    /* display: inline-block; */
+    border: 1px solid gainsboro;
+    border-radius: 7px;
+}
 
 /* ============ public shared items routes ============ */
 
@@ -65,7 +69,7 @@ body {
     margin: 1em 2em 1em 2em;
     padding: 0.5em 1em;
     border: 2px solid gainsboro;
-    border-radius: 10px;
+    border-radius: 7px;
 }
 
 .mashupCard {
@@ -73,7 +77,7 @@ body {
     margin: 1em 2em 1em 2em;
     padding: 0.5em 1em;
     border: 2px solid gainsboro;
-    border-radius: 10px;
+    border-radius: 7px;
 }
 
 /* ============ user profile jsx ============ */
@@ -92,6 +96,7 @@ body {
     padding: 1em 1em;
     border: 1px solid rgba(0,0,0,.5);
     border-radius: 5px;
+    margin: 1em;
 }
 
 #PromptCards {
@@ -106,6 +111,7 @@ body {
     border: 2px solid gainsboro;
     border-radius: 10px;
     background-color: rgba(220,220,220,.5);
+    margin: 1em;
 }
 
 .view-prompt {
@@ -126,6 +132,7 @@ body {
     border: 1px solid gainsboro;
     border-radius: 10px;
     background-color: rgba(220,220,220,.5);
+    margin: 1em;
 }
 
 .view-mashup {

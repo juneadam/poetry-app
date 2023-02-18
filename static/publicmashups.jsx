@@ -1,9 +1,8 @@
 // React file for generating HTML for public mashups template
 
 const MashupCard = (props) => {
-    const mashupCards = []
-    for (const mashup of props.mashups) {
-        mashupCards.push(
+    const mashup = props.mashup
+        return (
             <div className="mashupCard col-md-3 col-sm-6 col-auto purple" key={mashup[0]}>
                 <form action="/savedmashup" method="POST">
                     <p><strong>{mashup[1]}</strong> by {mashup[2]}</p>
@@ -12,9 +11,7 @@ const MashupCard = (props) => {
                 </form>
             </div>
         )
-    }
-    return <section id="mashupCards">{mashupCards}</section>;
-};
+    };
 
 
 
@@ -30,11 +27,19 @@ const fetchMashups = () => {
 }
 
 React.useEffect(fetchMashups, [])
+
+const mashupCards = []
+
+for (const mashup of mashups) {
+    mashupCards.push(<MashupCard mashup={mashup} />)
+}
   
 return (
-        <div className="container">
-        <MashupCard mashups={mashups} />
-        </div>
+    <React.Fragment>
+        <section id="public-mashup-cards" className="d-flex flex-wrap justify-content-between align-items-stretch">
+            {mashupCards}
+        </section>
+    </ React.Fragment>
 );
 }
 

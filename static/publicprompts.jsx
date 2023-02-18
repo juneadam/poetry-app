@@ -1,9 +1,8 @@
 // React file for generating HTML for public prompts template
 
 const ResponseCard = (props) => {
-    const responseCards = []
-    for (const response of props.responses) {
-        responseCards.push(
+    const response = props.response 
+        return (
             <div className="responseCard  col-md-3 col-sm-6 col-auto purple" key={response[0]}>
                 <p><strong>{response[1]}</strong></p>
                 <p>by {response[2]}</p>
@@ -19,9 +18,7 @@ const ResponseCard = (props) => {
                 </div>
             </div>
         )
-    }
-    return <section id="responseCards">{responseCards}</section>;
-};
+    };
 
 
 // Creating a container for the poem cards, that sets bookmarks
@@ -41,13 +38,17 @@ const PublicResponses = (props) => {
     }
     
     React.useEffect(fetchPrompts, [])
+    const responseCards = []
+    for (const response of responses) {
+        responseCards.push(<ResponseCard response={response} />)
+    }
       
     return (
         <div>
 
-            <div className="container">
-            <ResponseCard responses={responses} />
-            </div>
+            <section id="public-response-cards" className="d-flex flex-wrap justify-content-between align-items-stretch">
+                {responseCards}
+            </section>
 
         </div>
     );
