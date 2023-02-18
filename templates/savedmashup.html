@@ -20,9 +20,9 @@
             <div class="col-12" id="saved-mashup-text">
                 {% for line in lines %}
                     <div>
-                        <span hidden value="{{ line['author'] }}""></span>
-                        <span hidden value="{{ line['source_title'] }}""></span>
-                        <span value="{{ line['line'] }}"">{{ line['line'] }}</span>
+                        <span hidden value="{{ line['author'] }}" id="author"></span>
+                        <span hidden value="{{ line['source_title'] }}" id="title"></span>
+                        <span value="{{ line['line'] }}" id="line-text">{{ line['line'] }}</span>
                     </div>
                 {% endfor %}
             </div>

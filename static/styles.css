@@ -1,11 +1,13 @@
 /* poetry app styling */
 
 
-/* ============ base.html ============ */
+/* ============ base.html / app-wide ============ */
+
+@import url('https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600;1,700&display=swap');
 
 body {
-    background-image: url(/static/imgs/olga-thelavart-vS3idIiYxX0-unsplash.jpg);
-    /* font-family: ; */
+    background-image: url(/static/imgs/olga-thelavart-vS3idIiYxX0-unsplash.png);
+    font-family: 'Lora', serif;
     }
 
 .footer {
@@ -59,13 +61,12 @@ body {
 
 /* ============ poems.html ============ */
 
-#poem-hole {
+/* #poem-hole {
     font-family: EBGaramond;
     src: url("C:\Users\juned\AppData\Local\Microsoft\Windows\Fonts\EBGaramond-VariableFont_wght.ttf") format("woff2-variations");
-}
+} */
 
 #optional-inputs-menu {
-    /* display: inline-block; */
     border: 1px solid gainsboro;
     border-radius: 7px;
 }
@@ -90,7 +91,7 @@ body {
 
 .mashupCard {
     display: inline-block;
-    margin: 1em 2em 1em 2em;
+    margin: 1em 0em 1em 1em;
     padding: 0.5em 1em;
     border: 2px solid gainsboro;
     border-radius: 7px;
@@ -104,10 +105,6 @@ body {
 }
 
 .saved-poem-card {
-    /* border: 1px solid gainsboro;
-    border-radius: 5px;
-    padding: 1em;
-    margin-top: 1em; */
     display: inline-block;
     padding: 1em 1em;
     border: 1px solid rgba(0,0,0,.5);
@@ -139,7 +136,7 @@ body {
 
 #MashupCards {
     align-items: center;
-    justify-content: space-around;
+    /* justify-content: space-around; */
 }
 
 .mashup-card {
@@ -148,18 +145,20 @@ body {
     border: 1px solid gainsboro;
     border-radius: 10px;
     background-color: rgba(220,220,220,.5);
-    margin: 1em;
+    /* margin: 1em; */
 }
 
 .view-mashup {
-    /* border: 1px solid gainsboro; */
-    /* border-radius: 5px;
-    padding: 1em;
-    margin-top: 1em; */
     display: inline-block;
     padding: 0.5em 1em;
     border: 1px solid rgba(0,0,0,.5);
     border-radius: 5px;
+}
+
+.mashup-form {
+    margin-top: 1em;
+    margin-bottom: .5em;
+    margin-left: .75em;
 }
 
 #inputs-body {

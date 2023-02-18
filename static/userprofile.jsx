@@ -238,10 +238,10 @@ const MashupCard = (props) => {
             <div key={mashup[0]} className="mashup-card col-md-4 col-sm-6 col-12">
                 <div className="view-mashup purple">
                     <div className="saved-mashup-title"><strong>{mashup[1]}</strong></div>
-                    <form action="/savedmashup" method="POST">
-                        <input type="hidden" name="mashup_id" value={mashup[0]}/>
-                        <button type="submit" className="btn btn-outline-secondary" method="POST">View Mashup</button>
-                    </form>
+                        <form action="/savedmashup" method="POST" className="mashup-form">
+                            <input type="hidden" name="mashup_id" value={mashup[0]}/>
+                            <button type="submit" className="btn btn-outline-secondary mashup-form-button" method="POST">View Mashup</button>
+                        </form>
                 </div>
                 <div className="make-public-mashup">
                     <form action="/update-public-mashup" method="POST">

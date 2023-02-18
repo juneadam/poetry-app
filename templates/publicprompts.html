@@ -9,10 +9,15 @@
 <script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
 {% endblock head %} {% block body %}
 
-<div class="container page-header" id="public-responses-header">
-    <h1>User Prompt Responses</h1>
+<div class="container">
+    <div class="row page-header" id="public-responses-header">
+        <h1>User Prompt Responses</h1>
+    </div> 
 </div>
-<div id="display-responses" class="container"></div>
+
+<div id="display-responses" class="container">
+
+</div>
 
 <script src="/static/publicprompts.jsx" type="text/jsx"></script>
 {% endblock %}

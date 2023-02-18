@@ -3,7 +3,7 @@
 const ResponseCard = (props) => {
     const response = props.response 
         return (
-            <div className="responseCard  col-md-3 col-sm-6 col-auto purple" key={response[0]}>
+            <div className="responseCard  col-md-3 col-sm-10 purple" key={response[0]}>
                 <p><strong>{response[1]}</strong></p>
                 <p>by {response[2]}</p>
                 <p>
