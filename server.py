@@ -446,7 +446,11 @@ def mashup_generator():
 
     for i in range(0, linecount):
         poem = choice(mashup_response)
+        while poem['lines'][i] == '':
+            poem = choice(mashup_response)
         poems_by_line_tuples_list.append((poem['author'], poem['title'], poem['lines'][i]))
+
+    print(f'\n\n\npoems_by_line_tuples_list {poems_by_line_tuples_list}\n\n')
     
     return jsonify({'data': poems_by_line_tuples_list, 
                     'username': username,
