@@ -54,7 +54,7 @@ const savePrompt = document.querySelector('#save-prompt').addEventListener('clic
             alert('Prompt and response saved!');
         }
         else if (responseData == 'update') {
-             alert('Response updated and saved! (FUNCTIONALITY NOT YET BUILT)');
+             alert('Response updated and saved!');
         }
         else if (responseData === 'not logged in') {
             alert('Only users who are logged in can save prompts and responses!');
