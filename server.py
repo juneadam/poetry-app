@@ -330,7 +330,7 @@ def load_saved_mashup():
     mashup_id = int(request.form.get('mashup_id'))
     mashup_obj = crud.find_mashup_by_id(mashup_id)
     mashup_title = mashup_obj.mashup_title
-    username = mashup_obj.user.username
+    username = mashup_obj.mashup_author
 
     mashup_lines_list = crud.find_mashup_lines_by_id(mashup_id)
 

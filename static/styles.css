@@ -23,6 +23,14 @@ body {
     background-color: #e3dcff;
 }
 
+.purple-3 {
+    border-color: #7d5cff99;
+}
+
+.alt-btn {
+    border-color: #e3dcff;
+}
+
 .accordion-button {
     background-color: #e3dcff;
 }
