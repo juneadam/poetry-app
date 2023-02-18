@@ -19,10 +19,13 @@
         <label for="poem-body">
             <div class="col-12" id="saved-mashup-text">
                 {% for line in lines %}
-                    <div>
-                        <span hidden value="{{ line['author'] }}" id="author"></span>
-                        <span hidden value="{{ line['source_title'] }}" id="title"></span>
-                        <span value="{{ line['line'] }}" id="line-text">{{ line['line'] }}</span>
+                    <div class="d-flex flex-wrap">
+                        
+                        <!-- mashup line -->
+                        <a class="line-text">{{ line['line'] }}</a>
+                        
+                        <!-- hover element that displays the author and poem the line originates from -->
+                        <span class="hover-info">{{ line['author'] }} - <i>{{ line['source_title'] }}</i></span>
                     </div>
                 {% endfor %}
             </div>

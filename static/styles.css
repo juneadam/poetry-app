@@ -61,15 +61,35 @@ body {
 
 /* ============ poems.html ============ */
 
-/* #poem-hole {
-    font-family: EBGaramond;
-    src: url("C:\Users\juned\AppData\Local\Microsoft\Windows\Fonts\EBGaramond-VariableFont_wght.ttf") format("woff2-variations");
-} */
-
 #optional-inputs-menu {
     border: 1px solid gainsboro;
     border-radius: 7px;
 }
+
+/* ============ savedmashup.html ============ */
+
+.line-text {
+    color: black;
+    text-decoration: none;
+}
+
+.line-text:hover{
+    color: #7d5cff;
+    text-decoration: dashed;
+}
+
+.hover-info {
+    display: none;
+  }
+  
+ .line-text:hover + .hover-info {
+    display: inline;
+    background-color: #7d5cff;
+    color: white;
+    padding: 5px 10px;
+    border-radius: 4px;
+    font-size: 13px;
+  }
 
 /* ============ public shared items routes ============ */
 

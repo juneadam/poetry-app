@@ -29,9 +29,14 @@ const mashupButton = document.querySelector('#mashup-poem').addEventListener('cl
         mashupText.innerHTML = ''
         for (poem of mashupDataJson['data']) {
             mashupText.insertAdjacentHTML('beforeend', 
-            `<div id="${poem[2]}">
-            <div hidden class="hidden">${poem[0]}@${poem[1]}@${poem[2]}</div>
-            ${poem[2]}
+            `<div class="d-flex flex-wrap" id="${poem[2]}">
+                <div hidden class="hidden">${poem[0]}@${poem[1]}@${poem[2]}</div>
+                
+                <!-- mashup line -->
+                <a class="line-text">${poem[2]}</a>
+
+                <!-- hover element that displays the author and poem the line originates from -->
+                <span class="hover-info">${poem[0]} - <i>${poem[1]}</i></span>
             </div>`
             )
         }
