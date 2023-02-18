@@ -61,7 +61,7 @@ class FlaskTestsSimpleRenders(TestCase):
 
         result = self.client.get('/mashups')
         self.assertEqual(result.status_code, 200)
-        self.assertIn(b'<h1>Mashup Generator!</h1>', result.data)
+        self.assertIn(b'<h1>Mashup Generator</h1>', result.data)
 
     def test_add_prompt_route_success(self):
         """Testing the HTML render for the add_prompt page."""
@@ -301,7 +301,7 @@ class FlaskTestsPoemsJSON(TestCase):
 
     # def test_call_random_poem():
 
-    # ============ testing update booksmarks POST routes ============ #
+    # ============ testing update bookmarks POST routes ============ #
 
 class FlaskTestsPoemsJSON(TestCase):
 
@@ -327,20 +327,33 @@ class FlaskTestsPoemsJSON(TestCase):
         db.session.close()
         db.drop_all()
 
-    # def test_update_comments(self):
+    def test_update_comments_success(self):
 
-    #     with self.client.session_transaction() as sess:
-    #         sess["user_id"] = 1
+        with self.client.session_transaction() as sess:
+            sess["user_id"] = 1
 
-    #     with self.client:
-    #         result = self.client.post('/update-comments', data={
-    #             'updated_text': 'test text only',
-    #             'title': 'good_poem_for_sure '
-    #         }, follow_redirects=True)
+        with self.client:
+            result = self.client.post('/update-comments', json={
+                'updated_text': 'test text only',
+                'title': 'good_poem_for_sure'
+            }, follow_redirects=True)
 
-    #         self.assertEqual(result.status_code, 200, result.data)
-    #         assert session['user_id'] is None
-    #         self.assertIn(b'User not found, please create an account below!', result.data)
+            self.assertEqual(result.status_code, 200, result.data)
+            assert b'ok' in result.data
+
+    def test_update_comments_failure(self):
+
+        with self.client.session_transaction() as sess:
+            sess["user_id"] = 1
+
+        with self.client:
+            result = self.client.post('/update-comments', json={
+                'updated_text': 'test text only',
+                'title': 'fake_poem_name'
+            }, follow_redirects=True)
+
+            self.assertEqual(result.status_code, 200, result.data)
+            assert b'error' in result.data
 
 
 

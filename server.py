@@ -82,7 +82,6 @@ def logout():
 
     session['user_id'] = None
     session['username'] = None
-    # print(session['user_id'])
     flash('You have successfully logged out.')
     return redirect('/')
 
@@ -122,13 +121,11 @@ def call_random_poem_with_inputs():
     input_fields, output_fields = get_payload(author=author, title=title, lines=lines, linecount=linecount)
 
     url = f'https://poetrydb.org/{input_fields}/{output_fields}/all.json'
-    # print(f'\n\n url {url}\n\n')
 
     res = requests.get(url)
     random_poem = []
     
     response_list = res.json()
-    # print(response_list)
 
     # PoetryDB API sends a dictionary {404: "not found"} if it returns no results - otherwise,
     # format is always a list of dictionaries [{}]
@@ -139,8 +136,6 @@ def call_random_poem_with_inputs():
             random_poem.append(response_list[randint(0, (len(response_list) - 1))])
         elif len(response_list) == 1:
             random_poem.append(response_list[0])
-    # print(random_poem)
-    # print(f"\n random_poem: {random_poem}\n\n")
 
     return jsonify({'data': random_poem})
 
@@ -154,7 +149,6 @@ def bookmark_random_poem():
     author = request.json.get('author')[2:]
     lines_string = request.json.get('lines')
     comments = request.json.get('comments')
-    # print(author)
 
     lines = lines_string.split('\n')
     bk_poem_id = ''
@@ -211,11 +205,8 @@ def save_prompt_and_text():
 
     prompt_text = request.json.get('prompt_text')
     user_response = request.json.get('user_response')
-    # print(f'\n\n\n\n prompt_text: {prompt_text} \n\n\n')
-    # print(f'\n\n\n\n user_response: {user_response} \n\n\n')
 
     promptDB_object = crud.find_prompt_by_text(prompt_text=prompt_text) 
-    # print(f'\n\n\n\n promptDB_object: {promptDB_object} \n\n\n')
 
     user_id = session['user_id']
 
@@ -257,7 +248,6 @@ def save_prompt_to_db():
     """Saves the new prompt to the database."""
 
     user_prompt = request.json.get('new_prompt')
-    # print(user_prompt)
 
     if user_prompt:
         new_prompt_obj = crud.create_prompt(prompt=user_prompt)
@@ -282,8 +272,6 @@ def load_bookmarked_poem_and_comments():
     user_id = session['user_id']
     username = session['username']
 
-    # print(f'\n\n\n{type(bk_poem_id)}\n\n\n')
-
     poem_object = crud.find_bookmark_by_id(bk_poem_id=bk_poem_id)
     title = poem_object.title
     author = poem_object.author
@@ -295,16 +283,9 @@ def load_bookmarked_poem_and_comments():
 
     comments = crud.find_all_comments_by_user_id(user_id)
     comment = ''
-    # print(f'\n\n\n comments: {comments}')
     for comment_obj in comments:
         if comment_obj.bk_poem_id == bk_poem_id:
             comment = comment_obj.user_notes
-            # print(f'\n\n\n user_notes: {comment_obj.user_notes}')
-    # print(f"\n\n comment: {comment} \n\n")
-    # print(f"\n\n poem_object: {poem_object} \n\n")
-    # print(f"\n\n bk_poem_id: {bk_poem_id} \n\n")
-    # print(f"\n\n user_id: {user_id} \n\n")
-    # print(f"\n\n {lines} \n\n")
 
     return render_template("savedpoem.html",
                             title=title,
@@ -328,20 +309,13 @@ def load_bookmarked_prompt_and_response():
 
     prompt_response_list = crud.find_all_saved_prompts_by_user_id(user_id)
     user_response = ''
-    # print(f'\n\n\n prompt_response_list {prompt_response_list}')
     for response in prompt_response_list:
-        # print(f'\n\nresponse {response} \n response.prompt_id {type(response.prompt_id)} {response.prompt_id} \n prompt_id {prompt_id} \n text{response.user_text}')
         if int(response.saved_prompt_id) == saved_prompt_id:
             user_response = response.user_text
             prompt_id = response.prompt_id
-            # print(f'\n\n\n response {response} \n\n\n')\
 
     prompt_obj = crud.find_prompt_by_id(prompt_id)
     prompt_text = prompt_obj.prompt_text
-    # print(f'\n\n\n prompt_id {saved_prompt_id}')
-    # print(f'\n\n\n user_id {user_id}')
-    # print(f'\n\n\n prompt_text {prompt_text}')
-    # print(f'\n\n\n user_response {user_response}')
     return render_template("savedprompt.html",
                             username=username,
                             prompt_text=prompt_text,
@@ -357,10 +331,8 @@ def load_saved_mashup():
     mashup_obj = crud.find_mashup_by_id(mashup_id)
     mashup_title = mashup_obj.mashup_title
     username = mashup_obj.user.username
-    # print(mashup_title)
 
     mashup_lines_list = crud.find_mashup_lines_by_id(mashup_id)
-    # print(f'\n\n\nmashup_lines_list {mashup_lines_list}\n\n')
 
     lines=[]
     for line in mashup_lines_list:
@@ -380,22 +352,19 @@ def update_saved_comments():
     with new edits."""
 
     user_id = session['user_id']
-    # print(f'\n\n\nuser_id type: {type(user_id)}\n\n')
     updated_text = request.json.get('updated_text')
     title = request.json.get('title')
-    # print(f'\n\n\ntitle: {title} author: {author}\nnew_text: {updated_text}\n\n')
 
     poem_object = crud.find_bookmark_by_title(title)
+    if not poem_object:
+        return 'error'
     bk_poem_id = poem_object.bk_poem_id
-    # print(f'\n\npoem_object {poem_object}')
-    # print(f'\n\n\nbk_poem_id: {bk_poem_id}\n\n\n')
 
     comments_by_user = crud.find_all_comments_by_user_id(user_id=user_id)
     comment_to_update = ''
     for comment_obj in comments_by_user:
         if comment_obj.bk_poem_id == bk_poem_id:
             comment_to_update = comment_obj  
-    # print(f'\n\n\ncomment_to_update: {comment_to_update.user_notes}\n\n\n')
 
     if comment_to_update:
         comment_to_update.user_notes = updated_text
@@ -413,22 +382,17 @@ def update_saved_response():
     with new edits."""
     
     user_id = session['user_id']
-    # print(f'\n\n\nuser_id type: {type(user_id)}\n\n')
 
     updated_response = request.json.get('updated_response')
     prompt_text = request.json.get('prompt_text')
-    # print(f'\n\n\nupdated_response: {updated_response}')
-    # print(f'\n\n\nprompt_text: {prompt_text}')
 
     prompt_id = crud.find_prompt_by_text(prompt_text).prompt_id
     response_obj_list = crud.find_saved_prompts_by_id(prompt_id)
-    # print(f'\n\n\nresponse_obj_list: {response_obj_list}')
 
     response_to_update = ''
     for response in response_obj_list:
         if response.user_id == user_id:
             response_to_update = response
-            # print(f'\n\n\nresponse_to_update: {response_to_update.user_text}')
             response_to_update.user_text = updated_response
 
     if response_to_update:
@@ -463,7 +427,6 @@ def mashup_generator():
     for i in range(linecount, (linecount + range_modifier(linecount))):
         res = requests.get(f'https://poetrydb.org/linecount/{i}/all.json')
         mashup_response.extend(res.json())
-    # print(f'\n\nmashup_response {mashup_response}\n\n')
 
     title_list = []
     for i in range(0, 4):
@@ -478,14 +441,12 @@ def mashup_generator():
     linecount_prefix = form_easter_egg(linecount)
     if linecount_prefix:
         title = linecount_prefix + title
-    # print(title)
 
     poems_by_line_tuples_list = []
 
     for i in range(0, linecount):
         poem = choice(mashup_response)
         poems_by_line_tuples_list.append((poem['author'], poem['title'], poem['lines'][i]))
-    # print(f'\n\n\npoems_list: {poems_by_line_tuples_list}\n\n')
     
     return jsonify({'data': poems_by_line_tuples_list, 
                     'username': username,
@@ -500,15 +461,12 @@ def save_mashup():
     dataList = request.json.get('dataList')
     title = request.json.get('title')
     author = request.json.get('author')[3:-13]
-    # print(f'\n\n\ndataList {dataList}\n')
-    # print(f'\n\ntitle {title}\n')
-    # print(f'\n\nauthor {author} {len(author)}\n')
 
     mashup_obj = crud.find_mashup_by_title(title)
 
-    if mashup_obj:
-        print(f'\n\n\nmashup_lines {mashup_obj.lines}\n\n')
-        print(f'\n\n dataList {dataList}\n\n')
+    # if mashup_obj:
+    #     print(f'\n\n\nmashup_lines {mashup_obj.lines}\n\n')
+    #     print(f'\n\n dataList {dataList}\n\n')
 
     if dataList == []:
         return 'empty'
@@ -519,16 +477,13 @@ def save_mashup():
 
     mashup_obj = crud.find_mashup_by_title(title)
     mashup_id = mashup_obj.mashup_id
-    # print(f'\n\n\n{mashup_id}\n\n\n')
 
     mashup_lines = []
     for line in dataList:
         split_line = line.split('@')
         mashup_lines.append(split_line)
-    # print(mashup_lines)
 
     new_mashup_lines = crud.create_mashup_lines(mashup_id=mashup_id, lines=mashup_lines)
-    # print(new_mashup_lines)
 
     db.session.add_all(new_mashup_lines)
     db.session.commit()
@@ -564,7 +519,6 @@ def fetch_bookmarks_json():
     for comment in user_comments:
         if comment.bk_poem_id not in bk_poem_ids:
             bk_poem_ids.append(comment.bk_poem_id)
-    # print(f'\n\n\n\n\n bk_poem_ids {bk_poem_ids} \n\n\n\n')
 
     bookmarks = []
     for bkid in bk_poem_ids:
@@ -573,7 +527,6 @@ def fetch_bookmarks_json():
         title = poem.title
         author = poem.author
         bookmarks.append((poem_id, title, author))
-    # print(f'\n\n\n\n\n bookmarks {bookmarks} \n\n\n\n')
 
     return jsonify({'bookmarks': bookmarks})
 
@@ -587,7 +540,6 @@ def fetch_prompts_json():
     for saved_prompt in user_prompts:
         prompt_in_db = crud.find_prompt_by_id(saved_prompt.prompt_id)
         prompt_texts.append((saved_prompt.saved_prompt_id, saved_prompt.user_text, prompt_in_db.prompt_text, saved_prompt.prompt_public))
-    # print(f'\n\n\nuser_prompts: {prompt_texts}\n\n\n')
 
     return jsonify({'user_prompts': prompt_texts})
 
@@ -614,17 +566,13 @@ def update_prompt_bool_in_db():
     user_id = session['user_id']
     public_check = bool(request.json.get('public_check'))
     saved_prompt_id = int(request.json.get('saved_prompt_id'))
-    # print(f'\n\nsaved_prompt_id type{type(saved_prompt_id)}\n\n')
-    # print(f'\nuser_id {user_id}\npublic_check {public_check}\nsaved_prompt_id {saved_prompt_id}\n')
 
     saved_prompt = crud.find_saved_prompt_by_saved_prompt_id(saved_prompt_id=saved_prompt_id)
-    # print(f'\n\nsaved_prompt{saved_prompt.user_id}\n\n')
     
     if saved_prompt.user_id != user_id:
         return 'wrong user'
     
     saved_prompt.prompt_public = public_check
-    # print(f'\n\nsaved_prompt_public {saved_prompt.prompt_public}\n\n')
     db.session.add(saved_prompt)
     db.session.commit()
 
@@ -639,16 +587,13 @@ def update_mashup_bool_in_db():
     public_check = bool(request.json.get('public_check'))
     saved_mashup_id = int(request.json.get('saved_mashup_id'))
 
-    # print(f'\nuser_id {user_id}\npublic_check {public_check}\nsaved_mashup_id {saved_mashup_id}\n')
 
     saved_mashup = crud.find_mashup_by_id(mashup_id=saved_mashup_id)
-    # print(f'\n\nsaved_mashup{saved_mashup.user_id}\n\n')
     
     if saved_mashup.user_id != user_id:
         return 'wrong user'
     
     saved_mashup.mashup_public = public_check
-    # print(f'\n\nsaved_mashup_public {saved_mashup.mashup_public}\n\n')
     db.session.add(saved_mashup)
     db.session.commit()
 
@@ -671,11 +616,8 @@ def deactivate_account():
     password1 = request.form.get('password1')
     password2 = request.form.get('password2')
     user_id = session['user_id']
-    # print(f'\n\nemail {email}\n')
-    # print(f'\n\nuser_id {user_id}\n')
 
     user = crud.find_user_by_email(email=email)
-    # print(f'user.user_id {user.user_id}\n')
 
     if password1 != password2:
         flash("Passwords do not match, please try again.")
@@ -723,11 +665,8 @@ def reactivate_account():
     password1 = request.form.get('password1')
     password2 = request.form.get('password2')
     user_id = session['user_id']
-    # print(f'\n\nemail {email}\n')
-    # print(f'\n\nuser_id {user_id}\n')
 
     user = crud.find_user_by_email(email=email)
-    # print(f'user.user_id {user.user_id}\n')
 
     if password1 != password2:
         flash("Passwords do not match, please try again.")
@@ -764,12 +703,10 @@ def fetch_public_prompts():
     """Generate a list of public prompt objects using crud function."""
 
     prompts_list = crud.find_all_public_prompts()
-    # print(prompts_list)
 
     prompts_data = []
     for prompt in prompts_list:
         prompt_text = crud.find_prompt_by_id(prompt.prompt_id).prompt_text
-        # print(prompt_text)
         author_username = crud.find_user_by_id(prompt.user_id).username
         
         prompts_data.append((prompt.saved_prompt_id, prompt_text, author_username, prompt.user_text))

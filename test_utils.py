@@ -55,6 +55,5 @@ class FlaskTestsUtilsLogicFuncs(TestCase):
         assert utils.form_easter_egg(100) == "Cento: "
 
 
-
 if __name__ == "__main__":
     unittest.main()
