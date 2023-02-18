@@ -19,6 +19,14 @@ body {
     background-color: #af9bff60;
 }
 
+.purple-2 {
+    background-color: #e3dcff;
+}
+
+.accordion-button {
+    background-color: #e3dcff;
+}
+
 #front-page-forms {
     justify-content: space-around;
 }
