@@ -271,16 +271,11 @@ class FlaskTestsPoemsJSON(TestCase):
     def setUp(self):
         """Stuff to do before every test."""
 
-        # Get the Flask test client
         self.client = app.test_client()
-
-        # Show Flask errors that happen during tests
         app.config['TESTING'] = True
 
-        # Connect to test database
         connect_to_db(app, db_uri="postgresql:///testdb", echo=False)
 
-        # Create tables and add sample data
         db.create_all()
         seed_database()
 
@@ -331,16 +326,11 @@ class FlaskTestsPoemsJSON(TestCase):
     def setUp(self):
         """Stuff to do before every test."""
 
-        # Get the Flask test client
         self.client = app.test_client()
-
-        # Show Flask errors that happen during tests
         app.config['TESTING'] = True
 
-        # Connect to test database
         connect_to_db(app, db_uri="postgresql:///testdb", echo=False)
 
-        # Create tables and add sample data
         db.create_all()
         seed_database()
 
@@ -377,6 +367,133 @@ class FlaskTestsPoemsJSON(TestCase):
 
             self.assertEqual(result.status_code, 200, result.data)
             assert b'error' in result.data
+
+    def test_update_response_success(self):
+
+        with self.client.session_transaction() as sess:
+            sess['user_id'] = 1
+
+        with self.client:
+            result = self.client.post("/update-response", json={
+                "updated_response": "test text",
+                "prompt_text": "What's the name of tomorrow? Write an ode."
+            }, follow_redirects=True)
+
+            self.assertEqual(result.status_code, 200, result.data)
+            assert b"ok" in result.data
+
+    def test_update_response_failure(self):
+
+        with self.client.session_transaction() as sess:
+            sess['user_id'] = 1
+
+        with self.client:
+            result = self.client.post("/update-response", json={
+                "updated_response": "test text",
+                "prompt_text": "Why are my shoes wet?"
+            }, follow_redirects=True)
+
+            self.assertEqual(result.status_code, 200, result.data)
+            assert b"error" in result.data
+        
+
+# ============ testing mashup POST JSON routes ============ #
+
+class FlaskTestsMashupsJSON(TestCase):
+
+    def setUp(self):
+        """Stuff to do before every test."""
+
+        self.client = app.test_client()
+        app.config['TESTING'] = True
+
+        connect_to_db(app, db_uri="postgresql:///testdb", echo=False)
+
+        db.create_all()
+        seed_database()
+
+        with self.client.session_transaction() as sess:
+            sess['user_id'] = 1
+
+    def tearDown(self):
+        """Do at end of every test."""
+
+        db.session.close()
+        db.drop_all()
+
+    def test_save_mashup_empty_data_list(self):
+
+        with self.client:
+            result = self.client.post("/save-mashup.json", json={
+                'dataList': [],
+                'title': 'something',
+                'author': 'by someone'
+            })
+        
+            self.assertEqual(result.status_code, 200, result.data)
+            assert b'empty' in result.data
+
+    def test_save_mashup_success(self):
+
+        with self.client:
+            result = self.client.post("/save-mashup.json", json={
+                'dataList': ['someone@something@sometext'],
+                'title': 'something',
+                'author': 'by someone'
+            })
+        
+            self.assertEqual(result.status_code, 200, result.data)
+            assert b'ok' in result.data
+
+# ============ testing user profile JSON routes ============ #
+
+class FlaskTestsProfileJSON(TestCase):
+
+    def setUp(self):
+        """Stuff to do before every test."""
+
+        self.client = app.test_client()
+        app.config['TESTING'] = True
+
+        connect_to_db(app, db_uri="postgresql:///testdb", echo=False)
+
+        db.create_all()
+        seed_database()
+
+    def tearDown(self):
+        """Do at end of every test."""
+
+        db.session.close()
+        db.drop_all()
+
+    def test_fetch_username_json(self):
+
+        with self.client.session_transaction() as sess:
+            sess['username'] = 'userX'
+
+
+        with self.client:
+            result = self.client.get('/username.json')
+            assert b'userX' in result.data
+
+    def test_fetch_username_corner_json_loggedin(self):
+
+        with self.client.session_transaction() as sess:
+            sess['username'] = 'userX'
+
+        with self.client:
+            result = self.client.get('/username-corner.json')
+
+            assert b'userX' in result.data
+
+    # def test_fetch_username_corner_json_not_loggedin(self):
+
+    #     with self.client.session_transaction() as sess:
+    #         sess['username'] is None
+
+    #     with self.client:
+    #         result = self.client.get('/username-corner.json')
+    #         assert b'Account' in result.data
 
 
 # ============ UTILS.PY ============ #

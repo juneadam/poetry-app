@@ -449,8 +449,6 @@ def mashup_generator():
         while poem['lines'][i] == '':
             poem = choice(mashup_response)
         poems_by_line_tuples_list.append((poem['author'], poem['title'], poem['lines'][i]))
-
-    print(f'\n\n\npoems_by_line_tuples_list {poems_by_line_tuples_list}\n\n')
     
     return jsonify({'data': poems_by_line_tuples_list, 
                     'username': username,
@@ -466,14 +464,14 @@ def save_mashup():
     title = request.json.get('title')
     author = request.json.get('author')[3:-13]
 
+    if dataList == []:
+        return 'empty'
+
     mashup_obj = crud.find_mashup_by_title(title)
 
     # if mashup_obj:
     #     print(f'\n\n\nmashup_lines {mashup_obj.lines}\n\n')
     #     print(f'\n\n dataList {dataList}\n\n')
-
-    if dataList == []:
-        return 'empty'
     
     new_mashup = crud.create_mashup(user_id=user_id, mashup_title=title, mashup_author=author)
     db.session.add(new_mashup)

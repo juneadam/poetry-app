@@ -3,7 +3,7 @@
 import model
 
 
-# ------------ users ------------ #
+# ============ users ============ #
 
 def create_user(username, email, password, location=None):
     """Creates a User object to be added to the database."""
@@ -24,7 +24,7 @@ def find_user_by_id(user_id):
     return model.User.query.filter_by(user_id=user_id).first()
 
 
-# ------------ bookmarks ------------ #
+# ============ bookmarks ============ #
 
 def create_bookmark(title, author):
     """Creates a Poem object (a saved poem from the API)
@@ -68,7 +68,7 @@ def find_bookmark_all_lines_by_id(bk_poem_id):
     return model.PoemLine.query.filter_by(bk_poem_id=bk_poem_id).all()
 
 
-# ------------ comments ------------ #
+# ============ comments ============ #
 
 def create_comment(user_id, bk_poem_id, user_notes=""):
     """Creates a Comment object to be added to the database."""
@@ -88,7 +88,7 @@ def find_comment_by_id(comment_id):
     return model.Comment.query.filter_by(comment_id=comment_id)
 
 
-# ------------ prompts ------------ #
+# ============ prompts ============ #
 
 def create_prompt(prompt):
     """Creates a PromptDB object which can be added to the database."""
@@ -138,7 +138,7 @@ def find_all_public_prompts():
     return model.SavedPrompt.query.filter_by(prompt_public=True).all()
 
 
-# ------------ mashups ------------ #
+# ============ mashups ============ #
 
 def create_mashup(user_id, mashup_title, mashup_author):
     """Create a new mashup entry."""

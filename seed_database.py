@@ -31,20 +31,25 @@ def seed_database():
     model.db.session.add_all(new_lineX)
     model.db.session.commit()
 
+    new_promptX = crud.create_prompt("What's the name of tomorrow? Write an ode.")
+    model.db.session.add(new_promptX)
+    model.db.session.commit()    
+
+    new_prompt_responseX = crud.save_prompt_response(1, 1, 'filler_text')
+    model.db.session.add(new_prompt_responseX)
+    model.db.session.commit()
+
 
     # Creates 10 poem objects to test the database.
     poems_in_db = []
 
     for n in range(10):
-        # api_url = f'xyz{n}.com'
         title = f'title{n}'
         author = f'author{n}'
-        # full_text = f'{n}\n Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque ut mollis turpis, condimentum semper eros. Nunc et tristique urna, sagittis scelerisque massa. Duis fringilla faucibus neque, nec hendrerit tellus elementum eget. In augue mauris, aliquet sit amet tempor nec, sagittis et sapien. Fusce iaculis arcu in luctus porttitor. Aenean dignissim mollis erat, sed efficitur dolor ultricies non. Sed non neque mattis, hendrerit felis non, pulvinar mauris. Donec nec bibendum leo. Aliquam eget eros sapien. Fusce nec leo a lectus volutpat suscipit. Vivamus nec libero luctus, condimentum quam eu, ullamcorper massa. Praesent a auctor tortor. Morbi euismod leo nec efficitur eleifend. Aenean feugiat, est nec ullamcorper scelerisque, magna odio interdum enim, eget fermentum sapien risus ut turpis.\n\nEtiam sit amet volutpat erat. Sed fringilla, tortor nec aliquam condimentum, enim mi consectetur elit, at varius libero nisl ac massa. Vestibulum suscipit, tellus eget rutrum imperdiet, orci nibh porttitor libero, et volutpat enim ipsum in dui. In hac habitasse platea dictumst. Nunc diam sem, viverra tincidunt ante consectetur, suscipit convallis tellus. Sed ac felis at diam lacinia pretium et ut leo. Ut vel vestibulum leo, at rutrum elit. Cras quis posuere metus. Vestibulum volutpat lectus sed ante tincidunt, id malesuada felis suscipit. Aliquam massa eros, gravida porttitor tempus a, dictum vel urna. In ornare diam vel consectetur faucibus. Ut eleifend posuere lacus eu finibus. '
         
         new_text = crud.create_bookmark(title=title, author=author)
 
         poems_in_db.append(new_text)
-        # model.db.session.add(new_text)
 
     model.db.session.add_all(poems_in_db)
     model.db.session.commit()
