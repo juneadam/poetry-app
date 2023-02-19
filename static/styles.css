@@ -8,6 +8,8 @@
 body {
     background-image: url(/static/imgs/olga-thelavart-vS3idIiYxX0-unsplash.png);
     font-family: 'Lora', serif;
+    font-weight: 500;
+    font-size: min(1em, 20px);
     }
 
 h3 {
@@ -112,6 +114,7 @@ h3 {
     padding: 5px 10px;
     border-radius: 4px;
     font-size: 13px;
+    margin-left: 1em;
   }
 
 /* ============ public shared items routes ============ */
