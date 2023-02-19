@@ -24,7 +24,7 @@ app.jinja_env.undefined = StrictUndefined
 def show_homepage():
     """render the homepage"""
 
-    return render_template('homepage.html')
+    return render_template('homepage.html',)
 
 @app.route('/sign-up', methods=['POST'])
 def user_sign_up():
@@ -512,6 +512,18 @@ def fetch_username_json():
     username = session['username']
     
     return username
+
+@app.route('/username-corner.json')
+def fetch_username_corner_json():
+    """Fetch username from the database."""
+
+    if session.get('username'):
+        username = session['username']
+    else:
+        username = 'Account'
+    
+    return username
+
 
 @app.route('/user-saved-bookmarks.json')
 def fetch_bookmarks_json():

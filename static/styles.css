@@ -34,7 +34,7 @@ h3 {
 }
 
 .btn {
-    box-shadow: 3px 3px 3px #7d5cff60;
+    box-shadow: 3px 3px 3px #7d5cff50;
 }
 
 .q {
@@ -71,12 +71,21 @@ h3 {
     background-color: #af9bff60;
 }
 
+#flash-hole {
+    margin-top: 2em;
+    padding: 0.5em 1em;
+    border: 1px dotted black;
+    border-radius: 7px;
+    background-color: rgba(255,0,0,0.2);
+    vertical-align: center;
+}
+
 /* ============ poems.html ============ */
 
 #optional-inputs-menu {
     border: 1px solid gainsboro;
     border-radius: 7px;
-    box-shadow: 3px 3px 3px #7d5cff60;
+    box-shadow: 3px 3px 3px #7d5cff50;
 
 }
 
@@ -179,7 +188,7 @@ h3 {
     border: 1px solid gainsboro;
     border-radius: 10px;
     background-color: rgba(220,220,220,.5);
-    /* margin: 1em; */
+    margin: 1em;
 }
 
 .view-mashup {
