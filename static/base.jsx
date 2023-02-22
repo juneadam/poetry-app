@@ -8,10 +8,10 @@ const UsernameCorner = (props) => {
         .then((response) => response.text())
         .then((usernameJSON) => {
             updateUsername(usernameJSON)
-        })
-    };
+        });
+    }
 
-    React.useEffect(fetchUsername, []);
+    React.useEffect(fetchUsername, [])
 
     return (
         <React.Fragment>
