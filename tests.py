@@ -8,6 +8,7 @@ import server
 from model import connect_to_db, db
 from seed_database import seed_database
 import utils
+import crud
 
 
 # ============ SERVER.PY ============ #
@@ -222,6 +223,23 @@ class FlaskTestsLogin(TestCase):
             self.assertEqual(result.status_code, 200, result.data)
             assert session['user_id'] is None
             self.assertIn(b'User not found, please create an account below!', result.data)
+
+    def test_login_route_reactivate(self):
+        """Testing the login route with incorrect data."""
+
+        deactivate = crud.find_user_by_id(1)
+        deactivate.active_account = False
+        db.session.add(deactivate)
+        db.session.commit()
+
+        with self.client:
+            result = self.client.post('/login', data={
+                'email': 'test@email.test',
+                'password': 'test'
+            }, follow_redirects=True)
+
+            self.assertEqual(result.status_code, 200, result.data)
+            self.assertIn(b'previously marked as inactive', result.data)
 
 
 # ============ testing logout routes ============ #
@@ -445,9 +463,9 @@ class FlaskTestsMashupsJSON(TestCase):
             self.assertEqual(result.status_code, 200, result.data)
             assert b'ok' in result.data
 
-# ============ testing user profile JSON routes ============ #
+# ============ testing username JSON routes ============ #
 
-class FlaskTestsProfileJSON(TestCase):
+class FlaskTestsUsernameJSON(TestCase):
 
     def setUp(self):
         """Stuff to do before every test."""
@@ -486,14 +504,45 @@ class FlaskTestsProfileJSON(TestCase):
 
             assert b'userX' in result.data
 
-    # def test_fetch_username_corner_json_not_loggedin(self):
+    def test_fetch_username_corner_json_not_loggedin(self):
 
-    #     with self.client.session_transaction() as sess:
-    #         sess['username'] is None
+        with self.client:
+            result = self.client.get('/username-corner.json')
+            assert b'Account' in result.data
 
-    #     with self.client:
-    #         result = self.client.get('/username-corner.json')
-    #         assert b'Account' in result.data
+
+# ============ testing profile JSON routes ============ #
+
+class FlaskTestsProfileJSON(TestCase):
+
+    def setUp(self):
+        """Stuff to do before every test."""
+
+        self.client = app.test_client()
+        app.config['TESTING'] = True
+
+        connect_to_db(app, db_uri="postgresql:///testdb", echo=False)
+
+        db.create_all()
+        seed_database()
+
+    def tearDown(self):
+        """Do at end of every test."""
+
+        db.session.close()
+        db.drop_all()
+
+    def test_fetch_bookmarks_json(self):
+
+        with self.client.session_transaction() as sess:
+            sess['username'] = 'userX'
+
+        with self.client:
+            result = self.client.get("/userprofile", follow_redirects=True)
+
+            assert b'good_poem_for_sure' in result.data
+
+
 
 
 # ============ UTILS.PY ============ #
