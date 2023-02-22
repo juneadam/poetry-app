@@ -4,14 +4,14 @@
 
 {% block body %}
 <div class="container">
-    <div class="row">
+    <div class="row page-header purple">
         <h1>Poetry Prompts</h1>
     </div>
-    <div class="row">
-        <div class="col-6 col-8-md" id="saved-prompt-hole">
-        {{ prompt_text }}
+    <div class="row page-header purple justify-content-between align-items-center">
+        <div class="col-8" id="saved-prompt-hole">
+            <strong>{{ prompt_text }}</strong>
         </div>
-        <div class="col-6 col-4-md">
+        <div class="col-4">
             <button type="button" class="btn btn-outline-secondary" id="save-changes">Save Changes to Your Notes</button>
         </div>
     </div>
@@ -19,7 +19,7 @@
 <div class="container">
     <div class="col-12">
         <br>
-        <label for="text-box-for-saved-prompt-response">{{ username}} -- Use the space below to update your response.</label>
+        <label for="text-box-for-saved-prompt-response"><h4>{{ username}} -- Use the space below to update your response:</h4></label>
         <textarea class="form-control" id="saved-prompt-response" name="saved-prompt-response" rows="20">{{ user_response }}</textarea>
     </div>
 </div>

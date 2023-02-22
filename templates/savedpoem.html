@@ -11,8 +11,8 @@
                 <h3>by {{author }} </h3>
             </div>
         </div>
-        <div class="col-3">
-            <button type="button" class="btn btn-outline-secondary purple" id="update-comments">Save and Update Comments</button>
+        <div class="col-3 justify-content-center">
+            <button type="button" class="btn btn-outline-secondary alt-btn purple" id="update-comments">Save and Update Comments</button>
         </div>
     </div>
 
@@ -23,7 +23,7 @@
             {% endfor %}
         </div>
         <div class="col-4 col-8-md">
-            <br><label for="text-box-for-updating-comments">Use the space below to update any notes or comments you left.</label>
+            <br><label for="text-box-for-updating-comments"><h4>Use the space below to update any notes or comments you left.</h4></label>
             <textarea class="form-control" id="updating-comments" name="updating-comments" rows="20" >{{ user_text }}</textarea>
         </div>
     </div>
