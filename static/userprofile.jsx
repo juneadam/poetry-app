@@ -196,7 +196,7 @@ const UserSavedPrompts = (props) => {
     }
 
     return (
-        <section className="col-12 d-flex flex-wrap justify-content-evenly align-items-stretch" id="PromptCards">
+        <section className="col-12 d-flex flex-wrap justify-content-between align-items-stretch" id="PromptCards">
             {promptCards}
         </section>
     )
@@ -208,7 +208,7 @@ const UserSavedPrompts = (props) => {
 const MashupCard = (props) => {
 
     const mashup = props.mashup
-    const [publicMashupBool, updatePublicMashupBool] = React.useState(mashup[0])
+    const [publicMashupBool, updatePublicMashupBool] = React.useState(mashup[2])
 
     // console.log(mashup[0])
     function updateMashupBoolInDB () {

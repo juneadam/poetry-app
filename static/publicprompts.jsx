@@ -46,7 +46,7 @@ const PublicResponses = (props) => {
     return (
         <div>
 
-            <section id="public-response-cards" className="d-flex flex-wrap justify-content-between align-items-stretch">
+            <section id="public-response-cards" className="d-flex flex-wrap justify-content-evenly align-items-stretch">
                 {responseCards}
             </section>
 

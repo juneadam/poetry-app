@@ -36,7 +36,7 @@ for (const mashup of mashups) {
   
 return (
     <React.Fragment>
-        <section id="public-mashup-cards" className="d-flex flex-wrap justify-content-between align-items-stretch">
+        <section id="public-mashup-cards" className="d-flex flex-wrap justify-content-evenly align-items-stretch">
             {mashupCards}
         </section>
     </ React.Fragment>
