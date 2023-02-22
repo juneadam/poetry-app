@@ -10,6 +10,64 @@ from seed_database import seed_database
 import utils
 import crud
 
+test = os.environ['test_pw']
+
+
+# ============ UTILS.PY ============ #
+# ============ testing the logic of utility functions ============ #
+
+class FlaskTestsUtilsPayload(TestCase):
+    """Tests utility functions."""
+
+    def setUp(self):
+        self.client = app.test_client()
+        app.config['TESTING'] = True
+
+    def tearDown(self):
+        pass
+
+    def test_get_payload_4params(self):
+
+        assert utils.get_payload(
+            author="shakespeare", 
+            title="sonnet", 
+            lines="thence", 
+            linecount="14"
+            ) == ('author,title,lines,linecount','shakespeare;sonnet;thence;14')
+    
+    def test_get_payload_2params(self):
+
+        assert utils.get_payload(author="byron", linecount="20") == ('author,linecount','byron;20')
+
+    def test_get_payload_0params(self):
+
+        assert utils.get_payload() == ('','')
+
+
+class FlaskTestsUtilsLogicFuncs(TestCase):
+    """Tests utility functions."""
+
+    def setUp(self):
+        pass
+
+    def tearDown(self):
+        pass
+
+    def test_range_modifier(self):
+
+        for linecount in range(1,4):
+            assert utils.range_modifier(linecount) == 5
+        for linecount in range(4,10):
+            assert utils.range_modifier(linecount) == 2
+
+    def test_form_easter_egg(self):
+
+        assert utils.form_easter_egg(3) == "Haiku: "
+        assert utils.form_easter_egg(5) == "Limerick: "
+        assert utils.form_easter_egg(14) == "Sonnet: "
+        assert utils.form_easter_egg(19) == "Villanelle: "
+        assert utils.form_easter_egg(100) == "Cento: "
+
 
 # ============ SERVER.PY ============ #
 # ============ Testing simple GET request HTML renders ============ #
@@ -85,6 +143,51 @@ class FlaskTestsSimpleRenders(TestCase):
             result = self.client.get('/add-prompt', follow_redirects=True)
             self.assertEqual(result.status_code, 200, result.data)
             self.assertIn(b'You must be logged in to access this feature.', result.data)
+
+    def test_deactivate_account_check_route(self):
+        """Testing the HTML render for the deactivate page."""
+
+        with self.client:
+            result = self.client.get('/deactivate-account-check')
+            self.assertEqual(result.status_code, 200, result.data)
+            self.assertIn(b'<form action="/deactivate-account" method="POST">', result.data)
+
+    def test_reactivate_account_check_route(self):
+        """Testing the HTML render for the deactivate page."""
+
+        with self.client:
+            result = self.client.get('/reactivate-account-check')
+            self.assertEqual(result.status_code, 200, result.data)
+            self.assertIn(b'<form action="/reactivate-account" method="POST">', result.data)
+
+    def test_public_responses_route_loggedin(self):
+        """Testing the HTML render for the public responses page."""
+
+        with self.client.session_transaction() as sess:
+            sess['user_id'] = 1
+            sess['username'] = 'userX'
+
+        with self.client:
+            result = self.client.get('/search-responses')
+            self.assertEqual(result.status_code, 200, result.data)
+            self.assertIn(b'<div class="row page-header" id="public-responses-header">', result.data)
+
+
+    def test_public_mashups_route_loggedin(self):
+        """Testing the HTML render for the public responses page."""
+
+        with self.client.session_transaction() as sess:
+            sess['user_id'] = 1
+            sess['username'] = 'userX'
+
+        with self.client:
+            result = self.client.get('/search-mashups')
+            self.assertEqual(result.status_code, 200, result.data)
+            self.assertIn(b'<div class = "page-header row" id="public-mashups-header">', result.data)
+
+        
+
+
 
 
 
@@ -255,7 +358,7 @@ class FlaskTestsLogout(TestCase):
     def tearDown(self):
         """Do at end of every test."""
 
-        pass
+        return
 
     def test_logout_success(self):
         """Testing the login route when user data is stored in the session."""
@@ -339,7 +442,7 @@ class FlaskTestsPoemsJSON(TestCase):
 
     # ============ testing update bookmarks POST routes ============ #
 
-class FlaskTestsPoemsJSON(TestCase):
+class FlaskTestsUpdateBookmarks(TestCase):
 
     def setUp(self):
         """Stuff to do before every test."""
@@ -501,7 +604,6 @@ class FlaskTestsUsernameJSON(TestCase):
 
         with self.client:
             result = self.client.get('/username-corner.json')
-
             assert b'userX' in result.data
 
     def test_fetch_username_corner_json_not_loggedin(self):
@@ -511,9 +613,9 @@ class FlaskTestsUsernameJSON(TestCase):
             assert b'Account' in result.data
 
 
-# ============ testing profile JSON routes ============ #
+# ============ testing public/private toggle routes ============ #
 
-class FlaskTestsProfileJSON(TestCase):
+class FlaskTestsPublicPrivateToggles(TestCase):
 
     def setUp(self):
         """Stuff to do before every test."""
@@ -532,68 +634,139 @@ class FlaskTestsProfileJSON(TestCase):
         db.session.close()
         db.drop_all()
 
-    def test_fetch_bookmarks_json(self):
+    def test_update_prompt_bool_in_db_success(self):
 
         with self.client.session_transaction() as sess:
+            sess['user_id'] = 1
             sess['username'] = 'userX'
 
         with self.client:
-            result = self.client.get("/userprofile", follow_redirects=True)
+            result = self.client.post('/update-prompt-bool.json', json={
+                'public_check': True,
+                'saved_prompt_id': 1
+            }, follow_redirects='True')
 
-            assert b'good_poem_for_sure' in result.data
+            self.assertEqual(result.status_code, 200, result.data)
+            assert b'ok' in result.data
 
+    def test_update_prompt_bool_in_db_wrong_user(self):
 
+        with self.client.session_transaction() as sess:
+            sess['user_id'] = 2
+            sess['username'] = 'user0'
 
+        with self.client:
+            result = self.client.post('/update-prompt-bool.json', json={
+                'public_check': True,
+                'saved_prompt_id': 1
+            }, follow_redirects='True')
 
-# ============ UTILS.PY ============ #
-# ============ testing the logic of utility functions ============ #
+            self.assertEqual(result.status_code, 200, result.data)
+            assert b'wrong user' in result.data
 
-class FlaskTestsUtilsPayload(TestCase):
-    """Tests utility functions."""
+    def test_update_mashup_bool_in_db_success(self):
+
+        with self.client.session_transaction() as sess:
+            sess['user_id'] = 1
+            sess['username'] = 'userX'
+
+        with self.client:
+            result = self.client.post('/update-mashup-bool.json', json={
+                'public_check': True,
+                'saved_mashup_id': 1
+            }, follow_redirects='True')
+
+            self.assertEqual(result.status_code, 200, result.data)
+            assert b'ok' in result.data
+
+    def test_update_mashup_bool_in_db_wrong_user(self):
+
+        with self.client.session_transaction() as sess:
+            sess['user_id'] = 2
+            sess['username'] = 'user0'
+
+        with self.client:
+            result = self.client.post('/update-mashup-bool.json', json={
+                'public_check': True,
+                'saved_mashup_id': 1
+            }, follow_redirects='True')
+
+            self.assertEqual(result.status_code, 200, result.data)
+            assert b'wrong user' in result.data
+
+        
+# ============ testing deactivate/reactivate routes ============ #
+
+# class FlaskTestsPublicPrivateToggles(TestCase):
+
+#     def setUp(self):
+#         """Stuff to do before every test."""
+
+#         self.client = app.test_client()
+#         app.config['TESTING'] = True
+
+#         connect_to_db(app, db_uri="postgresql:///testdb", echo=False)
+
+#         db.create_all()
+#         seed_database()
+
+#     def tearDown(self):
+#         """Do at end of every test."""
+
+#         db.session.close()
+#         db.drop_all()
+
+#     def test_deactivate_account(self):
+
+#         with self.client.session_transaction() as sess:
+#             sess['user_id'] = 1
+#             sess['username'] = 'userX'
+
+#         with self.client:
+#             result = self.client.post('/deactivate-account', json={
+#                 'password1': test,
+#                 'password2': test,
+#                 'email': 'test@email.test'
+#             }, follow_redirects='True')
+
+#             assert crud.find_user_by_id(1).active_account is False
+#             self.assertEqual(result.status_code, 200, result.data)
+#             assert b'Account successfully deactivated.' in result.data
+            
+
+# ============ testing public lists JSON routes ============ #
+
+class FlaskTestsPublicRoutes(TestCase):
 
     def setUp(self):
+        """Stuff to do before every test."""
+
         self.client = app.test_client()
         app.config['TESTING'] = True
 
-    def tearDown(self):
-        pass
+        connect_to_db(app, db_uri="postgresql:///testdb", echo=False)
 
-    def test_get_payload_4params(self):
-
-        assert utils.get_payload(author="shakespeare", title="sonnet", lines="thence", linecount="14") == ('author,title,lines,linecount','shakespeare;sonnet;thence;14')
-    
-    def test_get_payload_2params(self):
-
-        assert utils.get_payload(author="byron", linecount="20") == ('author,linecount','byron;20')
-
-    def test_get_payload_0params(self):
-
-        assert utils.get_payload() == ('','')
-
-
-class FlaskTestsUtilsLogicFuncs(TestCase):
-    """Tests utility functions."""
-
-    def setUp(self):
-        pass
+        db.create_all()
+        seed_database()
 
     def tearDown(self):
-        pass
+        """Do at end of every test."""
 
-    def test_range_modifier(self):
+        db.session.close()
+        db.drop_all()
 
-        for linecount in range(1,4):
-            assert utils.range_modifier(linecount) == 5
-        for linecount in range(4,10):
-            assert utils.range_modifier(linecount) == 2
+    def test_public_prompts_json(self):
 
-    def test_form_easter_egg(self):
+        prompt = crud.find_saved_prompt_by_saved_prompt_id(1)
+        prompt.prompt_public = True
+        db.session.add(prompt)
+        db.session.commit()
 
-        assert utils.form_easter_egg(3) == "Haiku: "
-        assert utils.form_easter_egg(5) == "Limerick: "
-        assert utils.form_easter_egg(14) == "Sonnet: "
-        assert utils.form_easter_egg(19) == "Villanelle: "
-        assert utils.form_easter_egg(100) == "Cento: "
+        with self.client:
+            result = self.client.get('/public-prompts.json')
+            self.assertEqual(result.status_code, 200, result.data)
+            assert b"What's the name of tomorrow? Write an ode." in result.data
+
 
 if __name__ == "__main__":
     os.system('dropdb testdb')

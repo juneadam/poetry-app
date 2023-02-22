@@ -43,8 +43,18 @@ h3 {
     box-shadow: none;
 }
 
+.q:hover {
+    box-shadow: 3px 3px 3px rgba(0,0,0,0.3);
+    background-color: gray;
+    color:white
+}
+
 .alt-btn {
     border-color: #e3dcff;
+}
+
+.update-btn {
+    box-shadow: 3px 3px 3px rgba(0,0,0,0.3);
 }
 
 .accordion-button {

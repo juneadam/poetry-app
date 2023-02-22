@@ -39,6 +39,10 @@ def seed_database():
     model.db.session.add(new_prompt_responseX)
     model.db.session.commit()
 
+    new_mashupX = crud.create_mashup(1, 'mashupTitleX', 'userX')
+    model.db.session.add(new_mashupX)
+    model.db.session.commit()
+
 
     # Creates 10 poem objects to test the database.
     poems_in_db = []
