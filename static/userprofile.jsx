@@ -196,7 +196,7 @@ const UserSavedPrompts = (props) => {
     }
 
     return (
-        <section className="col-12 d-flex flex-wrap justify-content-between align-items-stretch" id="PromptCards">
+        <section className="col-12 d-flex flex-wrap justify-content-evenly align-items-stretch" id="PromptCards">
             {promptCards}
         </section>
     )
