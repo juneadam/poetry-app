@@ -10,18 +10,17 @@ Poetry Toolkit is an app for people who like poems. The goal is to inspire users
 
 Using the [PoetryDB](https://poetrydb.org/index.html) API, as well as our built-in database, users can view centuries of poetry and search for authors or titles they like. They can also respond to poetry prompts or create their own to inspire other users. Users can also create poem mashups by randomly mixing and matching lines from existing works. Users can save their prompt responses and their favorite mashups to their profile and choose to share them with other users.
 
+## Tech Stack:
+- Python, Flask, Jinja 
+- Javascript (AJAX, React), CSS, HTML, Bootstrap
+- PostgreSQL, SQLAlchemy
+- PoetryDB API
+
 ![Poetry Toolkit front page](/README/Front%20Page.png)
 ![Poetry Toolkit poems page](/README/Poems%20bookmark%20alert.png)
 ![Poetry Toolkit prompts page](/README/Prompts.png)
 ![Poetry Toolkit mashups page](/README/Mashups.png)
 ![Poetry Toolkit user profile page](/README/User%20Profile.png)
-
-
-# Tech Stack:
-- Python, Flask, Jinja 
-- Javascript (AJAX, React), CSS, HTML, Bootstrap
-- PostgreSQL, SQLAlchemy
-- PoetryDB API
 
 
 # Development Diary:
@@ -122,7 +121,7 @@ Commits today:
 - “we can now load user comments and saved poems, as well as user responses and saved prompts, on new savedpoems / savedprompts templates” 5:15PM
     - sending poem/prompt id via post request from submit buttons that display this id # on the user profile - feels like there must be a better way to handle this, or at least mask the id # (maybe this can be resolved via React when/if I get to that?
 - "you can now edit and save edits to the database for responses and comments by opening them from the user profile" 8:52PM
-    - Trew helped me solve the previous problem using "<input type=”hidden”>"
+    - Trew helped me solve the previous problem using ```<input type=”hidden”>```
     - next steps for tomorrow is to investigate how to implement user profile using React
 ### Day 8 2/1/2023:
 - "userprofiletest route to assess building user profile with React was successful" ~7:30PM (commited 11AM 2/2)
