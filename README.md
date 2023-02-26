@@ -210,4 +210,5 @@ Commits today:
 - “added favicon” (7:22 PM)
 ### Day 28 2/26/2023:
 - “created a README file” (1:33 PM)
-- “added this diary to the README”
+- “added project diary to the README” (1:52 PM)
+- "updating README formatting" (1:56 PM)
