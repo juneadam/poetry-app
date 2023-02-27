@@ -150,6 +150,7 @@ if __name__ == "__main__":
 
     # run these functions from model.py
     model.connect_to_db(server.app)
+    server.app.app_context().push()
     model.db.create_all()
 
     seed_database()
