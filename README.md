@@ -4,7 +4,7 @@
 
 *contact the developer:* [June Balter -- LinkedIn](https://www.linkedin.com/in/june-balter/)
 
-**Demo Video:** [YouTube](https://www.youtube.com/watch?v=i6cDlsd1Lxk)
+**Demo Video:** [YouTube](https://youtu.be/WwlgrRZlsmM)
 
 Poetry Toolkit is an app for people who like poems. The goal is to inspire users to read more and write more by making accessible and approachable tools for English-language poets.
 

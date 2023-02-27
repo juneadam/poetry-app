@@ -1,6 +1,7 @@
 """Models for poetry tools app."""
 
 from flask_sqlalchemy import SQLAlchemy
+import os
 
 db = SQLAlchemy()
 
@@ -197,6 +198,8 @@ class SavedLinebreak(db.Model):
 
 
 # ============ Etc. ============ #
+
+# db_uri = os.environ['DATABASE_URL']
 
 def connect_to_db(flask_app, db_uri="postgresql:///poetrytoolkitDB", echo=True):
     flask_app.config["SQLALCHEMY_DATABASE_URI"] = db_uri
