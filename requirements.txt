@@ -20,5 +20,6 @@ pytest==7.1.2
 selenium
 SQLAlchemy==1.4.25
 tomli==2.0.1
-Werkzeug==2.0.1requests
-
+Werkzeug==2.0.1
+requests
+gunicorn==20.1.0

@@ -753,7 +753,7 @@ def fetch_public_mashups():
 
 if __name__ == "__main__":
     connect_to_db(app)
-    app.run(host="0.0.0.0", debug=True)
+    app.run(host="0.0.0.0", debug=False)
     import sys
     if sys.argv[-1] == "jstest":
         JS_TESTING_MODE = True
