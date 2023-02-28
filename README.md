@@ -1,6 +1,6 @@
 # Poetry Toolkit
 
-**deployment coming soon!**
+*visit:* [Poetry Toolkit - deployed via AWS](3.88.39.80)
 
 *contact the developer:* [June Balter -- LinkedIn](https://www.linkedin.com/in/june-balter/)
 
